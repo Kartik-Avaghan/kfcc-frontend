@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { UserCheck, X, Plus, Minus, Square, CheckSquare } from "lucide-react";
+import { notify } from "../../Utils/notify";
 
 function MembersList() {
   const [members, setMembers] = useState([]);
@@ -7,13 +8,15 @@ function MembersList() {
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔹 Fetch ONM committee members
+  //  Fetch ONM committee members
+  // useEffect(()=>{
   const fetchMembers = async () => {
     try {
       setLoading(true);
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/user/role?role=ONM_COMMITTEE`,
         {
+          method:"GET",
           headers: {
             Authorization: localStorage.getItem("token"),
           },
@@ -30,6 +33,8 @@ function MembersList() {
       setLoading(false);
     }
   };
+  // fetchMembers();
+  // },[])
 
   const openCreateMeeting = () => {
     setSelectedMemberId(null);
@@ -68,12 +73,13 @@ function MembersList() {
 
       if (!res.ok) throw new Error("Failed to appoint leader");
 
-      alert("ONM Leader appointed successfully");
+     
+      notify("ONM Leader appointed successfully", "success")
       setShowModal(false);
       setSelectedMemberId(null);
     } catch (err) {
-      console.error(err);
-      alert("Error appointing leader");
+     notify(err.message,"error")
+     
     }
   };
 

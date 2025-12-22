@@ -70,7 +70,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
           },
           body: JSON.stringify({
             action: "APPROVE",
-           
+            
           }),
         }
       );

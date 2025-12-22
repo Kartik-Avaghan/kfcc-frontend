@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar } from "lucide-react";
+import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Vote } from "lucide-react";
 import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
 
 function ONMMembershipDashboard() {
@@ -36,7 +36,11 @@ function ONMMembershipDashboard() {
     };
 
     fetchMemberships();
-  }, []);
+  }, [selectedApplicationId]);
+
+
+  
+
 
   /* ---------------- LOADING ---------------- */
   if (loading) {
@@ -86,38 +90,42 @@ function ONMMembershipDashboard() {
         >
 
           <div className="bg-blue-50 px-6 py-6 border-b border-gray-300">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-              <div className="space-y-1">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {member.applicantName}
-                </h3>
+    {/* LEFT: Applicant Info */}
+    <div className="space-y-1">
+      <h3 className="text-xl font-semibold text-gray-800">
+        {member.applicantName}
+      </h3>
 
-                <div className="flex flex-wrap mt-2 gap-8 text-sm text-gray-600">
-                  <p>
-                    <span className="font-medium">Application ID:</span> #{member.applicationId}
-                  </p>
-                  {/* <p>
-                    <span className="font-medium">Category:</span>{" "}
-                    {member.membershipCategory || "—"}
-                  </p> */}
-                  {/* <p>
-                    <span className="font-medium">Submitted At: </span>{" "}
-                    {  member?.submittedAt ? new Date(member.submittedAt).toLocaleDateString("en-IN") : "—"}
-                  </p> */}
-                </div>
-              </div>
+      <div className="flex flex-wrap  gap-8 text-sm text-gray-600">
+        <p>
+          <span className="font-medium">Application ID:</span> #{member.applicationId}
+        </p>
+      </div>
+    </div>
 
-              <button
-                onClick={() => setSelectedApplicationId(member)}
-                className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg hover:cursor-pointer"
-              >
-                <Eye className="w-4 h-4" />
-                View Membership Form
-              </button>
-        
-            </div>
-          </div>
+    {/* RIGHT: Action Buttons */}
+    <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+      <button
+        onClick={() => setSelectedApplicationId(member)}
+        className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
+      >
+        <Eye className="w-4 h-4" />
+        View Membership Form
+      </button>
+
+      <button
+        className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
+      >
+        <Vote className="w-4 h-4" />
+        Voting Result
+      </button>
+    </div>
+
+  </div>
+</div>
+
 
           {/* ===== Card Body ===== */}
           <div className="px-6 py-6">

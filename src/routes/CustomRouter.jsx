@@ -10,8 +10,8 @@ import MembershipDashboard from "../pages/staff/MembershipDashboard";
 import TitleRegistrationDashboard from "../pages/staff/TitleRegistrationDashboard";
 import MembersList from "../pages/manager/MembersList";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
-import KFCCMemberList from "../pages/onmcommitte-leader/KFCCMemberList";
 import ONMMembershipDashboard from "../pages/onmcommitte-leader/ONMMembershipDashboard";
+import ONMMemberList from "../pages/onmcommitte-leader/ONMMemberList";
 
 
 
@@ -52,7 +52,7 @@ function CustomRouter() {
 
           {/* onm-leader */}
           <Route path="onmleader/onmleaderdashboard" element={<ONMMembershipDashboard/>}/>
-          <Route path="onmleader/memberslist" element={<KFCCMemberList/>}/>
+          <Route path="onmleader/memberslist" element={<ONMMemberList/>}/>
         </Route>
       </Routes>
     </div>
