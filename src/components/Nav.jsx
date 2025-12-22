@@ -66,9 +66,9 @@ function Nav() {
       { name: "Public Clearance", icon: Globe, path: "/ec/meetings" },
     ],
 
-    OM_COMMITTEE_LEADER: [
-      { name: "Dashboard", icon: BarChart3, path: "/om/dashboard" },
-      { name: "Members", icon: Users, path: "/onmleader/memberlist" },
+    ONM_COMMITTEE_LEADER: [
+      { name: "Dashboard", icon: BarChart3, path: "/onmleader/onmleaderdashboard" },
+      { name: "KFCC Members", icon: Users, path: "/onmleader/memberslist" },
     ],
 
     SECRETARY: [

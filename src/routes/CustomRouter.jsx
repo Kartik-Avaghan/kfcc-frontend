@@ -11,6 +11,9 @@ import TitleRegistrationDashboard from "../pages/staff/TitleRegistrationDashboar
 import MembersList from "../pages/manager/MembersList";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import KFCCMemberList from "../pages/onmcommitte-leader/KFCCMemberList";
+import ONMMembershipDashboard from "../pages/onmcommitte-leader/ONMMembershipDashboard";
+
+
 
 function CustomRouter() {
   return (
@@ -48,7 +51,8 @@ function CustomRouter() {
 
 
           {/* onm-leader */}
-          <Route path="onmleader/memberlist" element={<KFCCMemberList/>}/>
+          <Route path="onmleader/onmleaderdashboard" element={<ONMMembershipDashboard/>}/>
+          <Route path="onmleader/memberslist" element={<KFCCMemberList/>}/>
         </Route>
       </Routes>
     </div>

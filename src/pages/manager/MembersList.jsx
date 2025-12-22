@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { UserCheck, X, Plus, Minus } from "lucide-react";
+import { UserCheck, X, Plus, Minus, Square, CheckSquare } from "lucide-react";
 
 function MembersList() {
   const [members, setMembers] = useState([]);
@@ -37,6 +37,12 @@ function MembersList() {
     setShowModal(true);
   };
 
+
+  const toggleMember = (id) => {
+  setSelectedMemberId((prev) => (prev === id ? null : id));
+};
+
+
   const appointLeader = async () => {
     if (!selectedMemberId) {
       alert("Please select a member");
@@ -71,10 +77,6 @@ function MembersList() {
     }
   };
 
-
-  
-
-
   return (
     <>
       {/* ACTION BUTTONS */}
@@ -87,10 +89,10 @@ function MembersList() {
           Create Meeting
         </button>
 
-        <button className="flex items-center bg-red-700 px-5 py-3 rounded-lg text-white">
+        {/* <button className="flex items-center bg-red-700 px-5 py-3 rounded-lg text-white">
           <Minus size={20} className="mr-2" />
           Terminate Meeting
-        </button>
+        </button> */}
       </div>
 
       {/* MODAL */}
@@ -102,7 +104,12 @@ function MembersList() {
               <h2 className="text-xl font-semibold">
                 Select ONM Committee Leader
               </h2>
-              <button onClick={() =>{setShowModal(false); setSelectedMemberId(null)} }>
+              <button
+                onClick={() => {
+                  setShowModal(false);
+                  setSelectedMemberId(null);
+                }} className="hover:cursor-pointer hover:text-gray-600"
+              >
                 <X />
               </button>
             </div>
@@ -112,39 +119,46 @@ function MembersList() {
               <p className="text-center py-10">Loading members...</p>
             ) : (
               <div className="space-y-3 max-h-[400px] overflow-y-auto">
-                {members.map((m) => (
-                  <label
-                    key={m.id}
-                    className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer ${
-                      selectedMemberId === m.id
-                        ? "border-blue-600 bg-blue-50"
-                        : "border-gray-200"
-                    }`}
-                  >
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {m.firstName} {m.middleName} {m.lastName}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Ph No: {m.mobileNo}
-                      </p>
-                    </div>
+                {members.map((m) => {
+  const isSelected = selectedMemberId === m.id;
 
-                  <input
-  type="radio"
-  name="leader"
-  checked={selectedMemberId === m.id}
-  onChange={() =>
-    setSelectedMemberId(
-      selectedMemberId === m.id ? null : m.id
-    )
-  }
-  className="h-5 w-5 cursor-pointer"
-/>
+  return (
+    <div
+      key={m.id}
+      className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer transition
+        ${isSelected ? "border-blue-600 bg-blue-50" : "border-gray-200"}
+      `}
+      onClick={() => toggleMember(m.id)}
+    >
+      {/* LEFT INFO */}
+      <div>
+        <p className="font-semibold text-gray-800">
+          {m.firstName} {m.middleName} {m.lastName}
+        </p>
+        <p className="text-sm text-gray-500">
+          Ph No: {m.mobileNo}
+        </p>
+      </div>
 
+      {/* RIGHT CHECK ICON */}
+      <button
+        type="button"
+        className="cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation(); // 
+          toggleMember(m.id);
+        }}
+      >
+        {isSelected ? (
+          <CheckSquare className="text-blue-600 w-6 h-6" />
+        ) : (
+          <Square className="text-gray-600 w-6 h-6" />
+        )}
+      </button>
+    </div>
+  );
+})}
 
-                  </label>
-                ))}
 
                 {!members.length && (
                   <p className="text-center text-gray-500">
