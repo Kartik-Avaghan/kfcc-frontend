@@ -4,10 +4,12 @@ import logo from "../assets/logo.jpeg";
 import { Send, Phone, Lock } from "lucide-react";
 import { notify } from "../Utils/notify";
 import { useDispatch } from "react-redux";
-import { userLogin } from "../reducer/userSlice";
-import { jwtDecode } from "jwt-decode";
+import { userLogin } from "../Redux/Reducer";
+import {jwtDecode} from "jwt-decode";
 
 function Login() {
+
+  
 
   const [userDetails, setUserDetails] = useState({
     phone: "",
@@ -35,7 +37,7 @@ function Login() {
    
  
         try{
-            const response = await fetch(`http://localhost:8080/auth/request-otp?mobileNo=${userDetails.phone}`,{
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/request-otp?mobileNo=${userDetails.phone}`,{
                 method:"POST",
             
             });
@@ -54,50 +56,53 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!userDetails.otp) {
-      notify("Please enter OTP", "error");
-      return;
+  if (!userDetails.otp) {
+    notify("Please enter OTP", "error");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/auth/verify-otp?mobileNo=${userDetails.phone}&otp=${userDetails.otp}`,
+      { method: "POST" }
+    );
+
+    if (!response.ok) {
+      throw new Error("Invalid OTP");
     }
 
-    try {
-      const response = await fetch(`http://localhost:8080/auth/verify-otp?mobileNo=${userDetails.phone}&otp=${userDetails.otp}`, {
-        method: "POST",
-      });
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error("Invalid OTP");
-      }
+    // store token
+    localStorage.setItem("token", `Bearer ${data.token}`);
 
-      const data = await response.json();
-      const decodedToken = jwtDecode(data.token);
+    // decode token
+    const decodedToken = jwtDecode(data.token);
 
-      localStorage.setItem("token", data.token);
+    
 
-      // correct redux usage
-      dispatch(
-        userLogin({
-           id: decodedToken.userid,
-           name: decodedToken.username,
+    // dispatch normalized user data
+    dispatch(
+      userLogin({
+        id: decodedToken.userid,
+        name: decodedToken.username,
         phone: decodedToken.sub,
-       role: decodedToken.userrole?.[0], 
-         
-        })
-      );
+        roles: decodedToken.userrole,
+      })
+    );
 
-      // clear form
-      setUserDetails({
-        phone: "",
-        otp: "",
-      });
+    // clear form
+    setUserDetails({ phone: "", otp: "" });
 
-      // navigate AFTER success
-      navigate("/nav");
-    } catch (error) {
-      notify(error.message, "error");
-    }
-  };
+    // navigate
+    navigate("/dashboard");
+  } catch (error) {
+    notify(error.message, "error");
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen  px-4">

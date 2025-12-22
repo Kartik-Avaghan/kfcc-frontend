@@ -7,10 +7,13 @@ import {
   BarChart3,
   Users,
   Settings,
+  Globe,
+  CreditCard,
+  MessageSquare,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userLogout } from "../reducer/userSlice";
+import { userLogout } from "../Redux/Reducer";
 import logo from "../assets/logo.jpeg";
 
 function Nav() {
@@ -19,35 +22,53 @@ function Nav() {
 
   const user = useSelector((state) => state.user.user);
   const isAuth = useSelector((state) => state.user.isAuthenticated);
-  const authReady = useSelector((state) => state.user.authReady);
+  
+
+
+ 
 
  
   useEffect(() => {
-    if (authReady && isAuth === false) {
+    if (isAuth === false) {
       navigate("/");
     }
-  }, [isAuth, navigate, authReady]);
+  }, [isAuth, navigate, ]);
 
   
   const roleMenus = {
+
+     USER: [
+      // { name: "Dashboard", icon: BarChart3, path: "/user/dashboard" },
+      { name: "Membership", icon: FileText, path: "/user/membershipform" },
+    ],
     STAFF: [
-      { name: "Dashboard", icon: BarChart3, path: "/staff/dashboard" },
-      { name: "Membership", icon: FileText, path: "/staff/membership" },
+      { name: "Membership", icon: FileText, path: "/staff/membershipdashboard" },
+      { name: "Title Registration", icon: CreditCard, path: "/staff/titleregistrationdashboard" },
+      { name: "Public Clearance", icon: Globe, path: "/staff/publiclearence" },
     ],
 
     PRODUCER: [
       { name: "Dashboard", icon: BarChart3, path: "/producer/dashboard" },
-      { name: "My Projects", icon: FileText, path: "/producer/projects" },
+      { name: "Title Registration", icon: CreditCard, path: "/producer/projects" },
+      { name: "Public Clearance", icon: Globe, path: "/producer/projects" }
     ],
 
     OM_COMMITTEE: [
-      { name: "O&M Dashboard", icon: BarChart3, path: "/om/dashboard" },
-      { name: "Meetings", icon: Users, path: "/om/meetings" },
+      { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
+      { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
+      { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
+
     ],
 
     EC_MEMBER: [
-      { name: "EC Dashboard", icon: BarChart3, path: "/ec/dashboard" },
-      { name: "Voting", icon: Users, path: "/ec/voting" },
+      { name: "Title Registration", icon: CreditCard, path: "/ec/dashboard" },
+      { name: "Remarked Titles", icon: MessageSquare, path: "/ec/meetings" },
+      { name: "Public Clearance", icon: Globe, path: "/ec/meetings" },
+    ],
+
+    OM_COMMITTEE_LEADER: [
+      { name: "Dashboard", icon: BarChart3, path: "/om/dashboard" },
+      { name: "Members", icon: Users, path: "/onmleader/memberlist" },
     ],
 
     SECRETARY: [
@@ -56,8 +77,8 @@ function Nav() {
     ],
 
     MANAGER: [
-      { name: "Manager Dashboard", icon: BarChart3, path: "/manager/dashboard" },
-      { name: "User Control", icon: Users, path: "/manager/users" },
+      { name: "Manager Dashboard", icon: BarChart3, path: "manager/managerdashboard" },
+      { name: "ONM Meetings", icon: Users, path: "/manager/memberslist" },
     ],
 
     PRESIDENT: [
@@ -66,7 +87,14 @@ function Nav() {
     ],
   };
 
-  const menuItems = roleMenus[user?.role] || [];
+  // const menuItems = roleMenus[user?.roles] || [];
+  const menuItems = user?.roles
+  ?.flatMap((role) => roleMenus[role] || [])
+  .filter(
+    (item, index, self) =>
+      index === self.findIndex((i) => i.path === item.path)
+  );
+
 
   
   const handleLogout = () => {
@@ -76,8 +104,8 @@ function Nav() {
 
   
   return (
-    <div className="h-screen">
-      <div className="w-72 h-screen bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
+    <div className="fixed h-screen">
+      <div className=" w-72 h-screen bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
 
         {/* Header */}
         <div className="p-6 border-b border-blue-800">
@@ -93,7 +121,7 @@ function Nav() {
         {/* User Info */}
         <div className="p-6 border-b border-blue-800">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center">
+            <div className="w-14 h-10 bg-blue-700 rounded-full flex items-center justify-center">
               <User className="w-5 h-5" />
             </div>
             <div>
@@ -101,14 +129,16 @@ function Nav() {
                 <>              <p className="font-medium">
                 Welcome {user?.name}
               </p>
+
               <p className="text-xs text-blue-200 capitalize">
-                {user?.role?.toLowerCase()}
-              </p>
+  {user?.roles?.join(", ").toLowerCase()}
+</p>
 
               {/* <p className="text-xs text-blue-200 capitalize">
-  {user.roles.map(role => role.replace("_", " ")).join(", ").toLowerCase()}
-</p> */}
+                {user?.roles?.toLowerCase()}
+              </p> */}
 
+              
               </>
 
               )}
@@ -117,32 +147,34 @@ function Nav() {
         </div>
 
         {/* Menu */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 overflow-y-auto  scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-900">
           <p className="text-xs font-semibold text-blue-300 uppercase mb-4">
             Main Menu
           </p>
 
+
           <nav className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.name}
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `group flex items-center justify-between p-4 rounded-xl transition-all
-                    ${isActive ? "bg-blue-800" : "hover:bg-blue-900"}`
-                  }
-                >
-                  <div className="flex items-center space-x-3">
-                    <Icon className="w-5 h-5 text-blue-300 group-hover:text-white" />
-                    <span className="font-medium">{item.name}</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-                </NavLink>
-              );
-            })}
-          </nav>
+  {menuItems.map((item) => {
+    const Icon = item.icon;
+    return (
+      <NavLink
+        key={item.path}
+        to={item.path}
+        className={({ isActive }) =>
+          `group flex items-center justify-between p-4 rounded-xl transition-all
+           ${isActive ? "bg-blue-800" : "hover:bg-blue-900"}`
+        }
+      >
+        <div className="flex items-center space-x-3">
+          <Icon className="w-5 h-5 text-blue-300 group-hover:text-white" />
+          <span className="font-medium">{item.name}</span>
+        </div>
+        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+      </NavLink>
+    );
+  })}
+</nav>
+         
         </div>
 
         {/* Logout */}
