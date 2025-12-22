@@ -22,7 +22,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
   const [actionLoading, setActionLoading] = useState(false);
 
   const [showRemarkModal, setShowRemarkModal] = useState(false);
-const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
 
 
   useEffect(() => {
@@ -94,10 +94,10 @@ const [showRejectModal, setShowRejectModal] = useState(false);
       {/* <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl overflow-hidden "> */}
       <div className="bg-white w-full max-w-5xl max-h-[90vh] rounded-2xl shadow-xl overflow-hidden flex flex-col">
         {/* HEADER */}
-        <div className="bg-gradient-to-r from-blue-950 to-blue-800 text-white p-6 relative ">
+        <div className="bg-linear-to-r from-blue-950 to-blue-800 text-white p-6 relative ">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 hover:text-gray-300"
+            className="absolute top-4 right-4 hover:text-gray-300 hover:cursor-pointer"
           >
             <X />
           </button>
@@ -114,7 +114,7 @@ const [showRejectModal, setShowRejectModal] = useState(false);
 
         {/* CONTENT */}
         {/* <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6"> */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-gray-50">
           {/* APPLICANT */}
           <InfoSection title="Applicant Details" icon={User}>
             <Field label="Firm Name" value={data.applicantFirmName} />
@@ -258,7 +258,7 @@ const [showRejectModal, setShowRejectModal] = useState(false);
                 data.nominee.map((n, i) => (
                   <div
                     key={i}
-                    className=" bg-white rounded-2xl shadow-sm p-5 space-y-4"
+                    className=" bg-white rounded-2xl w-full shadow-sm p-5 space-y-4"
                   >
                     {/* CARD HEADER */}
                     <h4 className="text-lg font-semibold text-blue-700">
@@ -377,12 +377,12 @@ const [showRejectModal, setShowRejectModal] = useState(false);
           className="fixed inset-0 bg-black/90 flex items-center justify-center z-60"
           onClick={() => setPreview(null)}
         >
-          <img src={preview} alt="preview" className="max-h-[90%] rounded-xl" />
+          <img src={`${import.meta.env.VITE_API_BASE_URL}/${preview}`} alt="preview" className="max-h-[90%] rounded-xl" />
         </div>
       )}
 
       {showConfirm && (
-        <div className="fixed inset-0 bg-black/70 z-[60] flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/70 z-60 flex items-center justify-center">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl">
             <div className="flex items-center gap-3">
               <CheckCircle className="text-green-600 w-8 h-8" />
@@ -454,9 +454,10 @@ const [showRejectModal, setShowRejectModal] = useState(false);
 
 /* ----------------- UI HELPERS ----------------- */
 
+// eslint-disable-next-line no-unused-vars
 function InfoSection({ title, icon: Icon, children }) {
   return (
-    <div className="bg-gray-50 shadow-xl  rounded-2xl p-4 space-y-3">
+    <div className="  rounded-2xl p-4 space-y-3">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <Icon className="w-5 h-5 text-blue-600" />
         {title}
@@ -487,7 +488,7 @@ function Doc({ label, file, onView }) {
       {hasFile ? (
         <button
           onClick={() => onView(file)}
-          className="text-blue-600 text-sm underline"
+          className="text-blue-600 text-sm underline hover:cursor-pointer"
         >
           View
         </button>
@@ -501,6 +502,7 @@ function Doc({ label, file, onView }) {
   );
 }
 
+// eslint-disable-next-line no-unused-vars
 function ActionBtn({ color, icon: Icon, text, onClick }) {
   const colors = {
     green: "bg-green-600 hover:bg-green-700",

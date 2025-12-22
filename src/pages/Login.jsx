@@ -105,7 +105,7 @@ function Login() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen  px-4">
+    <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-blue-50 px-4">
       <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-2xl p-8 transition-all">
         {/* Header */}
         <div className="flex flex-col items-center mb-8">
