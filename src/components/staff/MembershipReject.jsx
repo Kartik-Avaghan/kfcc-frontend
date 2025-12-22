@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
 
-function MembershipReject({ applicationId, onClose,onSuccess  }) {
+function MembershipReject({ applicationId, onClose, onSuccess }) {
   const [remark, setRemark] = useState("");
 
   function handleSubmit(e) {
@@ -14,8 +14,8 @@ function MembershipReject({ applicationId, onClose,onSuccess  }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-         action: "REJECT",
-            remark,
+        action: "REJECT",
+        remark : remark,
       }),
     })
       .then((response) => {
@@ -23,7 +23,7 @@ function MembershipReject({ applicationId, onClose,onSuccess  }) {
           throw new Error("Response not ok");
         }
         onClose(false);
-        closeApplication(false);
+        onSuccess();
         return response.json();
       })
       .then((data) => {
@@ -67,7 +67,7 @@ function MembershipReject({ applicationId, onClose,onSuccess  }) {
           {/* Info Notice */}
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
             <div className="flex items-start gap-2">
-              <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
               <div>
                 <p className="text-yellow-800 text-sm font-medium mb-1">Important Notice</p>
                 <p className="text-yellow-700 text-xs leading-relaxed">
@@ -111,7 +111,7 @@ function MembershipReject({ applicationId, onClose,onSuccess  }) {
               <button
                 type="submit"
                 disabled={remark.length < 10}
-                className="flex-1 bg-gradient-to-r from-red-600 to-orange-600 text-white px-6 py-3 rounded-xl font-medium hover:from-yellow-700 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-pointer"
+                className="flex-1 bg-linear-to-r from-red-600 to-orange-600 text-white px-6 py-3 rounded-xl font-medium hover:from-yellow-700 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-pointer"
               >
                 <X className="size-5" />
                  Reject 
@@ -121,7 +121,7 @@ function MembershipReject({ applicationId, onClose,onSuccess  }) {
         </div>
 
         {/* Bottom Accent */}
-        <div className="h-1 bg-gradient-to-r from-yellow-600 to-orange-600"></div>
+        <div className="h-1 bg-linear-to-r from-yellow-600 to-orange-600"></div>
       </div>
     </div>
   );

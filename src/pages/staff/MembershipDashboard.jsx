@@ -36,7 +36,7 @@ function MembershipDashboard() {
     };
 
     fetchMemberships();
-  }, []);
+  }, [selectedApplicationId]);
 
   /* ---------------- LOADING ---------------- */
   if (loading) {
