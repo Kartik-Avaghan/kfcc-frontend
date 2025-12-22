@@ -31,13 +31,12 @@ function MembersList() {
     }
   };
 
-  
   const openCreateMeeting = () => {
+    setSelectedMemberId(null);
     fetchMembers();
     setShowModal(true);
   };
 
- 
   const appointLeader = async () => {
     if (!selectedMemberId) {
       alert("Please select a member");
@@ -46,16 +45,18 @@ function MembersList() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/onm/meetings/create/{leaderId}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/onm/meetings/create/${selectedMemberId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: localStorage.getItem("token"),
           },
-          body: JSON.stringify({
-            memberId: selectedMemberId,
-          }),
+          // body: JSON.stringify({
+
+          // }),
         }
       );
 
@@ -70,10 +71,14 @@ function MembersList() {
     }
   };
 
+
+  
+
+
   return (
     <>
       {/* ACTION BUTTONS */}
-      <div className="flex justify-between items-center mt-10 px-10">
+      <div className="flex justify-between items-center  mt-10 px-20">
         <button
           onClick={openCreateMeeting}
           className="flex items-center bg-blue-700 px-5 py-3 rounded-lg text-white"
@@ -92,13 +97,12 @@ function MembersList() {
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6">
-
             {/* HEADER */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 Select ONM Committee Leader
               </h2>
-              <button onClick={() => setShowModal(false)}>
+              <button onClick={() =>{setShowModal(false); setSelectedMemberId(null)} }>
                 <X />
               </button>
             </div>
@@ -119,20 +123,26 @@ function MembersList() {
                   >
                     <div>
                       <p className="font-semibold text-gray-800">
-                        {m.name}
+                        {m.firstName} {m.middleName} {m.lastName}
                       </p>
                       <p className="text-sm text-gray-500">
-                        Name: {m.membershipCategory || "N/A"}
+                        Ph No: {m.mobileNo}
                       </p>
                     </div>
 
-                    <input
-                      type="radio"
-                      name="leader"
-                      checked={selectedMemberId === m.id}
-                      onChange={() => setSelectedMemberId(m.id)}
-                      className="h-5 w-5"
-                    />
+                  <input
+  type="radio"
+  name="leader"
+  checked={selectedMemberId === m.id}
+  onChange={() =>
+    setSelectedMemberId(
+      selectedMemberId === m.id ? null : m.id
+    )
+  }
+  className="h-5 w-5 cursor-pointer"
+/>
+
+
                   </label>
                 ))}
 
@@ -154,8 +164,10 @@ function MembersList() {
               </button>
 
               <button
+                disabled={!selectedMemberId}
                 onClick={appointLeader}
-                className="flex items-center bg-green-600 text-white px-5 py-2 rounded-lg"
+                className={`flex items-center px-5 py-2 rounded-lg text-white
+    ${selectedMemberId ? "bg-green-600" : "bg-gray-400 cursor-not-allowed"}`}
               >
                 <UserCheck size={18} className="mr-2" />
                 Appoint Leader
@@ -169,9 +181,3 @@ function MembersList() {
 }
 
 export default MembersList;
-
-
-
-
-
-
