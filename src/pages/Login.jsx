@@ -126,7 +126,7 @@ function Login() {
           {/* Phone Number Field */}
           <div className="relative">
             <div className="absolute left-3 top-3 text-gray-400 flex gap-1 ">
-              <Phone className="h-5 w-5" /> +91
+              <Phone className="h-5 w-5" /> <span className="text-md">+91</span> 
             </div>
             <input
               type="text"
@@ -143,9 +143,9 @@ function Login() {
             <button
               type="button"
               onClick={handleSendOtp}
-              className=" w-full flex items-center justify-center gap-1 text-sm font-medium cursor-pointer bg-blue-950 text-white hover:bg-blue-900 active:scale-[0.98]w-full py-2.5 rounded-lg  shadow-md transition-transform duration-200"
+              className=" w-full flex items-center justify-center gap-1 text-sm font-medium cursor-pointer bg-blue-950 text-white hover:bg-blue-900 active:scale-[0.98]w-full py-2.5 rounded-lg  shadow-md duration-200 group transition-all"
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-4 w-4 group-hover:-translate-x-1 group-hover:rotate-45 ease-in-out duration-100" />
               Send OTP
             </button>
           )}
