@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Users, CheckSquare, Square, Search } from "lucide-react";
 import { notify } from "../../Utils/notify";
+import { useNavigate } from "react-router-dom";
 
 function ONMMemberList() {
   const [members, setMembers] = useState([]);
   const [selected, setSelected] = useState([]);
   const [meeting, setMeeting] = useState();
-  // const [addMembersToVote, setAddMembersToVote] = useState();
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // Fetch ONM Committee Members
   useEffect(() => {
@@ -209,14 +211,6 @@ function ONMMemberList() {
           <span className="font-medium">
             {selected.length} member(s) selected
           </span>
-          {/* <Link
-            to="/o&m/leaderdashboard"
-            state={{ selectedMemberIds: selected }}
-          >
-            <button className="bg-white text-blue-700 px-4 py-1.5 rounded-md font-semibold hover:bg-gray-100">
-              Start Voting Process
-            </button>
-          </Link> */}
 
           <button
             onClick={handleStartVoting}

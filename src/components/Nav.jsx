@@ -60,6 +60,14 @@ function Nav() {
 
     ],
 
+     ONM_COMMITTEE_VOTER: [
+      {name:"Vote" , icon:Globe, path: "/onm/membershipForm/voting"},
+      { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
+      { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
+      { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
+
+    ],
+
     EC_MEMBER: [
       { name: "Title Registration", icon: CreditCard, path: "/ec/dashboard" },
       { name: "Remarked Titles", icon: MessageSquare, path: "/ec/meetings" },
@@ -131,7 +139,7 @@ function Nav() {
               </p>
 
               <p className="text-xs text-blue-200 capitalize">
-  {user?.roles?.join(", ").toLowerCase()}
+  {user?.roles?.join(", ")}
 </p>
 
               {/* <p className="text-xs text-blue-200 capitalize">
