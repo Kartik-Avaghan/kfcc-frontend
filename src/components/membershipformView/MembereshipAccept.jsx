@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { X, MessageSquare, AlertTriangle, CheckCircle } from 'lucide-react';
 
-function MembereshipAccept({ applicationId, onClose , onSuccess }) {
+function MembershipAccept({ applicationId, onClose , onSuccess }) {
   const [actionLoading, setActionLoading] = useState(false);
 
   const handleAccept = async () => {
@@ -113,4 +113,4 @@ function MembereshipAccept({ applicationId, onClose , onSuccess }) {
   );
 }
 
-export default MembereshipAccept;
+export default MembershipAccept;

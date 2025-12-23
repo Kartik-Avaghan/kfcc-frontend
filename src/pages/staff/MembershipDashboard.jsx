@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar } from "lucide-react";
-import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
+import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
+
 
 function MembershipDashboard() {
  

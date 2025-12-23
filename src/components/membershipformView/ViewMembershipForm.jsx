@@ -8,33 +8,45 @@ import {
   Building,
   Users,
   CreditCard,
-  FileText,
   AlertCircle,
 } from "lucide-react";
 import MembershipRemark from "./MembershipRemark";
 import MembershipReject from "./MembershipReject";
+import MembershipAccept from "./MembereshipAccept";
+import { useSelector } from "react-redux";
+
+// import MembershipAccept from "./MembershipAccept";
 
 export default function ViewMembershipForm({ applicationId, onClose }) {
   const [preview, setPreview] = useState(null);
-  
+
   const [data, setData] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
 
   const [showRemarkModal, setShowRemarkModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
+  const user = useSelector((state) => state.user.user);
+  const roles = user?.roles || [];
+
+  const ONM_BLOCKED_ROLES = [
+    "ONM_COMMITTEE_VOTER",
+    "EC_MEMBER",
+  ];
+
+  const isRestrictedUser = roles.some((role) =>
+    ONM_BLOCKED_ROLES.includes(role)
+  );
 
   useEffect(() => {
-    setActionLoading(true);
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}`, {
       headers: {
-        Authorization: localStorage.getItem("token"),
+        Authorization: `${localStorage.getItem("token")}`,
       },
     })
       .then((res) => res.json())
       .then(setData)
-      .finally(() => setActionLoading(false));
+      .catch((err) => console.error("Error fetching membership data:", err));
   }, [applicationId]);
 
   if (!data) return null;
@@ -50,42 +62,6 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
   const openPreview = (file) => {
     if (!file) return;
     setPreview(file);
-  };
-
-  const handleAccept = async () => {
-    setActionLoading(true);
-
-    // const action = "APPROVE";
-
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/membership/${applicationId}/action`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: localStorage.getItem("token"),
-          },
-          body: JSON.stringify({
-            action: "APPROVE",
-            
-          }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to accept");
-
-      alert(" Application accepted successfully");
-      setShowConfirm(false);
-      onClose(); // close modal
-    } catch (err) {
-      alert(" Failed to accept application");
-      console.error(err);
-    } finally {
-      setActionLoading(false);
-    }
   };
 
   return (
@@ -107,13 +83,12 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
             Application ID: {data.applicationId}
           </p>
 
-          <span className="inline-flex mt-3 px-3 py-1 rounded-full text-sm bg-white/10 border border-white/20">
+          {/* <span className="inline-flex mt-3 px-3 py-1 rounded-full text-sm bg-white/10 border border-white/20">
             Status: {data.membershipStatus}
-          </span>
+          </span> */}
         </div>
 
         {/* CONTENT */}
-        {/* <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6"> */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-gray-50">
           {/* APPLICANT */}
           <InfoSection title="Applicant Details" icon={User}>
@@ -208,7 +183,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
                 {data.partners.map((p, idx) => (
                   <div
                     key={idx}
-                    className="bg-white shadow-xl rounded-2xl  p-5 space-y-4"
+                    className="bg-white border border-gray-200 rounded-2xl  p-5 space-y-4"
                   >
                     {/* CARD HEADER */}
                     <div className="flex items-center justify-between">
@@ -323,132 +298,80 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
         </div>
 
         {/* ACTIONS */}
-        <div className="border-t p-4 flex justify-between items-center gap-4">
-          <ActionBtn
-            color="green"
-            icon={CheckCircle}
-            text="Accept"
-            onClick={() => setShowConfirm(true)}
-          />
+        {!isRestrictedUser && (
+          <div className="border-t border-gray-300 p-4 flex justify-between items-center gap-4">
+            <ActionBtn
+              color="green"
+              icon={CheckCircle}
+              text="Accept"
+              onClick={() => setShowConfirm(true)}
+            />
 
-          {/* <ActionBtn
-            color="yellow"
-            icon={MessageSquare}
-            text="Remark"
-            onClick={() => setShowRemark(!showRemark)}
-          />
-          <ActionBtn color="red" icon={XCircle} text="Reject" />
-        </div>
+            <ActionBtn
+              color="yellow"
+              icon={MessageSquare}
+              text="Remark"
+              onClick={() => setShowRemarkModal(true)}
+            />
 
-        {/* REMARK */}
-        {/* {showRemark && (
-          <div className="border-t p-4">
-            <textarea
-              value={remark}
-              onChange={(e) => setRemark(e.target.value)}
-              placeholder="Enter remark here..."
-              className="w-full border rounded-xl p-3 min-h-[120px]"
+            <ActionBtn
+              color="red"
+              icon={XCircle}
+              text="Reject"
+              onClick={() => setShowRejectModal(true)}
             />
           </div>
-        )}  */}
+        )}
 
-
-
-
-        <ActionBtn
-  color="yellow"
-  icon={MessageSquare}
-  text="Remark"
-  onClick={() => setShowRemarkModal(true)}
-/>
-
-<ActionBtn
-  color="red"
-  icon={XCircle}
-  text="Reject"
-  onClick={() => setShowRejectModal(true)}
-/>
-
-      </div>
-
-      {/* IMAGE PREVIEW */}
-      {preview && (
-        <div
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-60"
-          onClick={() => setPreview(null)}
-        >
-          <img src={`${import.meta.env.VITE_API_BASE_URL}/${preview}`} alt="preview" className="max-h-[90%] rounded-xl" />
-        </div>
-      )}
-
-      {showConfirm && (
-        <div className="fixed inset-0 bg-black/70 z-60 flex items-center justify-center">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="text-green-600 w-8 h-8" />
-              <h3 className="text-xl font-semibold">Confirm Acceptance</h3>
-            </div>
-
-            <p className="text-gray-600">
-              Are you sure you want to <b>accept</b> this membership
-              application?
-            </p>
-
-            
-
-            <div className="flex justify-around  pt-2">
-              <button
-                onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 rounded-lg border"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handleAccept}
-                disabled={actionLoading}
-                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"
-              >
-                {actionLoading ? (
-                  "Processing..."
-                ) : (
-                  <>
-                    <CheckCircle className="w-4 h-4" />
-                    Confirm
-                  </>
-                )}
-              </button>
-            </div>
+        {/* IMAGE PREVIEW */}
+        {preview && (
+          <div
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-60"
+            onClick={() => setPreview(null)}
+          >
+            <img
+              src={`${import.meta.env.VITE_API_BASE_URL}/${preview}`}
+              alt="preview"
+              className="max-h-[90%] rounded-xl"
+            />
           </div>
-        </div>
-      )}
+        )}
 
+        {showConfirm && (
+          <MembershipAccept
+            applicationId={applicationId}
+            onClose={() => setShowConfirm(false)}
+            onSuccess={() => {
+              setShowRemarkModal(false);
+              onClose(); // close main view if needed
+            }}
+          />
+        )}
 
-{/* POP Up */}
-      {showRemarkModal && (
-  <MembershipRemark
-    applicationId={applicationId}
-    onClose={() => setShowRemarkModal(false)}
-    onSuccess={() => {
-      setShowRemarkModal(false);
-      onClose(); // close main view if needed
-    }}
-  />
-)}
+        {/* POP Up */}
+        {showRemarkModal && !isOnmUser && (
+          <MembershipRemark
+            applicationId={applicationId}
+            onClose={() => setShowRemarkModal(false)}
+            onSuccess={() => {
+              setShowRemarkModal(false);
+              onClose(); // close main view if needed
+            }}
+          />
+        )}
 
-{showRejectModal && (
-  <MembershipReject
-    applicationId={applicationId}
-    onClose={() => setShowRejectModal(false)}
-    onSuccess={() => {
-      setShowRejectModal(false);
-      onClose();
-    }}
-  />
-)}
-
+        {showRejectModal && (
+          <MembershipReject
+            applicationId={applicationId}
+            onClose={() => setShowRejectModal(false)}
+            onSuccess={() => {
+              setShowRejectModal(false);
+              onClose();
+            }}
+          />
+        )}
+      </div>
     </div>
-    // </div>
   );
 }
 
@@ -512,7 +435,7 @@ function ActionBtn({ color, icon: Icon, text, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`${colors[color]} text-white  px-2 w-xl py-3 rounded-xl flex justify-center items-center gap-2`}
+      className={`${colors[color]} text-white  px-2 w-xl py-3 rounded-xl flex justify-center items-center gap-2 hover:cursor-pointer`}
     >
       <Icon className="w-4 h-4" />
       {text}

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Vote } from "lucide-react";
-import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
+import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
+import VoteResultMembershipForm from "../../components/onmcommitte-leader/VoteResultMembershipForm";
+// import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
 
 function ONMMembershipDashboard() {
  
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
+  const[voteResult , setVoteResult]= useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -116,6 +119,7 @@ function ONMMembershipDashboard() {
       </button>
 
       <button
+      onClick={()=> setVoteResult(member)}
         className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
       >
         <Vote className="w-4 h-4" />
@@ -193,6 +197,15 @@ function ONMMembershipDashboard() {
         onClose={() => setSelectedApplicationId(null)}
       />
     )}
+
+
+    {voteResult && (
+       <VoteResultMembershipForm
+       voteForApplicationId = {voteResult.applicationId}
+       onCloseVoteResult={()=> setVoteResult(null)}/>
+    )
+     
+    }
 
   </div>
 

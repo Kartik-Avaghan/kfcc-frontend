@@ -61,7 +61,7 @@ function Nav() {
     ],
 
      ONM_COMMITTEE_VOTER: [
-      {name:"Vote" , icon:Globe, path: "/onm/membershipForm/voting"},
+      {name:"Vote" , icon:Globe, path: "/onm/membershipform/voting"},
       { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
       { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
       { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
