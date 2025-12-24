@@ -31,7 +31,7 @@ function MembershipAccept({ applicationId, onClose , onSuccess }) {
 
       if (!response.ok) throw new Error("Failed to accept");
 
-      notify(" Application accepted successfully","success");
+      notify("Application accepted successfully", "success");
       onClose();
       onSuccess();
     } catch (err) {

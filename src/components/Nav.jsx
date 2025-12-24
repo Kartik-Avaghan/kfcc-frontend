@@ -25,8 +25,8 @@ function Nav() {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
 
   useEffect(() => {
-    if (isAuth === false) {
-      navigate("/");
+    if (!isAuth) {
+      navigate("/login");
     }
   }, [isAuth, navigate]);
 
@@ -94,9 +94,9 @@ function Nav() {
 
     SECRETARY: [
       {
-        name: "Secretary Dashboard",
-        icon: BarChart3,
-        path: "/secretary/dashboard",
+         name: "Membership Request",
+        icon: FileText,
+        path: "/secretry/membershipDashboard",
       },
       { name: "Applications", icon: FileText, path: "/secretary/applications" },
     ],
@@ -107,7 +107,7 @@ function Nav() {
         icon: BarChart3,
         path: "manager/managerdashboard",
       },
-      { name: "ONM Meetings", icon: Users, path: "/manager/memberslist" },
+      { name: "ONM Meetings", icon: Users, path: "/manager/onmMeeting" },
     ],
 
     PRESIDENT: [
@@ -128,10 +128,10 @@ function Nav() {
   //     index === self.findIndex((i) => i.path === item.path)
   // );
 
-  const roles = Array.isArray(user?.roles) ? user.roles : [];
+  const roles = Array.isArray(user?.roles) ? user.roles :[];
 
   const menuItems = roles
-    .flatMap((role) => roleMenus[role] || [])
+    .flatMap((role) => roleMenus[role] || [] )
     .filter(
       (item, index, self) =>
         index === self.findIndex((i) => i.path === item.path)

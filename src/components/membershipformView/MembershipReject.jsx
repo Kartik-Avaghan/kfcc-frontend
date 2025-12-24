@@ -29,10 +29,10 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
         return response.json();
       })
       .then((data) => {
-        
+        console.log("Remark submitted:", data);
          // close popup after success
       })
-      .catch((error) => notify(error.message,"error"));
+      .catch((error) => console.log("Error:", error));
   }
 
   return (

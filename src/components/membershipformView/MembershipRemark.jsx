@@ -23,7 +23,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
         if (!response.ok) {
           throw new Error("Response not ok");
         }
-        notify("Application is Remarked","warning")
+        notify("Application is Remarked", "warning");
         onClose(false);
         onSuccess();
         return response.json();
@@ -31,7 +31,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
       .then((data) => {
         console.log("Remark submitted:", data);
       })
-      .catch((error) => notify(error.message, "error"));
+      .catch((error) => console.log("Error:", error));
   }
 
   return (

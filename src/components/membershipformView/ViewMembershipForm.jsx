@@ -349,7 +349,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
         )}
 
         {/* POP Up */}
-        {showRemarkModal && !isOnmUser && (
+        {showRemarkModal && (
           <MembershipRemark
             applicationId={applicationId}
             onClose={() => setShowRemarkModal(false)}
