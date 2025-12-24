@@ -6,13 +6,17 @@ import UserInitializer from "../Redux/UserInitializer";
 import Auth from "../Auth/Auth";
 import Dashboard from "../pages/Dashboard";
 import MembershipForm from "../pages/user/MembershipForm";
-import MembershipDashboard from "../pages/staff/MembershipDashboard";
+// import MembershipDashboard from "../pages/staff/StaffMembershipDashboard";
 import TitleRegistrationDashboard from "../pages/staff/TitleRegistrationDashboard";
 import MembersList from "../pages/manager/MembersList";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import ONMMembershipDashboard from "../pages/onmcommitte-leader/ONMMembershipDashboard";
 import ONMMemberList from "../pages/onmcommitte-leader/ONMMemberList";
-import ONMMembershipVoting from "../pages/onm-committe/ONMMembershipVoting";
+
+import ECMembershipDashboard from "../pages/ec-members/ECMembershipDashboard";
+import StaffMembershipDashboard from "../pages/staff/StaffMembershipDashboard";
+import MembershipDashboard from "../pages/onm-committe/MembershipVotingDashboard";
+import MembershipVotingDashboard from "../pages/onm-committe/MembershipVotingDashboard";
 
 
 
@@ -38,7 +42,7 @@ function CustomRouter() {
           {/* staff */}
           <Route
             path="staff/membershipdashboard"
-            element={<MembershipDashboard />}
+            element={<StaffMembershipDashboard />}
           />
           <Route
             path="staff/titleregistrationdashboard"
@@ -52,12 +56,15 @@ function CustomRouter() {
 
 
           {/* onm-leader */}
-          <Route path="onmleader/onmleaderdashboard" element={<ONMMembershipDashboard/>}/>
+          <Route path="onmleader/membershipDashboard" element={<ONMMembershipDashboard/>}/>
           <Route path="onmleader/memberslist" element={<ONMMemberList/>}/>
 
 
-          {/* onm-voter */}
-          <Route path="onm/membershipform/voting" element={<ONMMembershipVoting/>}/>
+          {/* onmcommitte-voter */}
+          <Route path="onm/voting/membershipDashboard" element={<MembershipVotingDashboard/>}/>
+
+          {/* ec-member */}
+          <Route path="ecmember/membershipDashboard" element={<ECMembershipDashboard/>}/>
         </Route>
       </Routes>
     </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { X, MessageSquare, AlertTriangle, CheckCircle } from 'lucide-react';
+import { notify } from "../../Utils/notify";
 
 function MembershipAccept({ applicationId, onClose , onSuccess }) {
   const [actionLoading, setActionLoading] = useState(false);
@@ -30,12 +31,11 @@ function MembershipAccept({ applicationId, onClose , onSuccess }) {
 
       if (!response.ok) throw new Error("Failed to accept");
 
-      alert(" Application accepted successfully");
+      notify(" Application accepted successfully","success");
       onClose();
       onSuccess();
     } catch (err) {
-      alert(" Failed to accept application");
-      console.error(err);
+      notify(err.message, "error")
     } finally {
       setActionLoading(false);
     }

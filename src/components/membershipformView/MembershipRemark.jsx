@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
+import { notify } from "../../Utils/notify";
 
 function MembershipRemark({ applicationId, onClose, onSuccess  }) {
   const [remark, setRemark] = useState("");
@@ -22,6 +23,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
         if (!response.ok) {
           throw new Error("Response not ok");
         }
+        notify("Application is Remarked","warning")
         onClose(false);
         onSuccess();
         return response.json();
@@ -29,7 +31,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
       .then((data) => {
         console.log("Remark submitted:", data);
       })
-      .catch((error) => console.log("Error:", error));
+      .catch((error) => notify(error.message, "error"));
   }
 
   return (

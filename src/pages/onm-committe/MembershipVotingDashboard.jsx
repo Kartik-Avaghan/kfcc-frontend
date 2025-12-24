@@ -13,7 +13,7 @@ import ViewMembershipForm from "../../components/membershipformView/ViewMembersh
 import VoteMembershipForm from "../../components/onmcommitte/VoteMembershipForm";
 // import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
 
-function ONMMembershipVoting() {
+function MembershipVotingDashboard() {
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [voteSelectedId, setVoteSelectedId] = useState();
@@ -230,4 +230,4 @@ function ONMMembershipVoting() {
   );
 }
 
-export default ONMMembershipVoting;
+export default MembershipVotingDashboard;

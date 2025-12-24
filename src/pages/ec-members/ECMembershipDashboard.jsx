@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Vote } from "lucide-react";
+import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar } from "lucide-react";
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
-import VoteResultMembershipForm from "../../components/onmcommitte-leader/VoteResultMembershipForm";
-// import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
 
-function ONMMembershipDashboard() {
+
+function ECMembershipDashboard() {
  
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
-  const[voteResult , setVoteResult]= useState();
   const [loading, setLoading] = useState(true);
 
-  
+  useEffect(() => {
     const fetchMemberships = async () => {
       try {
         const response = await fetch(
@@ -29,7 +27,7 @@ function ONMMembershipDashboard() {
         const data = await response.json();
 
         setMemberships(
-          data.filter((item) => item.status === "STAFF_APPROVED")
+          data.filter((item) => item.status === "ONM_APPROVED")
         );
       } catch (err) {
         console.log("API error:", err.message);
@@ -38,14 +36,8 @@ function ONMMembershipDashboard() {
       }
     };
 
-    useEffect(() => {
-
     fetchMemberships();
   }, [selectedApplicationId]);
-
-
-  
-
 
   /* ---------------- LOADING ---------------- */
   if (loading) {
@@ -73,7 +65,6 @@ function ONMMembershipDashboard() {
       {/* <span className="inline-flex items-center bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold">
         Total: {memberships.length}
       </span> */}
-      
     </div>
 
   
@@ -95,43 +86,38 @@ function ONMMembershipDashboard() {
         >
 
           <div className="bg-blue-50 px-6 py-6 border-b border-gray-300">
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-    {/* LEFT: Applicant Info */}
-    <div className="space-y-1">
-      <h3 className="text-xl font-semibold text-gray-800">
-        {member.applicantName}
-      </h3>
+              <div className="space-y-1">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {member.applicantName}
+                </h3>
 
-      <div className="flex flex-wrap  gap-8 text-sm text-gray-600">
-        <p>
-          <span className="font-medium">Application ID:</span> #{member.applicationId}
-        </p>
-      </div>
-    </div>
+                <div className="flex flex-wrap mt-2 gap-8 text-sm text-gray-600">
+                  <p>
+                    <span className="font-medium">Application ID:</span> #{member.applicationId}
+                  </p>
+                  {/* <p>
+                    <span className="font-medium">Category:</span>{" "}
+                    {member.membershipCategory || "—"}
+                  </p> */}
+                  {/* <p>
+                    <span className="font-medium">Submitted At: </span>{" "}
+                    {  member?.submittedAt ? new Date(member.submittedAt).toLocaleDateString("en-IN") : "—"}
+                  </p> */}
+                </div>
+              </div>
 
-    {/* RIGHT: Action Buttons */}
-    <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-      <button
-        onClick={() => setSelectedApplicationId(member)}
-        className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
-      >
-        <Eye className="w-4 h-4" />
-        View Membership Form
-      </button>
-
-      <button
-      onClick={()=> setVoteResult(member)}
-        className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
-      >
-        <Vote className="w-4 h-4" />
-        Voting Result
-      </button>
-    </div>
-
-  </div>
-</div>
-
+              <button
+                onClick={() => setSelectedApplicationId(member)}
+                className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg hover:cursor-pointer"
+              >
+                <Eye className="w-4 h-4" />
+                View Membership Form
+              </button>
+        
+            </div>
+          </div>
 
           {/* ===== Card Body ===== */}
           <div className="px-6 py-6">
@@ -200,20 +186,9 @@ function ONMMembershipDashboard() {
       />
     )}
 
-
-    {voteResult && (
-       <VoteResultMembershipForm
-       acceptForApplicationId = {voteResult.applicationId}
-       onCloseVoteResult={()=> {setVoteResult(null);
-        fetchMemberships()}
-       }/>
-    )
-     
-    }
-
   </div>
 
   );
 }
 
-export default ONMMembershipDashboard;
+export default ECMembershipDashboard;

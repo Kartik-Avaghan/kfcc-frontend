@@ -23,75 +23,99 @@ function Nav() {
 
   const user = useSelector((state) => state.user.user);
   const isAuth = useSelector((state) => state.user.isAuthenticated);
-  
 
-
- 
-
- 
   useEffect(() => {
     if (isAuth === false) {
       navigate("/");
     }
-  }, [isAuth, navigate, ]);
+  }, [isAuth, navigate]);
 
-  
   const roleMenus = {
-
-     USER: [
+    USER: [
       // { name: "Dashboard", icon: BarChart3, path: "/user/dashboard" },
       { name: "Membership", icon: FileText, path: "/user/membershipform" },
     ],
     STAFF: [
-      { name: "Membership", icon: FileText, path: "/staff/membershipdashboard" },
-      { name: "Title Registration", icon: CreditCard, path: "/staff/titleregistrationdashboard" },
+      {
+        name: "Membership",
+        icon: FileText,
+        path: "/staff/membershipdashboard",
+      },
+      {
+        name: "Title Registration",
+        icon: CreditCard,
+        path: "/staff/titleregistrationdashboard",
+      },
       { name: "Public Clearance", icon: Globe, path: "/staff/publiclearence" },
     ],
 
     PRODUCER: [
       { name: "Dashboard", icon: BarChart3, path: "/producer/dashboard" },
-      { name: "Title Registration", icon: CreditCard, path: "/producer/projects" },
-      { name: "Public Clearance", icon: Globe, path: "/producer/projects" }
+      {
+        name: "Title Registration",
+        icon: CreditCard,
+        path: "/producer/projects",
+      },
+      { name: "Public Clearance", icon: Globe, path: "/producer/projects" },
     ],
 
     ONM_COMMITTEE: [
       { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
       { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
       { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
-
     ],
 
-     ONM_COMMITTEE_VOTER: [
-      {name:"Vote" , icon:Globe, path: "/onm/membershipform/voting"},
+    ONM_COMMITTEE_VOTER: [
+      { name: "Vote", icon: Globe, path: "/onm/voting/membershipDashboard" },
       { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
       { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
       { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
-
     ],
 
     EC_MEMBER: [
+      {
+        name: "Membership Request",
+        icon: FileText,
+        path: "/ecmember/membershipDashboard",
+      },
       { name: "Title Registration", icon: CreditCard, path: "/ec/dashboard" },
-      { name: "Remarked Titles", icon: MessageSquare, path: "/ec/meetings" },
-      { name: "Public Clearance", icon: Globe, path: "/ec/meetings" },
+      // { name: "Remarked Titles", icon: MessageSquare, path: "/ec/meetings" },
+      { name: "Public Clearance", icon: Globe, path: "/ec/meetis" },
     ],
 
     ONM_COMMITTEE_LEADER: [
-      { name: "Membership Request", icon: FileText, path: "/onmleader/onmleaderdashboard" }, 
+      {
+        name: "Membership Request",
+        icon: FileText,
+        path: "/onmleader/membershipDashboard",
+      },
       { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
     ],
 
     SECRETARY: [
-      { name: "Secretary Dashboard", icon: BarChart3, path: "/secretary/dashboard" },
+      {
+        name: "Secretary Dashboard",
+        icon: BarChart3,
+        path: "/secretary/dashboard",
+      },
       { name: "Applications", icon: FileText, path: "/secretary/applications" },
     ],
 
     MANAGER: [
-      { name: "Manager Dashboard", icon: BarChart3, path: "manager/managerdashboard" },
+      {
+        name: "Manager Dashboard",
+        icon: BarChart3,
+        path: "manager/managerdashboard",
+      },
       { name: "ONM Meetings", icon: Users, path: "/manager/memberslist" },
     ],
 
     PRESIDENT: [
-      { name: "President Dashboard", icon: BarChart3, path: "/president/dashboard" },
+      {
+        name: "President Dashboard",
+        icon: BarChart3,
+        path: "/president/dashboard",
+      },
       { name: "Final Approvals", icon: Settings, path: "/president/approvals" },
     ],
   };
@@ -106,26 +130,21 @@ function Nav() {
 
   const roles = Array.isArray(user?.roles) ? user.roles : [];
 
-const menuItems = roles
-  .flatMap((role) => roleMenus[role] || [])
-  .filter(
-    (item, index, self) =>
-      index === self.findIndex((i) => i.path === item.path)
-  );
+  const menuItems = roles
+    .flatMap((role) => roleMenus[role] || [])
+    .filter(
+      (item, index, self) =>
+        index === self.findIndex((i) => i.path === item.path)
+    );
 
-
-
-  
   const handleLogout = () => {
     dispatch(userLogout());
     navigate("/login");
   };
 
-  
   return (
-    <div className="fixed h-screen">
-      <div className=" w-72 h-screen bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
-
+    <div className="fixed inset-y-0 left-0 w-72">
+      <div className="h-full bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
         {/* Header */}
         <div className="p-6 border-b border-blue-800">
           <div className="flex items-center space-x-3">
@@ -145,21 +164,16 @@ const menuItems = roles
             </div>
             <div>
               {user && (
-                <>              <p className="font-medium">
-                Welcome {user?.name}
-              </p>
-
-              <p className="text-xs text-blue-200 capitalize">
-  {user?.roles?.join(", ")}
-</p>
-
-              {/* <p className="text-xs text-blue-200 capitalize">
+                <>
+                  {" "}
+                  <p className="font-medium">Welcome {user?.name}</p>
+                  <p className="text-xs text-blue-200 capitalize">
+                    {user?.roles?.join(", ")}
+                  </p>
+                  {/* <p className="text-xs text-blue-200 capitalize">
                 {user?.roles?.toLowerCase()}
               </p> */}
-
-              
-              </>
-
+                </>
               )}
             </div>
           </div>
@@ -171,29 +185,27 @@ const menuItems = roles
             Main Menu
           </p>
 
-
           <nav className="space-y-2">
-  {menuItems.map((item) => {
-    const Icon = item.icon;
-    return (
-      <NavLink
-        key={item.path}
-        to={item.path}
-        className={({ isActive }) =>
-          `group flex items-center justify-between p-4 rounded-xl transition-all
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `group flex items-center justify-between p-4 rounded-xl transition-all
            ${isActive ? "bg-blue-800" : "hover:bg-blue-900"}`
-        }
-      >
-        <div className="flex items-center space-x-3">
-          <Icon className="w-5 h-5 text-blue-300 group-hover:text-white" />
-          <span className="font-medium">{item.name}</span>
-        </div>
-        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-      </NavLink>
-    );
-  })}
-</nav>
-         
+                  }
+                >
+                  <div className="flex items-center space-x-3">
+                    <Icon className="w-5 h-5 text-blue-300 group-hover:text-white" />
+                    <span className="font-medium">{item.name}</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                </NavLink>
+              );
+            })}
+          </nav>
         </div>
 
         {/* Logout */}

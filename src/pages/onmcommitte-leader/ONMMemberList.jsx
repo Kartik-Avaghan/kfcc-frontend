@@ -66,7 +66,7 @@ function ONMMemberList() {
         }
 
         const data = await response.json();
-        console.log("Meeting data:", data);
+       
         
         if (Array.isArray(data) && data.length > 0) {
           setMeeting(data[0]); // take first ACTIVE meeting
@@ -110,7 +110,7 @@ function ONMMemberList() {
       const data = await response.json();
      
       notify("Voting started successfully", "success");
-      navigate("/onmleader/onmleaderdashboard");
+      navigate("/onmleader/membershipDashboard");
     } catch (error) {
       notify(error.message, "error");
       

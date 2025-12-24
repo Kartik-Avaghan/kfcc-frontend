@@ -35,7 +35,7 @@ function VoteMembershipForm({ voteApplicationId, onCloseVote, onVoteSuccess }) {
         }
 
         const data = await response.json();
-        console.log("Meeting data:", data);
+        
 
         if (Array.isArray(data) && data.length > 0) {
           setMeeting(data[0]); // take first ACTIVE meeting

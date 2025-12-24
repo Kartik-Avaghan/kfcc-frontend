@@ -3,7 +3,7 @@ import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar } from "luc
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 
 
-function MembershipDashboard() {
+function StaffMembershipDashboard() {
  
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
@@ -191,4 +191,4 @@ function MembershipDashboard() {
   );
 }
 
-export default MembershipDashboard;
+export default StaffMembershipDashboard;
