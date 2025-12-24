@@ -10,6 +10,7 @@ import {
   Globe,
   CreditCard,
   MessageSquare,
+  File,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -53,7 +54,7 @@ function Nav() {
       { name: "Public Clearance", icon: Globe, path: "/producer/projects" }
     ],
 
-    OM_COMMITTEE: [
+    ONM_COMMITTEE: [
       { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
       { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
       { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
@@ -75,8 +76,8 @@ function Nav() {
     ],
 
     ONM_COMMITTEE_LEADER: [
-      { name: "Dashboard", icon: BarChart3, path: "/onmleader/onmleaderdashboard" },
-      { name: "KFCC Members", icon: Users, path: "/onmleader/memberslist" },
+      { name: "Membership Request", icon: FileText, path: "/onmleader/onmleaderdashboard" }, 
+      { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
     ],
 
     SECRETARY: [
@@ -96,12 +97,22 @@ function Nav() {
   };
 
   // const menuItems = roleMenus[user?.roles] || [];
-  const menuItems = user?.roles
-  ?.flatMap((role) => roleMenus[role] || [])
+  // const menuItems = user?.roles
+  // ?.flatMap((role) => roleMenus[role] || [])
+  // .filter(
+  //   (item, index, self) =>
+  //     index === self.findIndex((i) => i.path === item.path)
+  // );
+
+  const roles = Array.isArray(user?.roles) ? user.roles : [];
+
+const menuItems = roles
+  .flatMap((role) => roleMenus[role] || [])
   .filter(
     (item, index, self) =>
       index === self.findIndex((i) => i.path === item.path)
   );
+
 
 
   

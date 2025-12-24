@@ -191,7 +191,7 @@ function VoteMembershipForm({ voteApplicationId, onCloseVote, onVoteSuccess }) {
         <div className="h-1 bg-linear-to-r from-blue-600 to-blue-600"></div>
       </div>
 
-      {alreadyVoted && (
+      {/* {alreadyVoted && (
         <div className="bg-green-50 border border-green-300 rounded-lg p-4 mb-6">
           <div className="flex items-start gap-2">
             <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
@@ -207,7 +207,7 @@ function VoteMembershipForm({ voteApplicationId, onCloseVote, onVoteSuccess }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

@@ -201,7 +201,7 @@ function ONMMembershipDashboard() {
 
     {voteResult && (
        <VoteResultMembershipForm
-       voteForApplicationId = {voteResult.applicationId}
+       acceptForApplicationId = {voteResult.applicationId}
        onCloseVoteResult={()=> setVoteResult(null)}/>
     )
      

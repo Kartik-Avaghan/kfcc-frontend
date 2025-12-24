@@ -30,7 +30,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
   const roles = user?.roles || [];
 
   const ONM_BLOCKED_ROLES = [
-    "ONM_COMMITTEE_VOTER",
+    "ONM_COMMITTEE_VOTER","ONM_COMMITTEE_LEADER","ONM_COMMITTEE",
     "EC_MEMBER",
   ];
 
