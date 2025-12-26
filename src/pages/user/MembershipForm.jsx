@@ -572,7 +572,7 @@ const MembershipForm = () => {
         setTermsChecked(false);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        notify(error.message, "error");
       });
   };
 
