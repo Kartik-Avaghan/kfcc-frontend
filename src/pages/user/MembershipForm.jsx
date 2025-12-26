@@ -14,6 +14,7 @@ import {
   Hash,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
+import { notify } from "../../Utils/notify";
 
 const MembershipForm = () => {
   const today = new Date();
@@ -44,7 +45,6 @@ const MembershipForm = () => {
     applicantAddressProof: null,
     applicantSignature: null,
     firmSeal: null,
-   
 
     proprietor: {
       proprietorName: "",
@@ -74,9 +74,9 @@ const MembershipForm = () => {
         partnerAadhaarImg: null, // FILE
         partnerESignature: null, // FILE
 
-         partnershipDeed: null,
-    moa: null,
-    aoa: null,
+        partnershipDeed: null,
+        moa: null,
+        aoa: null,
       },
     ],
 
@@ -396,7 +396,7 @@ const MembershipForm = () => {
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
 
-  console.log(decodedToken);
+  // console.log(decodedToken);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -450,7 +450,7 @@ const MembershipForm = () => {
     formData.partners.forEach((p, i) => {
       if (p.partnerPanImg)
         // form.append("partnerPanImg[]", p.partnerPanImg);
-         form.append(`partnerPanImg_${i}`, p.partnerPanImg);
+        form.append(`partnerPanImg_${i}`, p.partnerPanImg);
 
       if (p.partnerAadhaarImg)
         // form.append("partnerAadhaarImg[]", p.partnerAadhaarImg);
@@ -460,11 +460,6 @@ const MembershipForm = () => {
         // form.append("partnerESignature[]", p.partnerESignature);
         form.append(`partnerESignature_${i}`, p.partnerESignature);
     });
-
-
-    
-
-
 
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/apply`, {
       method: "POST",
@@ -581,6 +576,53 @@ const MembershipForm = () => {
       });
   };
 
+  const [userData, setUserData] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    bloodGroup: "",
+    dob: "",
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/user/getDetail`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (!response.ok) throw new Error("The response was not ok");
+
+        const data = await response.json();
+        setUserData({
+          firstName: data.firstName || "",
+          middleName: data.middleName || "",
+          lastName: data.lastName || "",
+          bloodGroup: data.bloodGroup || "",
+          dob: data.dob || "",
+        });
+      } catch (error) {
+        notify(error.message, "error");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleUserData = (e) => {
+    const { name, value } = e.target;
+    setUserData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-8 bg-white rounded-lg space-y-6">
       <div className="text-center space-y-2">
@@ -605,27 +647,27 @@ const MembershipForm = () => {
             <div className="w-full flex gap-4">
               <input
                 type="text"
-                name="applicantFirstName"
-                value={formData.applicantFirstName}
-                onChange={(e) => handleInputChange(e, "applicant")}
+                name="firstName"
+                value={userData.firstName}
+                onChange={handleUserData}
                 placeholder="first name"
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
               />
 
               <input
                 type="text"
-                name="applicantMiddleName"
-                value={formData.applicantMiddleName}
-                onChange={(e) => handleInputChange(e, "applicant")}
+                name="middleName"
+                value={userData.middleName}
+                onChange={handleUserData}
                 placeholder="middle name"
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
               />
 
               <input
                 type="text"
-                name="applicantLastName"
-                value={formData.applicantLastName}
-                onChange={(e) => handleInputChange(e, "applicant")}
+                name="lastName"
+                value={userData.lastName}
+                onChange={handleUserData}
                 placeholder="last name"
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
               />
@@ -684,71 +726,92 @@ const MembershipForm = () => {
             </div>
           </div>
 
+          <div className="col-span-2 space-y-3">
+            <div className="w-full flex gap-4">
+              {/* State */}
+              <div className="w-full">
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
+                  <Map className="w-4 h-4 text-blue-700" />
+                  ರಾಜ್ಯ / State
+                </label>
+                <input
+                  type="text"
+                  name="applicantState"
+                  value={formData.applicantState || ""}
+                  onChange={(e) => handleInputChange(e, "applicant")}
+                  placeholder="Enter state"
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                />
+              </div>
 
+              {/* District */}
+              <div className="w-full">
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
+                  <MapPin className="w-4 h-4 text-blue-700" />
+                  ಜಿಲ್ಲೆ / District
+                </label>
+                <input
+                  type="text"
+                  name="applicantDistrict"
+                  value={formData.applicantDistrict || ""}
+                  onChange={(e) => handleInputChange(e, "applicant")}
+                  placeholder="Enter district"
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                />
+              </div>
 
-         
-
-<div className="col-span-2 space-y-3">
-
-  <div className="w-full flex gap-4">
-
-    {/* State */}
-    <div className="w-full">
-      <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
-        <Map className="w-4 h-4 text-blue-700" />
-        ರಾಜ್ಯ / State
-      </label>
-      <input
-        type="text"
-        name="applicantState"
-        value={formData.applicantState || ""}
-        onChange={(e) => handleInputChange(e, "applicant")}
-        placeholder="Enter state"
-        className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
-      />
-    </div>
-
-    {/* District */}
-    <div className="w-full">
-      <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
-        <MapPin className="w-4 h-4 text-blue-700" />
-        ಜಿಲ್ಲೆ / District
-      </label>
-      <input
-        type="text"
-        name="applicantDistrict"
-        value={formData.applicantDistrict || ""}
-        onChange={(e) => handleInputChange(e, "applicant")}
-        placeholder="Enter district"
-        className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
-      />
-    </div>
-
-    {/* Pincode */}
-    <div className="w-full">
-      <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
-        <Hash className="w-4 h-4 text-blue-700" />
-        ಪಿನ್ ಕೋಡ್ / Pincode
-      </label>
-      <input
-        type="text"
-        name="applicantPinCode"
-        value={formData.applicantPinCode || ""}
-        onChange={(e) => handleInputChange(e, "applicant")}
-        placeholder="Enter pincode"
-        className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
-      />
-    </div>
-
-  </div>
-</div>
-
-
-
-
-
+              {/* Pincode */}
+              <div className="w-full">
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
+                  <Hash className="w-4 h-4 text-blue-700" />
+                  ಪಿನ್ ಕೋಡ್ / Pincode
+                </label>
+                <input
+                  type="text"
+                  name="applicantPinCode"
+                  value={formData.applicantPinCode || ""}
+                  onChange={(e) => handleInputChange(e, "applicant")}
+                  placeholder="Enter pincode"
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                />
+              </div>
+            </div>
+          </div>
 
           <div className="mt-1">
+            <label className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <Droplet className="w-4 h-4 text-blue-700" />
+              ಅರ್ಜಿದಾರರ ರಕ್ತದ ಗುಂಪು / Applicant Blood Group
+            </label>
+
+            <input
+              type="text"
+              name="bloodGroup"
+              value={userData.bloodGroup}
+              onChange={handleUserData}
+              placeholder="blood group"
+              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+            />
+            {/* <select
+              name="applicantBloodGroup"
+              value={formData.applicantBloodGroup}
+              onChange={(e) => handleInputChange(e, "applicant")}
+              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+            >
+              <option value="">Select</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="special">Special</option>
+            </select> */}
+          </div>
+
+          {/* <div className="mt-1">
             <label className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
               <Droplet className="w-4 h-4 text-blue-700" />
               ಅರ್ಜಿದಾರರ ರಕ್ತದ ಗುಂಪು / Applicant Blood Group
@@ -770,7 +833,7 @@ const MembershipForm = () => {
               <option value="O-">O-</option>
               <option value="special">Special</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Image */}
           <div>
@@ -828,8 +891,7 @@ const MembershipForm = () => {
             />
           </div>
 
-
-           {/* Image */}
+          {/* Image */}
           <div>
             <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-blue-700" />
@@ -843,21 +905,21 @@ const MembershipForm = () => {
             />
           </div>
 
-         <div>
-  <label className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
-    <Building2 className="w-4 h-4 text-blue-700" />
-    ಸಂಸ್ಥೆಯ ಹೆಸರು / Firm Name
-  </label>
+          <div>
+            <label className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-blue-700" />
+              ಸಂಸ್ಥೆಯ ಹೆಸರು / Firm Name
+            </label>
 
-  <input
-    type="text"
-    name="applicantFirmName"
-    value={formData.applicantFirmName}
-    onChange={(e) => handleInputChange(e, "applicant")}
-    placeholder="Enter firm name"
-    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
-  />
-</div>
+            <input
+              type="text"
+              name="applicantFirmName"
+              value={formData.applicantFirmName}
+              onChange={(e) => handleInputChange(e, "applicant")}
+              placeholder="Enter firm name"
+              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+            />
+          </div>
 
           {/* Image */}
           <div>
@@ -872,8 +934,6 @@ const MembershipForm = () => {
               className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
             />
           </div>
-
-         
 
           {/* <div>
             <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -962,7 +1022,9 @@ const MembershipForm = () => {
               <option value="PRODUCER">Producer</option>
               <option value="DISTRIBUTER">Distributer</option>
               <option value="EXHIBITOR">Exhibitor</option>
-              <option value="STUDIO_LAB_OUTDOOR">Studio, Laboratory & Outdoor Unit</option>
+              <option value="STUDIO_LAB_OUTDOOR">
+                Studio, Laboratory & Outdoor Unit
+              </option>
               <option value="ASSOCIATE">Associated</option>
               <option value="HONORARY">Hony Member</option>
               <option value="TEMPORARY">Temporary Member</option>
@@ -1099,8 +1161,8 @@ const MembershipForm = () => {
             </div>
 
             {/* File Uploads */}
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              {/* PAN Image */}
+            {/* <div className="grid grid-cols-3 gap-4 mt-4">
+              
               <div>
                 <label className="block text-sm font-semibold mb-1">
                   ಪ್ಯಾನ್ ಕಾರ್ಡ್ ಚಿತ್ರ / PAN Card Image
@@ -1121,10 +1183,10 @@ const MembershipForm = () => {
                     className="mt-2 h-24 rounded border"
                   />
                 )}
-              </div>
+              </div> */}
 
-              {/* Aadhaar Image */}
-              <div>
+            {/* Aadhaar Image */}
+            {/* <div>
                 <label className="block text-sm font-semibold mb-1">
                   ಆಧಾರ್ ಕಾರ್ಡ್ ಚಿತ್ರ / Aadhaar Card Image
                 </label>
@@ -1144,10 +1206,10 @@ const MembershipForm = () => {
                     className="mt-2 h-24 rounded border"
                   />
                 )}
-              </div>
+              </div> */}
 
-              {/* E-Signature */}
-              <div>
+            {/* E-Signature */}
+            {/* <div>
                 <label className="block text-sm font-semibold mb-1">
                   ಇ-ಸಹಿ / E-Signature
                 </label>
@@ -1160,7 +1222,7 @@ const MembershipForm = () => {
                     onChange={(e) => handleInputChange(e, "proprietor")}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px] cursor-pointer file:cursor-pointer"
                   />
-                  {/* <Info className="cursor-pointer" /> */}
+                  
                 </div>
 
                 {formData.proprietor.proprietorESignature && (
@@ -1173,7 +1235,7 @@ const MembershipForm = () => {
                   />
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         )}
 
