@@ -19,6 +19,7 @@ import MembershipDashboard from "../pages/onm-committe/MembershipVotingDashboard
 import MembershipVotingDashboard from "../pages/onm-committe/MembershipVotingDashboard";
 import SecretryMembershipDashboard from "../pages/secretry/SecretryMembershipDashbord";
 import ONMMeeting from "../pages/manager/ONMMeeting";
+import TitleRegistrationForm from "../pages/user/TitleRegistrationForm";
 
 
 
@@ -41,6 +42,9 @@ function CustomRouter() {
 
           {/*user  */}
           <Route path="user/membershipform" element={<MembershipForm />} />
+          <Route path="producer/titleRegistrationform" element={<TitleRegistrationForm/>}/>
+
+
           {/* staff */}
           <Route
             path="staff/membershipdashboard"

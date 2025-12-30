@@ -54,7 +54,7 @@ function Nav() {
       {
         name: "Title Registration",
         icon: CreditCard,
-        path: "/producer/projects",
+        path: "producer/titleRegistrationform",
       },
       { name: "Public Clearance", icon: Globe, path: "/producer/projects" },
     ],
