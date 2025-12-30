@@ -1,9 +1,11 @@
-import { File } from "lucide-react";
+import { ChevronLeft, File, Plus,X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { notify } from "../../Utils/notify";
 
 function TitleRegistrationForm() {
+
+    const[openModal,setOpenModal]=useState(false);
   const [formData, setFormData] = useState({
   title: "",
   titleInKannada: "",
@@ -53,7 +55,7 @@ function TitleRegistrationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    
 
     const formPayload = new FormData();
 
@@ -90,7 +92,7 @@ function TitleRegistrationForm() {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/titleRegistration/apply`, {
       method: "POST",
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: formPayload,
     })
@@ -127,20 +129,54 @@ function TitleRegistrationForm() {
   };
 
   return (
-    <div className="flex justify-center py-12 px-4 sm:px-6 lg:px-8  min-h-screen">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-4xl bg-white p-8 rounded-2xl shadow-xl space-y-8"
+
+
+
+    <>
+
+
+    {!openModal && (
+  <div className="flex justify-between items-center mt-10 px-20">
+    <button
+      onClick={() => setOpenModal(true)}
+      className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white"
+    >
+      <Plus size={20} className="mr-2" />
+      Apply For TitleRegistration
+    </button>
+  </div>
+)}
+
+
+
+      {openModal && (
+    <div className="  flex justify-center items-start  py-12 px-4 sm:px-6 lg:px-8">
+
+    <form
+      onSubmit={handleSubmit}
+      className="relative w-full max-w-5xl bg-white p-8 rounded-2xl shadow-xl space-y-8"
+    >
+
+      {/* Top-left Close Button */}
+      <button
+        type="button"
+        onClick={() => setOpenModal(false)}
+        className="absolute top-4 left-4 flex items-center justify-center h-9 w-9 text-gray-700  hover:text-gray-400 transition"
       >
+            <ChevronLeft size={24} />
+
+      </button>
+             
         {/* Header */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-blue-950">
-            Title Registration
-          </h2>
-          <p className="text-gray-500 mt-2 text-sm">
-            Please fill out all required details carefully.
-          </p>
-        </div>
+<div className="text-center">
+  <h2 className="text-3xl font-bold text-blue-950">
+    Title Registration
+  </h2>
+  <p className="text-gray-500 mt-2 text-sm">
+    Please fill out all required details carefully.
+  </p>
+</div>
+
 
         {/* Film Details */}
         <div className="space-y-6">
@@ -506,6 +542,9 @@ function TitleRegistrationForm() {
         </div>
       </form>
     </div>
+    )}
+
+    </>
   );
 }
 

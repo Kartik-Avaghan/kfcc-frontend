@@ -12,6 +12,7 @@ import {
   Building2,
   Map,
   Hash,
+  ChevronLeft,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { notify } from "../../Utils/notify";
@@ -595,7 +596,7 @@ const MembershipForm = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${localStorage.getItem("token")}`,
+              Authorization: ` ${localStorage.getItem("token")}`,
             },
           }
         );
@@ -627,6 +628,7 @@ const MembershipForm = () => {
 
   return (
     <>
+    {!openModal && (
       <div className="flex justify-between items-center mt-10 px-20">
         <button
           onClick={() => setOpenModal(true)}
@@ -636,15 +638,18 @@ const MembershipForm = () => {
           Apply For MembershipForm
         </button>
       </div>
+    )}
 
       {openModal && (
         <div className="relative max-w-6xl mx-auto p-8 bg-white rounded-lg space-y-6 mt-6">
-          <button
-            onClick={() => setOpenModal(false)}
-            className="absolute top-4 right-4 text-xl text-gray-600 hover:text-red-600"
-          >
-            ✕
-          </button>
+           <button
+        type="button"
+        onClick={() => setOpenModal(false)}
+        className="absolute top-4 left-4 flex items-center justify-center h-9 w-9 text-gray-700  hover:text-gray-400 transition"
+      >
+            <ChevronLeft size={24} />
+
+      </button>
 
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-bold text-blue-900 mb-2">
@@ -1679,8 +1684,8 @@ const MembershipForm = () => {
         </div>
       )}
 
-
-      <MembershipCard/>
+{!openModal && (<MembershipCard />)}
+     
     </>
   );
 };

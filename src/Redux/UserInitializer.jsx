@@ -39,7 +39,7 @@ function UserInitializer({ children }) {
           })
         );
 
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token",  `Bearer ${data.token}`);
 
         setLoading(false);
 

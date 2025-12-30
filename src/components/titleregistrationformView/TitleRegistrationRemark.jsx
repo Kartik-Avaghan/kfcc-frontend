@@ -1,14 +1,18 @@
+
+
+
+
 import React, { useState } from "react";
 import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
 import { notify } from "../../Utils/notify";
 
-function MembershipRemark({ applicationId, onClose, onSuccess  }) {
+function TitleRegistrationRemark({ applicationId, onClose, onSuccess  }) {
   const [remark, setRemark] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}/action`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/titleRegistration/${applicationId}/action`, {
       method: "POST",
       headers: {
         "Authorization": localStorage.getItem("token"),
@@ -128,4 +132,4 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
   );
 }
 
-export default MembershipRemark;
+export default TitleRegistrationRemark;

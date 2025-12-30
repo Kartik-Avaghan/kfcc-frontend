@@ -1,35 +1,39 @@
+
+
+
 import React, { useState } from "react";
 import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
 import { notify } from "../../Utils/notify";
 
-function MembershipRemark({ applicationId, onClose, onSuccess  }) {
+function TitleRegistrationReject({ applicationId, onClose, onSuccess }) {
   const [remark, setRemark] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}/action`, {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/titleRegistration/${applicationId}/action`, {
       method: "POST",
       headers: {
         "Authorization": localStorage.getItem("token"),
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-         action: "REMARK",
-          remark : remark,
+        action: "REJECT",
+        remark : remark,
       }),
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Response not ok");
         }
-        notify("Application is Remarked", "warn");
+        notify("Application is Rejected","error")
         onClose(false);
         onSuccess();
         return response.json();
       })
       .then((data) => {
         // console.log("Remark submitted:", data);
+         // close popup after success
       })
       .catch((error) => notify(error.message, "error"));
   }
@@ -44,7 +48,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-yellow-600 text-white p-6 relative">
+        <div className="bg-red-600 text-white p-6 relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-20"
@@ -57,7 +61,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
               <MessageSquare className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Add Remark</h2>
+              <h2 className="text-xl font-bold">Reject Application</h2>
               <p className="text-yellow-100 text-sm">Provide feedback for this application</p>
             </div>
           </div>
@@ -112,10 +116,10 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
               <button
                 type="submit"
                 disabled={remark.length < 10}
-                className="flex-1 bg-linear-to-r from-yellow-600 to-orange-600 text-white px-6 py-3 rounded-xl font-medium hover:from-yellow-700 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-pointer"
+                className="flex-1 bg-linear-to-r from-red-600 to-orange-600 text-white px-6 py-3 rounded-xl font-medium hover:from-yellow-700 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-pointer"
               >
-                <Send className="w-4 h-4" />
-                Submit Remark
+                <X className="size-5" />
+                 Reject 
               </button>
             </div>
           </form>
@@ -128,4 +132,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
   );
 }
 
-export default MembershipRemark;
+export default TitleRegistrationReject;
+
+
+
