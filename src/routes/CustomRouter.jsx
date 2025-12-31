@@ -26,6 +26,7 @@ import TitleRegistrationCommitteDashboard from "../pages/titlecommitte-leader/Ti
 import TitleRegistrationVotingDashboard from "../pages/title-committe/TitleRegistrationVotingDashboard";
 import ECTitleRegistrationDashboard from "../pages/ec-members/ECTitleRegistrationDashboard";
 import SecretryTitleRegistrationDashboard from "../pages/secretry/SecretryTitleRegistrationDashboard";
+import Register from "../pages/Register";
 
 
 
@@ -34,6 +35,7 @@ function CustomRouter() {
     <div>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register/>}/>
         {/* <Route path="/nav" element={<Nav/>}/> */}
 
         <Route

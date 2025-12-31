@@ -5,6 +5,7 @@ import {
   Clock,
   AlertTriangle,
   XCircle,
+  FileText,
 } from "lucide-react";
 
 /* ================= STATUS FLOW ================= */
@@ -110,12 +111,23 @@ export default function MembershipCard() {
 
   /* ===== EMPTY STATE ===== */
   if (!applications.length) {
-    return (
-      <p className="text-center text-gray-500">
-        No membership applications found
+  return (
+    <div className="min-h-[70vh] flex flex-col items-center justify-center text-center">
+      <div className="w-16 h-16 rounded-full  flex items-center justify-center mb-2">
+        <FileText className="w-12 h-12 text-gray-600" />
+      </div>
+
+      <h3 className="text-lg font-semibold text-gray-800">
+        No Applications Found
+      </h3>
+
+      <p className="text-sm text-gray-500 mt-1 max-w-sm">
+        You haven’t submitted any membership applications yet.
       </p>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
     <div className="p-18 grid grid-cols-1 gap-6   ">
