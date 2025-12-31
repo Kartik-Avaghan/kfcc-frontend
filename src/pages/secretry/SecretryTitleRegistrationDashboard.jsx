@@ -1,9 +1,11 @@
+
+
 import React, { useEffect, useState } from "react";
 import { Eye, Film, User, Building, Search, FileText } from "lucide-react";
 import { notify } from "../../Utils/notify";
 import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
 
-function TitleRegistrationDashboard() {
+function SecretryTitleRegistrationDashboard() {
   const [registerDetails, setRegisterDetails] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ function TitleRegistrationDashboard() {
 
         setRegisterDetails(
           Array.isArray(data)
-            ? data.filter((item) => item.status === "SUBMITTED")
+            ? data.filter((item) => item.status === "TITLE_COMMITTEE_APPROVED")
             : []
         );
       } catch (err) {
@@ -60,11 +62,11 @@ function TitleRegistrationDashboard() {
   });
 
 
-  const handleApplicationActionSuccess = (applicationId) => {
-  setRegisterDetails((prev) =>
-    prev.filter((item) => item.id !== applicationId)
-  );
-};
+//   const handleApplicationActionSuccess = (applicationId) => {
+//   setRegisterDetails((prev) =>
+//     prev.filter((item) => item.id !== applicationId)
+//   );
+// };
 
 
   return (
@@ -195,7 +197,8 @@ function TitleRegistrationDashboard() {
         <ViewTitleRegistrationForm
         applicationId = {selectedRegistrationId.id}
         onClose={() => setSelectedRegistrationId(null)}
-        onActionSuccess={handleApplicationActionSuccess} />
+        // onActionSuccess={handleApplicationActionSuccess}
+        />
       )}
     </div>
   );
@@ -213,4 +216,6 @@ function InfoCard({ icon, label, value }) {
   );
 }
 
-export default TitleRegistrationDashboard;
+export default SecretryTitleRegistrationDashboard;
+
+

@@ -30,7 +30,7 @@ function SecretryMembershipDashboard() {
           data.filter((item) => item.status === "ONM_APPROVED")
         );
       } catch (err) {
-        console.log("API error:", err.message);
+         notify(err.message || "Failed to load data", "error");
       } finally {
         setLoading(false);
       }

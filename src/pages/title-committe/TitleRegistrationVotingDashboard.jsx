@@ -103,21 +103,25 @@ function TitleRegistrationVotingDashboard() {
         </div>
       )}
 
-      {/* Empty */}
-      {/* {!loading && applications.length === 0 && (
-        <div className="flex flex-col items-center py-24 text-gray-500">
-          <FileText className="w-12 h-12 mb-3 text-gray-400" />
-          <p className="text-lg font-medium">
-            No applications available for voting
-          </p>
-        </div>
-      )} */}
+     {/* EMPTY STATE: No applications at all */}
+{!loading && applications.length === 0 && (
+  <div className="flex flex-col items-center justify-center py-24 text-gray-500">
+    <FileText className="w-14 h-14 mb-3 text-gray-400" />
+    <p className="text-lg font-medium">
+      Applications not found
+    </p>
+    <p className="text-sm text-gray-400">
+      No title registration applications are available for voting
+    </p>
+  </div>
+)}
 
-{/* No Search Results */}
+
+{/* NO SEARCH RESULTS */}
 {!loading &&
   applications.length > 0 &&
   filteredApplications.length === 0 && (
-    <div className="flex flex-col items-center py-24 text-gray-500">
+    <div className="flex flex-col items-center justify-center py-24 text-gray-500">
       <FileText className="w-12 h-12 mb-3 text-gray-400" />
       <p className="text-lg font-medium">No records found</p>
       {/* <p className="text-sm text-gray-400">
@@ -126,8 +130,9 @@ function TitleRegistrationVotingDashboard() {
     </div>
 )}
 
+
       {/* Cards */}
-      {filteredApplications.length > 0 && (
+      {!loading && filteredApplications.length > 0 && (
       <div className="grid grid-cols-1 gap-6">
         {filteredApplications.map((app) => {
           const isVoted = votedApplications.has(app.id);

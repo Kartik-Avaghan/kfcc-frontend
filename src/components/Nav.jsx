@@ -78,7 +78,7 @@ function Nav() {
         icon: FileText,
         path: "/ecmember/membershipDashboard",
       },
-      { name: "Title Registration", icon: CreditCard, path: "/ec/dashboard" },
+      { name: "Title Registration", icon: CreditCard, path: "/ecmember/titleRegistrationDashboard" },
       // { name: "Remarked Titles", icon: MessageSquare, path: "/ec/meetings" },
       { name: "Public Clearance", icon: Globe, path: "/ec/meetis" },
     ],
@@ -115,7 +115,7 @@ function Nav() {
         icon: FileText,
         path: "/secretry/membershipDashboard",
       },
-      { name: "Applications", icon: FileText, path: "/secretary/applications" },
+      { name: "Title Registration", icon: FileText, path: "/secretry/titleRegistrationDashboard" },
     ],
 
     MANAGER: [

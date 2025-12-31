@@ -1,14 +1,10 @@
 
-
-
-
 import React, { useEffect, useState } from "react";
-import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Vote } from "lucide-react";
+import { Eye, FileText, Loader2, Users, Phone,  CheckCircle, Calendar, Vote, Search, Building, User, Film } from "lucide-react";
 import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
 import { notify } from "../../Utils/notify";
-// import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
-// import VoteResultMembershipForm from "../../components/onmcommitte-leader/VoteResultMembershipForm";
-// import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
+import VoteRresultTitleRegistration from "../../components/titlecommitte-leader/VoteRresultTitleRegistration";
+
 
 function TitleRegistrationCommitteDashboard() {
  
@@ -16,6 +12,7 @@ function TitleRegistrationCommitteDashboard() {
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const[voteResult , setVoteResult]= useState();
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   
     const fetchMemberships = async () => {
@@ -51,6 +48,12 @@ function TitleRegistrationCommitteDashboard() {
     fetchMemberships();
   }, [selectedApplicationId]);
 
+   const handleApplicationActionSuccess = (applicationId) => {
+  setMemberships((prev) =>
+    prev.filter((item) => item.id !== applicationId)
+  );
+};
+
 
   
 
@@ -64,6 +67,19 @@ function TitleRegistrationCommitteDashboard() {
       </div>
     );
   }
+
+
+
+  const filteredMemberships = memberships.filter((m) => {
+  const q = searchTerm.toLowerCase();
+
+  return (
+    m.applicantName?.toLowerCase().includes(q) ||
+    m.membershipCategory?.toLowerCase().includes(q) ||
+    m.mobileNo?.toLowerCase().includes(q) ||
+    String(m.id).includes(q)
+  );
+});
 
   return (
     <div className="p-16 max-w-7xl mx-auto space-y-8">
@@ -84,134 +100,151 @@ function TitleRegistrationCommitteDashboard() {
       
     </div>
 
+
+    <div className="mt-6 mb-10 max-w-xl">
+  <div className="relative">
+    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-600" />
+    <input
+      type="text"
+      placeholder="Search by name, category, mobile, ID..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="w-full border rounded-lg py-2.5 pl-10 pr-4
+                 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+    />
+  </div>
+</div>
+
+
   
-    {memberships.length === 0 && (
+    {/* {memberships.length === 0 && (
       <div className="flex flex-col items-center justify-center py-24 text-gray-500">
         <FileText className="w-12 h-12 mb-3 text-gray-400" />
         <p className="text-lg font-medium">
           No submitted title registration applications
         </p>
       </div>
-    )}
+    )} */}
+
+    {/* Empty State */}
+{!loading && memberships.length === 0 && (
+  <div className="flex flex-col items-center justify-center py-24 text-gray-500">
+    <FileText className="w-12 h-12 mb-3 text-gray-400" />
+    <p className="text-lg font-medium">
+      No membership applications found
+    </p>
+  </div>
+)}
+
+{/* No Search Results */}
+{!loading && filteredMemberships.length === 0 && memberships.length > 0 && (
+  <p className="text-center mt-10 text-gray-500">No records found</p>
+)}
+
 
   
-    <div className="grid grid-cols-1 gap-8 w-full">
-      {memberships.map((member) => (
-        <div
-          key={member.id}
-          className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border-l-4 border-blue-600 overflow-hidden"
-        >
+    <div className="grid grid-cols-1 gap-6 mt-6">
+  {filteredMemberships.map((member) => (
+    <div
+      key={member.id}
+      className="bg-white rounded-2xl shadow-md hover:shadow-lg transition
+                 border-l-4 border-blue-500 overflow-hidden"
+    >
+      {/* Card Header */}
+      <div className="bg-blue-50 px-6 py-4 border-b">
+        <div className="flex flex-col lg:flex-row justify-between gap-4">
 
-          <div className="bg-blue-50 px-6 py-6 border-b border-gray-300">
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="text-xl font-bold text-gray-800">
+              {member.title}
+            </h3>
 
-    {/* LEFT: Applicant Info */}
-    <div className="space-y-1">
-      <h3 className="text-xl font-semibold text-gray-800">
-        {member.applicantName}
-      </h3>
-
-      <div className="flex flex-wrap  gap-8 text-sm text-gray-600">
-        <p>
-          <span className="font-medium">Application ID:</span> #{member.id}
-        </p>
-      </div>
-    </div>
-
-    {/* RIGHT: Action Buttons */}
-    <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-      <button
-        onClick={() => setSelectedApplicationId(member)}
-        className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
-      >
-        <Eye className="w-4 h-4" />
-        View Membership Form
-      </button>
-
-      <button
-      onClick={()=> setVoteResult(member)}
-        className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
-      >
-        <Vote className="w-4 h-4" />
-        Voting Result
-      </button>
-    </div>
-
-  </div>
-</div>
-
-
-          {/* ===== Card Body ===== */}
-          <div className="px-6 py-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
-              {/* Category */}
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Users className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium">Membership Type</p>
-                  <p className="text-gray-800 font-semibold">
-                    {member.membershipCategory || "—"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Mobile */}
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Phone className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium">Mobile Number</p>
-                  <p className="text-gray-800 font-semibold">
-                    {member.mobileNo || "—"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Submitted At */}
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <Calendar className="w-5 h-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium">Submitted At</p>
-                  <p className="text-gray-800 font-semibold">
-                    {member?.submittedAt ? new Date(member.submittedAt).toLocaleDateString("en-IN") : "—"}
-                  </p>
-                </div>
-              </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-gray-600 mt-2">
+              <p><b>ID:</b> #{member.id}</p>
+                    <p><b>Language:</b> {member.language}</p>
+                    <p><b>Category:</b> {member.category}</p>
+                    <p>
+                      <b>Submitted:</b>{" "}
+                      {member.createdAt
+                        ? new Date(member.createdAt).toLocaleDateString()
+                        : "-"}
+                    </p>
             </div>
           </div>
 
-        
-          {/* <div className="px-6 py-4 border-t bg-gray-50 flex justify-end">
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
-              onClick={() => setSelectedMember(member)}
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
+              onClick={() => setSelectedApplicationId(member)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-xl
+                         flex items-center gap-2 hover:bg-blue-700"
             >
-              <Eye className="w-4 h-4" />
-              View Membership Form
+              <Eye size={16} />
+              View Title Registration Form
             </button>
-          </div> */}
+
+            <button
+              onClick={() => setVoteResult(member)}
+              className="bg-green-600 text-white px-6 py-2 rounded-xl
+                         flex items-center gap-2 hover:bg-green-700"
+            >
+              <Vote size={16} />
+              Voting Result
+            </button>
+          </div>
         </div>
-      ))}
-    </div>
+      </div>
+
+      {/* Body */}
+      <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <InfoCard
+                icon={<Building className="text-blue-600" />}
+                label="Producer"
+                value={
+                  member.producer
+                    ? `${member.producer.firstName} ${member.producer.lastName ?? ""}`
+                    : "-"
+                }
+              />
+
+              <InfoCard
+                icon={<User className="text-green-600" />}
+                label="Director"
+                value={member.director}
+              />
+
+              <InfoCard
+                icon={<Film className="text-purple-600" />}
+                label="Lead Actor"
+                value={member.leadActor}
+              />
+            </div>
+
+            {/* Status */}
+            <div className="px-6 pb-6">
+              <span className="text-sm text-gray-500">Current Status:</span>
+              <span className="ml-2 bg-gray-100 px-3 py-1 rounded text-sm font-semibold">
+                {member.status}
+              </span>
+            </div>
+          </div>
+  ))}
+</div>
+
 
   
     {selectedApplicationId && (
       <ViewTitleRegistrationForm
         applicationId={selectedApplicationId.id}
         onClose={() => setSelectedApplicationId(null)}
+        onActionSuccess={handleApplicationActionSuccess}
       />
     )}
 
 
     {voteResult && (
-       <VoteResultMembershipForm
-       acceptForApplicationId = {voteResult.applicationId}
+       <VoteRresultTitleRegistration
+       acceptForApplicationId = {voteResult.id}
        onCloseVoteResult={()=> {setVoteResult(null);
         fetchMemberships()}
        }/>
@@ -221,6 +254,20 @@ function TitleRegistrationCommitteDashboard() {
 
   </div>
 
+  );
+}
+
+
+
+function InfoCard({ icon, label, value }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="p-2 bg-gray-100 rounded-lg">{icon}</div>
+      <div>
+        <p className="text-sm text-gray-500">{label}</p>
+        <p className="font-semibold text-gray-800">{value || "-"}</p>
+      </div>
+    </div>
   );
 }
 

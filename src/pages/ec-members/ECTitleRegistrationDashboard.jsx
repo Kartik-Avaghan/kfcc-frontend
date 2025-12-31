@@ -152,7 +152,7 @@ function ECTitleRegistrationDashboard() {
 
                 <button onClick={()=> setSelectedRegistrationId(detail)}  className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700">
                   <Eye size={16} />
-                  View Details
+                  View Title Registration Form
                 </button>
               </div>
             </div>
@@ -197,7 +197,7 @@ function ECTitleRegistrationDashboard() {
         <ViewTitleRegistrationForm
         applicationId = {selectedRegistrationId.id}
         onClose={() => setSelectedRegistrationId(null)}
-        onActionSuccess={handleApplicationActionSuccess} />
+        />
       )}
     </div>
   );
