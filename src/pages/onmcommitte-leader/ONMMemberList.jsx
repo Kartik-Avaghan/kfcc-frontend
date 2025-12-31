@@ -162,16 +162,22 @@ function ONMMemberList() {
       {loading && <p className="text-gray-500">Loading members...</p>}
 
       {/* Members Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {!loading && filteredMembers.length > 0
-          ? filteredMembers.map((member) => {
+      <div className=" flex items-center justify-center">
+        {!loading && filteredMembers.length === 0 ? (
+          <div className="text-center text-gray-500">
+            <p className="text-lg font-medium">No members found</p>
+            
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            {filteredMembers.map((member) => {
               const isSelected = selected.includes(member.id);
-
+      
               return (
                 <div
                   key={member.id}
-                  className={`px-2 py-4 rounded-xl border shadow-sm flex justify-between items-center transition
-                ${isSelected ? "bg-blue-50 border-blue-400" : "bg-white"}`}
+                  className={`px-4 py-4 rounded-xl border shadow-sm flex justify-between items-center transition
+                  ${isSelected ? "bg-blue-50 border-blue-400" : "bg-white"}`}
                 >
                   {/* Member Info */}
                   <div>
@@ -182,12 +188,9 @@ function ONMMemberList() {
                       Mobile: {member.mobileNo}
                     </p>
                   </div>
-
+      
                   {/* Checkbox */}
-                  <button
-                    className="cursor-pointer"
-                    onClick={() => toggleMember(member.id)}
-                  >
+                  <button onClick={() => toggleMember(member.id)}>
                     {isSelected ? (
                       <CheckSquare className="text-blue-600 w-6 h-6" />
                     ) : (
@@ -196,13 +199,9 @@ function ONMMemberList() {
                   </button>
                 </div>
               );
-            })
-          : !loading && (
-              <div className="flex justify-center items-center">
-                {" "}
-                <p className="text-gray-500 col-span-2">No members found.</p>
-              </div>
-            )}
+            })}
+          </div>
+        )}
       </div>
 
       {/* Floating Action Bar */}

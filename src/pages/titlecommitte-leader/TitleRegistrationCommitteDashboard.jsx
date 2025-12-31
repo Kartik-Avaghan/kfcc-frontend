@@ -1,10 +1,16 @@
+
+
+
+
 import React, { useEffect, useState } from "react";
 import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Vote } from "lucide-react";
-import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
-import VoteResultMembershipForm from "../../components/onmcommitte-leader/VoteResultMembershipForm";
+import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
+import { notify } from "../../Utils/notify";
+// import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
+// import VoteResultMembershipForm from "../../components/onmcommitte-leader/VoteResultMembershipForm";
 // import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
 
-function ONMMembershipDashboard() {
+function TitleRegistrationCommitteDashboard() {
  
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
@@ -15,7 +21,7 @@ function ONMMembershipDashboard() {
     const fetchMemberships = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/membership/pending/requests`,
+          `${import.meta.env.VITE_API_BASE_URL}/titleRegistration/pending/requests`,
           {
             method: "GET",
             headers: {
@@ -27,12 +33,14 @@ function ONMMembershipDashboard() {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
+        console.log(data);
+        
 
         setMemberships(
           data.filter((item) => item.status === "STAFF_APPROVED")
         );
       } catch (err) {
-       notify(err.message || "Failed to load data", "error");
+        notify(err.message || "Failed to load data", "error");
       } finally {
         setLoading(false);
       }
@@ -52,7 +60,7 @@ function ONMMembershipDashboard() {
     return (
       <div className="flex items-center justify-center h-[60vh] text-blue-600">
         <Loader2 className="animate-spin mr-2" />
-        Loading membership applications...
+        Loading title registration applications...
       </div>
     );
   }
@@ -63,10 +71,10 @@ function ONMMembershipDashboard() {
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 className="text-2xl font-bold text-blue-900">
-          Applied Membership Applications
+          Applied Title Registration Applications
         </h1>
         <p className="text-sm text-gray-600">
-          Review and verify submitted membership requests
+          Review and verify submitted title registration requests
         </p>
       </div>
 
@@ -81,7 +89,7 @@ function ONMMembershipDashboard() {
       <div className="flex flex-col items-center justify-center py-24 text-gray-500">
         <FileText className="w-12 h-12 mb-3 text-gray-400" />
         <p className="text-lg font-medium">
-          No submitted membership applications
+          No submitted title registration applications
         </p>
       </div>
     )}
@@ -90,7 +98,7 @@ function ONMMembershipDashboard() {
     <div className="grid grid-cols-1 gap-8 w-full">
       {memberships.map((member) => (
         <div
-          key={member.applicationId}
+          key={member.id}
           className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border-l-4 border-blue-600 overflow-hidden"
         >
 
@@ -105,7 +113,7 @@ function ONMMembershipDashboard() {
 
       <div className="flex flex-wrap  gap-8 text-sm text-gray-600">
         <p>
-          <span className="font-medium">Application ID:</span> #{member.applicationId}
+          <span className="font-medium">Application ID:</span> #{member.id}
         </p>
       </div>
     </div>
@@ -194,8 +202,8 @@ function ONMMembershipDashboard() {
 
   
     {selectedApplicationId && (
-      <ViewMembershipForm
-        applicationId={selectedApplicationId.applicationId}
+      <ViewTitleRegistrationForm
+        applicationId={selectedApplicationId.id}
         onClose={() => setSelectedApplicationId(null)}
       />
     )}
@@ -216,4 +224,4 @@ function ONMMembershipDashboard() {
   );
 }
 
-export default ONMMembershipDashboard;
+export default TitleRegistrationCommitteDashboard;

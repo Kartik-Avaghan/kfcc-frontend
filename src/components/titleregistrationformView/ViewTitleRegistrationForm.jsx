@@ -14,6 +14,7 @@ import {
 import TitleRegistrationAccept from "./TitleRegistrationAccept";
 import TitleRegistrationRemark from "./TitleRegistrationRemark";
 import TitleRegistrationReject from "./TitleRegistrationReject";
+import { useSelector } from "react-redux";
 
 export default function ViewTitleRegistrationForm({ applicationId, onClose,onActionSuccess }) {
   const [data, setData] = useState(null);
@@ -23,6 +24,19 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
 
   const [showRemarkModal, setShowRemarkModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+
+
+   const user = useSelector((state) => state.user.user);
+  const roles = user?.roles || [];
+
+  const ONM_BLOCKED_ROLES = [
+    "TITLE_COMMITTEE_VOTER","TITLE_COMMITTEE_LEADER","TITLE_COMMITTEE",
+    "EC_MEMBER",
+  ];
+
+  const isRestrictedUser = roles.some((role) =>
+    ONM_BLOCKED_ROLES.includes(role)
+  );
 
   useEffect(() => {
     fetch(
@@ -120,6 +134,9 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
           </InfoSection>
         </div>
 
+
+        {!isRestrictedUser && (
+
         <div className="border-t border-gray-300 p-4 flex justify-between items-center gap-4">
           <ActionBtn
             color="green"
@@ -142,6 +159,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
             onClick={() => setShowRejectModal(true)}
           />
         </div>
+        )}
 
         {/* IMAGE PREVIEW */}
         {preview && (

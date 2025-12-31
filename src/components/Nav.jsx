@@ -96,9 +96,9 @@ function Nav() {
       {
         name: "Title Registration ",
         icon: FileText,
-        path: "/onmleader/membershipDashboard",
+        path: "/titleCommitteLeader/titleRegistrationDashboard",
       },
-      { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
+      { name: "Manage Voters", icon: Users, path: "/titleCommitteLeader/memberslist" },
     ],
 
     SECRETARY: [

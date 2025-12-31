@@ -30,7 +30,7 @@ function TitleCommitteMeeting() {
         const response = await fetch(
           `${
             import.meta.env.VITE_API_BASE_URL
-          }/title/meeting/status?status=ACTIVE`,
+          }/title/meetings/status?status=ACTIVE`,
           {
             method: "GET",
             headers: {
@@ -63,7 +63,7 @@ function TitleCommitteMeeting() {
     try {
       setLoading(true);
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/user/role?role=ONM_COMMITTEE`,
+        `${import.meta.env.VITE_API_BASE_URL}/title/meetings/allMembers`,
         {
           method: "GET",
           headers: {
@@ -88,7 +88,7 @@ function TitleCommitteMeeting() {
       const res = await fetch(
         `${
           import.meta.env.VITE_API_BASE_URL
-        }/title/meeting/${meetingId}/terminate`,
+        }/title/meetings/${meetingId}/terminate`,
         {
           method: "POST",
           headers: {
@@ -131,7 +131,7 @@ function TitleCommitteMeeting() {
       const res = await fetch(
         `${
           import.meta.env.VITE_API_BASE_URL
-        }/title/meeting/create/${selectedMemberId}`,
+        }/title/meetings/create/${selectedMemberId}`,
         {
           method: "POST",
           headers: {

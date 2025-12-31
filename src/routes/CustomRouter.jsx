@@ -21,6 +21,8 @@ import SecretryMembershipDashboard from "../pages/secretry/SecretryMembershipDas
 import ONMMeeting from "../pages/manager/ONMMeeting";
 import TitleRegistrationForm from "../pages/user/TitleRegistrationForm";
 import TitleCommitteMeeting from "../pages/manager/TitleCommitteMeeting";
+import KFCCMemberList from "../pages/titlecommitte-leader/KFCCMemberList";
+import TitleRegistrationCommitteDashboard from "../pages/titlecommitte-leader/TitleRegistrationCommitteDashboard";
 
 
 
@@ -76,6 +78,11 @@ function CustomRouter() {
           <Route path="ecmember/membershipDashboard" element={<ECMembershipDashboard/>}/>
 
           <Route path="secretry/membershipDashboard" element={<SecretryMembershipDashboard/>}/>
+
+
+          {/* titlecommitte-leader */}
+          <Route path="titleCommitteLeader/memberslist" element={<KFCCMemberList/>} />
+          <Route path="titleCommitteLeader/titleRegistrationDashboard" element={<TitleRegistrationCommitteDashboard/>}/>
         </Route>
       </Routes>
     </div>
