@@ -23,6 +23,7 @@ import TitleRegistrationForm from "../pages/user/TitleRegistrationForm";
 import TitleCommitteMeeting from "../pages/manager/TitleCommitteMeeting";
 import KFCCMemberList from "../pages/titlecommitte-leader/KFCCMemberList";
 import TitleRegistrationCommitteDashboard from "../pages/titlecommitte-leader/TitleRegistrationCommitteDashboard";
+import TitleRegistrationVotingDashboard from "../pages/title-committe/TitleRegistrationVotingDashboard";
 
 
 
@@ -83,6 +84,10 @@ function CustomRouter() {
           {/* titlecommitte-leader */}
           <Route path="titleCommitteLeader/memberslist" element={<KFCCMemberList/>} />
           <Route path="titleCommitteLeader/titleRegistrationDashboard" element={<TitleRegistrationCommitteDashboard/>}/>
+
+          {/* titlecommitte-voter */}
+          <Route path="titleCommittee/voting/titleRegistrationDashboard" element={<TitleRegistrationVotingDashboard/>}/>
+
         </Route>
       </Routes>
     </div>

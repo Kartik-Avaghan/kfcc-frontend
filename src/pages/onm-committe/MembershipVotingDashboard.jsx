@@ -18,6 +18,8 @@ function MembershipVotingDashboard() {
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [voteSelectedId, setVoteSelectedId] = useState();
   const [votedApplications, setVotedApplications] = useState(new Set());
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,7 @@ function MembershipVotingDashboard() {
 
         setMemberships(data.filter((item) => item.status === "STAFF_APPROVED"));
       } catch (err) {
-        console.log("API error:", err.message);
+          notify(err.message || "Failed to load data", "error");
       } finally {
         setLoading(false);
       }
@@ -59,6 +61,20 @@ function MembershipVotingDashboard() {
     );
   }
 
+
+  const filteredMemberships = memberships.filter((member) => {
+  const term = searchTerm.toLowerCase();
+
+  return (
+    member?.applicantName?.toLowerCase().includes(term) ||
+    member?.membershipCategory?.toLowerCase().includes(term) ||
+    member?.mobileNo?.toString().includes(term) ||
+    member?.applicationId?.toString().includes(term)
+  );
+});
+
+
+
   return (
     <div className="p-16 max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -75,6 +91,41 @@ function MembershipVotingDashboard() {
         Total: {memberships.length}
       </span> */}
       </div>
+
+
+      {/* Search */}
+<div className="max-w-xl">
+  <div className="relative">
+    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-600" />
+    <input
+      type="text"
+      placeholder="Search by name, mobile, category, application ID..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="w-full border rounded-lg py-2.5 pl-10 pr-4
+                 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+    />
+  </div>
+</div>
+
+
+{/* No Search Results */}
+{!loading &&
+  memberships.length > 0 &&
+  filteredMemberships.length === 0 && (
+    <div className="flex flex-col items-center py-24 text-gray-500">
+      <FileText className="w-12 h-12 mb-3 text-gray-400" />
+      <p className="text-lg font-medium">No records found</p>
+      {/* <p className="text-sm text-gray-400">
+        Try searching with a different keyword
+      </p> */}
+    </div>
+)}
+
+
+
+
+     
       {memberships.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-gray-500">
           <FileText className="w-12 h-12 mb-3 text-gray-400" />
@@ -84,7 +135,7 @@ function MembershipVotingDashboard() {
         </div>
       )}
       <div className="grid grid-cols-1 gap-8 w-full">
-        {memberships.map((member) => {
+        {filteredMemberships.map((member) => {
           const isVoted = votedApplications.has(member.applicationId);
           return (
             <div

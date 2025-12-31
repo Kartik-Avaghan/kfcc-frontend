@@ -92,6 +92,14 @@ function Nav() {
       { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
     ],
 
+
+     TITLE_COMMITTEE_VOTER: [
+      { name: "Vote", icon: Globe, path: "/titleCommittee/voting/titleRegistrationDashboard" },
+      { name: "Title Registration", icon: CreditCard, path: "/titleCommittee/dashboard" },
+      { name: "Remarked Titles", icon: MessageSquare, path: "/titleCommittee/meetings" },
+      { name: "Public Clearance", icon: Globe, path: "/titleCommittee/meetings" },
+    ],
+
      TITLE_COMMITTEE_LEADER: [
       {
         name: "Title Registration ",

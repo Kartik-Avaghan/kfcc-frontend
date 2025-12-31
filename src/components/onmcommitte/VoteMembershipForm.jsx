@@ -43,7 +43,7 @@ function VoteMembershipForm({ voteApplicationId, onCloseVote, onVoteSuccess }) {
           setMeeting(null);
         }
       } catch (error) {
-        console.error("Error fetching meeting:", error);
+        notify(error.message || "Failed to fetch active meeting", "error");
       }
     };
 

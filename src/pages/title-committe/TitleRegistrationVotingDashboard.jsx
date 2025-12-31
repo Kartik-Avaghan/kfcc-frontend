@@ -1,153 +1,191 @@
-
-
-
-
 import React, { useEffect, useState } from "react";
 import {
   Eye,
+  Film,
+  User,
+  Building,
+  Search,
+  Vote,
+  CheckCircle,
   FileText,
   Loader2,
-  Users,
-  Phone,
-  CheckCircle,
-  Calendar,
-  Vote,
 } from "lucide-react";
-import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
-import VoteMembershipForm from "../../components/onmcommitte/VoteMembershipForm";
-// import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
+import { notify } from "../../Utils/notify";
+import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
+import VoteTitleRegistrationForm from "../../components/titlecommitte/VoteTitleRegistrationForm";
 
 function TitleRegistrationVotingDashboard() {
-  const [memberships, setMemberships] = useState([]);
-  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
-  const [voteSelectedId, setVoteSelectedId] = useState();
-  const [votedApplications, setVotedApplications] = useState(new Set());
-
+  const [applications, setApplications] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const [viewApplication, setViewApplication] = useState(null);
+  const [voteApplication, setVoteApplication] = useState(null);
+  const [votedApplications, setVotedApplications] = useState(new Set());
+
+  /* ================= FETCH ================= */
   useEffect(() => {
-    const fetchMemberships = async () => {
+    const fetchApplications = async () => {
       try {
         const response = await fetch(
           `${import.meta.env.VITE_API_BASE_URL}/titleRegistration/pending/requests`,
           {
-            method: "GET",
             headers: {
-              Authorization: `${localStorage.getItem("token")}`,
+              Authorization: localStorage.getItem("token"),
             },
           }
         );
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) throw new Error("Failed to load applications");
 
         const data = await response.json();
-
-        setMemberships(data.filter((item) => item.status === "STAFF_APPROVED"));
+        setApplications(
+          Array.isArray(data)
+            ? data.filter((item) => item.status === "STAFF_APPROVED")
+            : []
+        );
       } catch (err) {
-        console.log("API error:", err.message);
+        notify(err.message, "error");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMemberships();
-  }, [selectedApplicationId]);
+    fetchApplications();
+  }, []);
 
-  /* ---------------- LOADING ---------------- */
-  if (loading) {
+  /* ================= SEARCH ================= */
+  const filteredApplications = applications.filter((app) => {
+    const term = searchTerm.toLowerCase();
     return (
-      <div className="flex items-center justify-center h-[60vh] text-blue-600">
-        <Loader2 className="animate-spin mr-2" />
-        Loading membership applications...
-      </div>
+      app?.title?.toLowerCase().includes(term) ||
+      app?.director?.toLowerCase().includes(term) ||
+      app?.leadActor?.toLowerCase().includes(term) ||
+      `${app?.producer?.firstName ?? ""} ${app?.producer?.lastName ?? ""}`
+        .toLowerCase()
+        .includes(term)
     );
-  }
+  });
 
+  /* ================= UI ================= */
   return (
     <div className="p-16 max-w-7xl mx-auto space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-blue-900">
-            Applied Membership Applications
-          </h1>
-          <p className="text-sm text-gray-600">
-            Review and verify submitted membership requests
-          </p>
-        </div>
-
-        {/* <span className="inline-flex items-center bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold">
-        Total: {memberships.length}
-      </span> */}
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-blue-900">
+          Title Registration Voting
+        </h1>
+        <p className="text-sm text-gray-600">
+          Review approved title registrations and cast your vote
+        </p>
       </div>
-      {memberships.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-24 text-gray-500">
-          <FileText className="w-12 h-12 mb-3 text-gray-400" />
-          <p className="text-lg font-medium">
-            No submitted membership applications
-          </p>
+
+      {/* Search */}
+      <div className="max-w-xl">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-600" />
+          <input
+            type="text"
+            placeholder="Search by title, producer, director, actor..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full border rounded-lg py-2.5 pl-10 pr-4
+                       focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      {/* Loading */}
+      {loading && (
+        <div className="flex items-center justify-center h-48 text-blue-600">
+          <Loader2 className="animate-spin mr-2" />
+          Loading applications...
         </div>
       )}
-      <div className="grid grid-cols-1 gap-8 w-full">
-        {memberships.map((member) => {
-          const isVoted = votedApplications.has(member.applicationId);
+
+      {/* Empty */}
+      {/* {!loading && applications.length === 0 && (
+        <div className="flex flex-col items-center py-24 text-gray-500">
+          <FileText className="w-12 h-12 mb-3 text-gray-400" />
+          <p className="text-lg font-medium">
+            No applications available for voting
+          </p>
+        </div>
+      )} */}
+
+{/* No Search Results */}
+{!loading &&
+  applications.length > 0 &&
+  filteredApplications.length === 0 && (
+    <div className="flex flex-col items-center py-24 text-gray-500">
+      <FileText className="w-12 h-12 mb-3 text-gray-400" />
+      <p className="text-lg font-medium">No records found</p>
+      {/* <p className="text-sm text-gray-400">
+        Try searching with a different keyword
+      </p> */}
+    </div>
+)}
+
+      {/* Cards */}
+      {filteredApplications.length > 0 && (
+      <div className="grid grid-cols-1 gap-6">
+        {filteredApplications.map((app) => {
+          const isVoted = votedApplications.has(app.id);
+
           return (
             <div
-              key={member.applicationId}
-              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border-l-4 border-blue-600 overflow-hidden"
+              key={app.id}
+              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition border-l-4 border-blue-600 overflow-hidden"
             >
-              <div className="bg-blue-50 px-6 py-6 border-b border-gray-300">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  {/* LEFT: Applicant Info */}
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-semibold text-gray-800">
-                      {member.applicantName}
+              {/* Header */}
+              <div className="bg-blue-50 px-6 py-4 border-b">
+                <div className="flex flex-col lg:flex-row justify-between gap-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      {app.title}
                     </h3>
 
-                    <div className="flex flex-wrap  gap-8 text-sm text-gray-600">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-gray-600 mt-2">
+                      <p><b>ID:</b> #{app.id}</p>
+                      <p><b>Language:</b> {app.language}</p>
+                      <p><b>Category:</b> {app.category}</p>
                       <p>
-                        <span className="font-medium">Application ID:</span> #
-                        {member.applicationId}
+                        <b>Submitted:</b>{" "}
+                        {app.createdAt
+                          ? new Date(app.createdAt).toLocaleDateString("en-IN")
+                          : "-"}
                       </p>
                     </div>
                   </div>
 
-                  {/* RIGHT: Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  {/* Actions */}
+                  <div className="flex gap-3">
                     <button
-                      onClick={() => setSelectedApplicationId(member)}
-                      className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg hover:cursor-pointer"
+                      onClick={() => setViewApplication(app)}
+                      className="bg-blue-600 text-white px-5 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700"
                     >
-                      <Eye className="w-4 h-4" />
-                      View Membership Form
+                      <Eye size={16} />
+                      View Title Registration Form
                     </button>
-
-                    {/* <button
-                    onClick={() => setVoteSelectedId(member)}
-                    className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
-                  >
-                    <Vote className="w-4 h-4" />
-                    Vote
-                  </button> */}
 
                     <button
                       disabled={isVoted}
-                      onClick={() => setVoteSelectedId(member)}
-                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-md
-    ${
-      isVoted
-        ? "bg-yellow-600 text-white cursor-not-allowed"
-        : "bg-green-600 text-white hover:bg-green-700 hover:shadow-lg hover:cursor-pointer"
-    }
-  `}
+                      onClick={() => setVoteApplication(app)}
+                      className={`px-6 py-2 rounded-xl flex items-center gap-2 text-white
+                        ${
+                          isVoted
+                            ? "bg-yellow-600 cursor-not-allowed"
+                            : "bg-green-600 hover:bg-green-700"
+                        }`}
                     >
                       {isVoted ? (
                         <>
-                          <CheckCircle className="w-4 h-4" />
+                          <CheckCircle size={16} />
                           Voted
                         </>
                       ) : (
                         <>
-                          <Vote className="w-4 h-4" />
+                          <Vote size={16} />
                           Vote
                         </>
                       )}
@@ -156,80 +194,72 @@ function TitleRegistrationVotingDashboard() {
                 </div>
               </div>
 
-              {/* ===== Card Body ===== */}
-              <div className="px-6 py-6">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  {/* Category */}
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Users className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">
-                        Membership Type
-                      </p>
-                      <p className="text-gray-800 font-semibold">
-                        {member.membershipCategory || "—"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Mobile */}
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <Phone className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">
-                        Mobile Number
-                      </p>
-                      <p className="text-gray-800 font-semibold">
-                        {member.mobileNo || "—"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Submitted At */}
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-yellow-100 rounded-lg">
-                      <Calendar className="w-5 h-5 text-yellow-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium">
-                        Submitted At
-                      </p>
-                      <p className="text-gray-800 font-semibold">
-                        {member?.submittedAt
-                          ? new Date(member.submittedAt).toLocaleDateString(
-                              "en-IN"
-                            )
-                          : "—"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              {/* Body */}
+              <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <InfoCard
+                  icon={<Building className="text-blue-600" />}
+                  label="Producer"
+                  value={
+                    app.producer
+                      ? `${app.producer.firstName} ${app.producer.lastName ?? ""}`
+                      : "-"
+                  }
+                />
+                <InfoCard
+                  icon={<User className="text-green-600" />}
+                  label="Director"
+                  value={app.director}
+                />
+                <InfoCard
+                  icon={<Film className="text-purple-600" />}
+                  label="Lead Actor"
+                  value={app.leadActor}
+                />
               </div>
+
+{/* status */}
+              <div className="px-6 pb-6">
+              <span className="text-sm text-gray-500">Current Status:</span>
+              <span className="ml-2 bg-gray-100 px-3 py-1 rounded text-sm font-semibold">
+                {app.status}
+              </span>
+            </div>
             </div>
           );
         })}
-      </div>
-      {selectedApplicationId && (
-        <ViewMembershipForm
-          applicationId={selectedApplicationId.applicationId}
-          onClose={() => setSelectedApplicationId(null)}
+      </div>)}
+
+      {/* Child Components */}
+      {viewApplication && (
+        <ViewTitleRegistrationForm
+          applicationId={viewApplication.id}
+          onClose={() => setViewApplication(null)}
         />
       )}
 
-      {voteSelectedId && (
-        <VoteMembershipForm
-          voteApplicationId={voteSelectedId.applicationId}
-          onCloseVote={() => setVoteSelectedId(null)}
+      {voteApplication && (
+        <VoteTitleRegistrationForm
+          voteApplicationId={voteApplication.id}
+          onCloseVote={() => setVoteApplication(null)}
           onVoteSuccess={(id) => {
             setVotedApplications((prev) => new Set(prev).add(id));
-            setVoteSelectedId(null);
+            setVoteApplication(null);
           }}
         />
       )}
+    </div>
+  );
+}
+
+/* ================= INFO CARD ================= */
+function InfoCard({ icon, label, value }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="p-2 bg-gray-100 rounded-lg">{icon}</div>
+      <div>
+        <p className="text-sm text-gray-500">{label}</p>
+        <p className="font-semibold text-gray-800">{value || "-"}</p>
+      </div>
     </div>
   );
 }
