@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import {
   UserCheck,
@@ -11,24 +12,25 @@ import {
   Phone,
   ShieldCheck,
   Power,
+  FileText,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 
-function ONMMeeting() {
+function TitleCommitteMeeting() {
   const [members, setMembers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [meetingDetails, setMeetingDetails] = useState([]);
 
-  
+ 
     const fetchMeeting = async () => {
       try {
         setLoading(true);
         const response = await fetch(
           `${
             import.meta.env.VITE_API_BASE_URL
-          }/onm/meetings/status?status=ACTIVE`,
+          }/title/meeting/status?status=ACTIVE`,
           {
             method: "GET",
             headers: {
@@ -50,7 +52,7 @@ function ONMMeeting() {
     };
 
 
-    useEffect(() => {
+     useEffect(() => {
 
     fetchMeeting();
   }, []);
@@ -86,7 +88,7 @@ function ONMMeeting() {
       const res = await fetch(
         `${
           import.meta.env.VITE_API_BASE_URL
-        }/onm/meetings/${meetingId}/terminate`,
+        }/title/meeting/${meetingId}/terminate`,
         {
           method: "POST",
           headers: {
@@ -129,7 +131,7 @@ function ONMMeeting() {
       const res = await fetch(
         `${
           import.meta.env.VITE_API_BASE_URL
-        }/onm/meetings/create/${selectedMemberId}`,
+        }/title/meeting/create/${selectedMemberId}`,
         {
           method: "POST",
           headers: {
@@ -144,10 +146,10 @@ function ONMMeeting() {
 
       if (!res.ok) throw new Error("Failed to appoint leader");
 
-      notify("ONM Leader appointed successfully", "success");
+      notify("Title Committee Leader appointed successfully", "success");
       setShowModal(false);
       setSelectedMemberId(null);
-      fetchMeeting();
+        fetchMeeting();
     } catch (err) {
       notify(err.message, "error");
     }
@@ -162,7 +164,7 @@ function ONMMeeting() {
           className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
         >
           <Plus size={20} className="mr-2" />
-          Create ONM Meeting
+          Create Title Committee Meeting
         </button>
       </div>
 
@@ -171,10 +173,10 @@ function ONMMeeting() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-blue-900">
-              Active ONM Meetings
+              Active Title Committee Meetings
             </h1>
             <p className="text-sm text-gray-600">
-              Manage ongoing ONM committee meetings
+              Manage ongoing Title committee meetings
             </p>
           </div>
 
@@ -186,6 +188,7 @@ function ONMMeeting() {
         {/* Empty State */}
         {!loading && meetingDetails.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-gray-500">
+            <FileText className="w-12 h-12 mb-3 text-gray-400" />
             <p className="text-lg font-medium">No active meetings found</p>
           </div>
         )}
@@ -206,7 +209,7 @@ function ONMMeeting() {
                     <div>
                       <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                         <ShieldCheck className="w-5 h-5 text-blue-600" />
-                        ONM Meeting #{meeting.id}
+                        Title Committee Meeting #{meeting.id}
                       </h3>
 
                       <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
@@ -240,7 +243,7 @@ function ONMMeeting() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        ONM Leader
+                        Title Committee Leader
                       </p>
                       <p className="text-gray-800 font-semibold">
                         {meeting.leader.firstName} {meeting.leader.lastName}
@@ -296,7 +299,7 @@ function ONMMeeting() {
             {/* HEADER */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
-                Select ONM Committee Leader
+                Select Title Committee Leader
               </h2>
               <button
                 onClick={() => {
@@ -356,7 +359,7 @@ function ONMMeeting() {
 
                 {!members.length && (
                   <p className="text-center text-gray-500">
-                    No ONM committee members found
+                    No Title Committee members found
                   </p>
                 )}
               </div>
@@ -388,4 +391,4 @@ function ONMMeeting() {
   );
 }
 
-export default ONMMeeting;
+export default TitleCommitteMeeting;

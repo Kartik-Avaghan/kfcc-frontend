@@ -59,11 +59,11 @@ function Nav() {
       { name: "Public Clearance", icon: Globe, path: "/producer/projects" },
     ],
 
-    ONM_COMMITTEE: [
-      { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
-      { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
-      { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
-    ],
+    // ONM_COMMITTEE: [
+    //   { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
+    //   { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
+    //   { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
+    // ],
 
     ONM_COMMITTEE_VOTER: [
       { name: "Vote", icon: Globe, path: "/onm/voting/membershipDashboard" },
@@ -92,6 +92,15 @@ function Nav() {
       { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
     ],
 
+     TITLE_COMMITTEE_LEADER: [
+      {
+        name: "Title Registration ",
+        icon: FileText,
+        path: "/onmleader/membershipDashboard",
+      },
+      { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
+    ],
+
     SECRETARY: [
       {
          name: "Membership Request",
@@ -108,6 +117,7 @@ function Nav() {
         path: "manager/managerdashboard",
       },
       { name: "ONM Meetings", icon: Users, path: "/manager/onmMeeting" },
+      { name: "Title Committee Meetings", icon: Users, path: "/manager/titlecommitteMeeting" },
     ],
 
     PRESIDENT: [
