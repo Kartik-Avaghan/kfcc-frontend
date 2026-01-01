@@ -8,7 +8,7 @@ import {
   FileText,
 } from "lucide-react";
 
-/* ================= STATUS FLOW ================= */
+
 const STATUS_FLOW = {
   SUBMITTED: 0,
 
@@ -28,7 +28,7 @@ const STATUS_FLOW = {
   FINAL_APPROVED: 4,
 };
 
-/* ================= STATUS TYPE ================= */
+
 const getStatusType = (status) => {
   if (status?.includes("REJECTED")) return "REJECTED";
   if (status?.includes("REMARKED")) return "REMARKED";
@@ -36,7 +36,7 @@ const getStatusType = (status) => {
   return "IN_PROGRESS";
 };
 
-/* ================= SAFE TAILWIND STYLES ================= */
+
 const STATUS_STYLES = {
   IN_PROGRESS: {
     bg: "bg-blue-50",
@@ -68,9 +68,9 @@ const STATUS_STYLES = {
   },
 };
 
-const STEPS = ["Submitted", "Staff", "ONM", "EC", "Final"];
+const STEPS = ["Submitted", "Staff", "ONM Committee", "EC Members", "Final Approval"];
 
-/* ================= COMPONENT ================= */
+
 export default function MembershipCard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);

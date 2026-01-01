@@ -2,6 +2,7 @@ import { ChevronLeft, File, Plus,X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { notify } from "../../Utils/notify";
+import TitleRegistrationStatusCard from "../../components/users/TitleRegistrationStatusCard";
 
 function TitleRegistrationForm() {
 
@@ -542,6 +543,10 @@ function TitleRegistrationForm() {
         </div>
       </form>
     </div>
+    )}
+
+    {!openModal && (
+      <TitleRegistrationStatusCard />
     )}
 
     </>

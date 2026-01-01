@@ -50,7 +50,7 @@ function Nav() {
     ],
 
     PRODUCER: [
-      { name: "Dashboard", icon: BarChart3, path: "/producer/dashboard" },
+      // { name: "Dashboard", icon: BarChart3, path: "/producer/dashboard" },
       {
         name: "Title Registration",
         icon: CreditCard,
