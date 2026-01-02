@@ -629,7 +629,7 @@ const MembershipForm = () => {
   return (
     <>
     {!openModal && (
-      <div className="flex justify-between items-center mt-10 px-20">
+      <div className="flex justify-between items-center mt-10 px-18">
         <button
           onClick={() => setOpenModal(true)}
           className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white"

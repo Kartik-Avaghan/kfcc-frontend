@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar } from "lucide-react";
+import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Search } from "lucide-react";
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 
 
@@ -8,6 +8,7 @@ function SecretryMembershipDashboard() {
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchMemberships = async () => {
@@ -39,15 +40,15 @@ function SecretryMembershipDashboard() {
     fetchMemberships();
   }, [selectedApplicationId]);
 
-  /* ---------------- LOADING ---------------- */
-  if (loading) {
+ 
+
+  const filteredApplications = memberships.filter((member) => {
+    const term = searchTerm.toLowerCase();
     return (
-      <div className="flex items-center justify-center h-[60vh] text-blue-600">
-        <Loader2 className="animate-spin mr-2" />
-        Loading membership applications...
-      </div>
+      member.applicantName.toLowerCase().includes(term) ||
+      member.applicationId.toLowerCase().includes(term)
     );
-  }
+  });
 
   return (
     <div className="p-16 max-w-7xl mx-auto space-y-8">
@@ -67,19 +68,38 @@ function SecretryMembershipDashboard() {
       </span> */}
     </div>
 
+{/* Search */}
+    <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+     <Search className="w-5 h-5 text-gray-600" />
+     <input
+       type="text"
+       placeholder="Search by title, director, language..."
+       value={searchTerm}
+       onChange={(e) => setSearchTerm(e.target.value)}
+       className="w-full focus:outline-none"
+     />
+   </div>
+
+     {/* LOADING */}
+      {loading && (
+        <div className="text-center text-gray-500 mt-20">
+          Loading applications...
+        </div>
+      )}
+    
+      {/* EMPTY */}
+      {!loading && filteredApplications.length === 0 && (
+        <div className="flex flex-col items-center mt-24 text-gray-500">
+          <FileText className="w-10 h-10 mb-3" />
+          <p className="text-xl font-medium">No applications found</p>
+        </div>
+      )}
+
   
-    {memberships.length === 0 && (
-      <div className="flex flex-col items-center justify-center py-24 text-gray-500">
-        <FileText className="w-12 h-12 mb-3 text-gray-400" />
-        <p className="text-lg font-medium">
-          No submitted membership applications
-        </p>
-      </div>
-    )}
 
   
     <div className="grid grid-cols-1 gap-8 w-full">
-      {memberships.map((member) => (
+      {filteredApplications.map((member) => (
         <div
           key={member.applicationId}
           className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border-l-4 border-blue-600 overflow-hidden"

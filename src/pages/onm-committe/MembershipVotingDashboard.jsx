@@ -8,6 +8,7 @@ import {
   CheckCircle,
   Calendar,
   Vote,
+  Search,
 } from "lucide-react";
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 import VoteMembershipForm from "../../components/onmcommitte/VoteMembershipForm";
@@ -95,17 +96,16 @@ function MembershipVotingDashboard() {
 
       {/* Search */}
 <div className="max-w-xl">
-  <div className="relative">
-    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-600" />
-    <input
-      type="text"
-      placeholder="Search by name, mobile, category, application ID..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full border rounded-lg py-2.5 pl-10 pr-4
-                 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-    />
-  </div>
+  <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+      <Search className="w-5 h-5 text-gray-600" />
+      <input
+        type="text"
+        placeholder="Search by title, director, language..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="w-full focus:outline-none"
+      />
+    </div>
 </div>
 
 
@@ -115,7 +115,7 @@ function MembershipVotingDashboard() {
   filteredMemberships.length === 0 && (
     <div className="flex flex-col items-center py-24 text-gray-500">
       <FileText className="w-12 h-12 mb-3 text-gray-400" />
-      <p className="text-lg font-medium">No records found</p>
+      <p className="text-lg font-medium">No Application found</p>
       {/* <p className="text-sm text-gray-400">
         Try searching with a different keyword
       </p> */}

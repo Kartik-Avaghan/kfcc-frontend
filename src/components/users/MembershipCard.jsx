@@ -6,10 +6,10 @@ import {
   AlertTriangle,
   XCircle,
   FileText,
+  Search,
 } from "lucide-react";
 import ViewMembershipForm from "../membershipformView/ViewMembershipForm";
 import EditMembershipForm from "./EditMembershipForm";
-
 
 const STATUS_FLOW = {
   SUBMITTED: 0,
@@ -30,7 +30,6 @@ const STATUS_FLOW = {
   FINAL_APPROVED: 4,
 };
 
-
 const getStatusType = (status) => {
   if (status?.includes("REJECTED")) return "REJECTED";
   if (status?.includes("REMARKED")) return "REMARKED";
@@ -38,7 +37,6 @@ const getStatusType = (status) => {
   if (status === "FINAL_APPROVED") return "APPROVED";
   return "IN_PROGRESS";
 };
-
 
 const STATUS_STYLES = {
   IN_PROGRESS: {
@@ -79,15 +77,20 @@ const STATUS_STYLES = {
   },
 };
 
-const STEPS = ["Submitted", "Staff", "ONM Committee", "EC Members", "Final Approval"];
-
+const STEPS = [
+  "Submitted",
+  "Staff",
+  "ONM Committee",
+  "EC Members",
+  "Final Approval",
+];
 
 export default function MembershipCard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const[viewFormOpen,setViewFormOpen]=useState(false);
-  const[selectedAppId,setSelectedAppId]=useState(null);
-  const[formMode,setFormMode]=useState(null); // "view" | "edit"
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAppId, setSelectedAppId] = useState(null);
+  const [formMode, setFormMode] = useState(null); // "view" | "edit"
 
   /* ===== FETCH API ===== */
   useEffect(() => {
@@ -107,8 +110,8 @@ export default function MembershipCard() {
         if (!res.ok) throw new Error("Failed to fetch applications");
 
         const data = await res.json();
-        // console.log("Membership data",data);
-        
+        console.log("Membership data",data);
+
         setApplications(data);
       } catch (err) {
         notify(err.message, "error");
@@ -120,198 +123,263 @@ export default function MembershipCard() {
     fetchApplications();
   }, []);
 
-
-  const handleOpenForm=(details)=>{
+  const handleOpenForm = (details) => {
     setSelectedAppId(details.applicationId);
-    if(getStatusType(details.status)==="REMARKED"){
+    if (getStatusType(details.status) === "REMARKED") {
       setFormMode("edit");
-    }
-    else{
+    } else {
       setFormMode("view");
     }
-  }
+  };
 
-  /* ===== LOADING ===== */
-  if (loading) {
-    return <p className="text-center text-gray-500">Loading applications...</p>;
-  }
+  const filteredApplications = applications.filter((app) => {
+    const term = searchTerm.toLowerCase();
+    return (
+    app.membershipCategory?.toLowerCase().includes(term)||
+    app.applicationId?.toString().toLowerCase().includes(term) ||
+    app.applicantName?.toLowerCase().includes(term)
+    )
+  });
 
-  /* ===== EMPTY STATE ===== */
-  if (!applications.length) {
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center text-center">
-      <div className="w-16 h-16 rounded-full  flex items-center justify-center mb-2">
-        <FileText className="w-12 h-12 text-gray-600" />
+    <div className="p-16 max-w-7xl mx-auto">
+      {/* HEADER */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-blue-900">
+          Membership Applications
+        </h1>
+        <p className="text-blue-900 text-sm mt-1">
+          Track and manage your membership applications status
+        </p>
       </div>
 
-      <h3 className="text-lg font-semibold text-gray-800">
-        No Applications Found
-      </h3>
 
-      <p className="text-sm text-gray-500 mt-1 max-w-sm">
-        You haven’t submitted any membership applications yet.
-      </p>
-    </div>
-  );
-}
+      
 
+      {/* SEARCH */}
+      <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+        <Search className="w-5 h-5 text-gray-600" />
+        <input
+          type="text"
+          placeholder="Search by title, director, language..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full focus:outline-none"
+        />
+      </div>
 
-  return (
-    <div className="p-18 grid grid-cols-1 gap-6   ">
-  {applications.map((application) => {
-    const stepIndex = STATUS_FLOW[application.status] ?? 0;
-    const statusType = getStatusType(application.status);
-    const style = STATUS_STYLES[statusType];
-    const StatusIcon = style.icon;
+      {/* LOADING */}
+      {loading && (
+        <div className="text-center text-gray-500 mt-20">
+          Loading applications...
+        </div>
+      )}
 
-    return (
-      <div
-        key={application.applicationId}
-        className={`${style.bg} ${style.border} border rounded-2xl p-6   shadow-md`}
-      >
-        {/* ===== HEADER ===== */}
-        <div className=" flex justify-between items-start mb-5">
-          <div className="flex items-center gap-3">
-            {/* Avatar */}
+      {/* EMPTY */}
+      {!loading && filteredApplications.length === 0 && (
+        <div className="flex flex-col items-center mt-24 text-gray-500">
+          <FileText className="w-10 h-10 mb-3" />
+          <p className="text-xl font-medium">No applications found</p>
+        </div>
+      )}
+
+      <div className=" grid grid-cols-1 gap-6   ">
+        {filteredApplications.map((application) => {
+          const stepIndex = STATUS_FLOW[application.status] ?? 0;
+          const statusType = getStatusType(application.status);
+          const style = STATUS_STYLES[statusType];
+          const StatusIcon = style.icon;
+
+          return (
             <div
-              className={` w-12 h-12 rounded-full ${style.bar} text-white flex items-center justify-center font-bold text-lg`}
+              key={application.applicationId}
+              className={`${style.bg} ${style.border} border rounded-2xl p-6   shadow-md`}
             >
-              {application.membershipCategory?.charAt(0)}
-            </div>
+              {/* ===== HEADER ===== */}
+              <div className=" flex justify-between items-start mb-5">
+                <div className="flex items-center gap-3">
+                  {/* Avatar */}
+                  <div
+                    className={` w-12 h-12 rounded-full ${style.bar} text-white flex items-center justify-center font-bold text-lg`}
+                  >
+                    {application.membershipCategory?.charAt(0)}
+                  </div>
 
-            {/* Name & ID */}
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">
-                {application.membershipCategory}
-              </h2>
-              <p className="text-md text-gray-500">
-                Application No: <span className="font-bold text-lg">#{application.applicationId}</span>
-              </p>
-            </div>
-          </div>
+                  {/* Name & ID */}
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">
+                      {application.membershipCategory}
+                    </h2>
+                    <p className="text-md text-gray-500">
+                      Application No:{" "}
+                      <span className="font-bold text-lg">
+                        #{application.applicationId}
+                      </span>
+                    </p>
+                  </div>
+                </div>
 
-          {/* Status Pill */}
-          {/* <span
+                {/* Status Pill */}
+                {/* <span
             className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${style.text} bg-white border ${style.border}`}
           >
             <StatusIcon size={14} />
             {application.status.replaceAll("_", " ")}
           </span> */}
 
-           <button
-                onClick={() => handleOpenForm(application)}
-                className={`px-6 py-2 rounded-xl text-white transition ${
-                  statusType === "REMARKED"
-                    ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                    : "bg-blue-900 hover:bg-blue-800 hover:cursor-pointer"
-                }`}
-              >
-                {statusType === "REMARKED"
-                  ? "Edit Application"
-                  : "View Details"}
-              </button>
-        </div>
-
-        {/* ===== STATUS MESSAGE ===== */}
-        <div
-          className={`mb-4 p-3 rounded-lg border ${style.border} ${style.bg} flex items-center gap-2`}
-        >
-          <StatusIcon size={18} className={style.text} />
-          <p className={`text-sm font-medium ${style.text}`}>
-            {statusType === "APPROVED" && "Application approved successfully"}
-            {statusType === "IN_PROGRESS" && "Application is under process"}
-            {statusType === "REMARKED" && "Application needs clarification"}
-            {statusType === "REJECTED" && "Application has been rejected"}
-            {statusType === "HOLD" && "Application has been put on hold"}
-
-          </p>
-        </div>
-
-        {/* ===== PROGRESS BAR ===== */}
-        <div className="relative mb-4">
-          <div className="flex items-center justify-between">
-            {STEPS.map((step, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center relative">
-                <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold z-10
-                    ${i <= stepIndex ? `${style.bar} text-white` : "bg-gray-200 text-gray-400"}`}
+                <button
+                  onClick={() => handleOpenForm(application)}
+                  className={`px-6 py-2 rounded-xl text-white transition ${
+                    statusType === "REMARKED"
+                      ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                      : "bg-blue-900 hover:bg-blue-800 hover:cursor-pointer"
+                  }`}
                 >
-                  {i + 1}
+                  {statusType === "REMARKED"
+                    ? "Edit Application"
+                    : "View Details"}
+                </button>
+              </div>
+
+              {/* ===== STATUS MESSAGE ===== */}
+              <div
+                className={`mb-4 p-3 rounded-lg border ${style.border} ${style.bg} flex items-center gap-2`}
+              >
+                <StatusIcon size={18} className={style.text} />
+                <p className={`text-sm font-medium ${style.text}`}>
+                  {statusType === "APPROVED" &&
+                    "Application approved successfully"}
+                  {statusType === "IN_PROGRESS" &&
+                    "Application is under process"}
+                  {statusType === "REMARKED" &&
+                    "Application needs clarification"}
+                  {statusType === "REJECTED" && "Application has been rejected"}
+                  {statusType === "HOLD" && "Application has been put on hold"}
+                </p>
+              </div>
+
+              {/* ===== PROGRESS BAR ===== */}
+              <div className="relative mb-4">
+                <div className="flex items-center justify-between">
+                  {STEPS.map((step, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 flex flex-col items-center relative"
+                    >
+                      <div
+                        className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold z-10
+                    ${
+                      i <= stepIndex
+                        ? `${style.bar} text-white`
+                        : "bg-gray-200 text-gray-400"
+                    }`}
+                      >
+                        {i + 1}
+                      </div>
+
+                      {i < STEPS.length - 1 && (
+                        <div
+                          className={`absolute top-4 left-1/2 w-full h-0.5
+                      ${i < stepIndex ? style.bar : "bg-gray-200"}`}
+                          style={{ transform: "translateY(-50%)" }}
+                        />
+                      )}
+                    </div>
+                  ))}
                 </div>
 
-                {i < STEPS.length - 1 && (
-                  <div
-                    className={`absolute top-4 left-1/2 w-full h-0.5
-                      ${i < stepIndex ? style.bar : "bg-gray-200"}`}
-                    style={{ transform: "translateY(-50%)" }}
-                  />
-                )}
+                <div className="flex justify-between text-xs text-gray-600 mt-2">
+                  {STEPS.map((step, i) => (
+                    <span
+                      key={i}
+                      className={`flex-1 text-center ${
+                        i <= stepIndex ? `font-semibold ${style.text}` : ""
+                      }`}
+                    >
+                      {step}
+                    </span>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
 
-          <div className="flex justify-between text-xs text-gray-600 mt-2">
-            {STEPS.map((step, i) => (
-              <span
-                key={i}
-                className={`flex-1 text-center ${
-                  i <= stepIndex ? `font-semibold ${style.text}` : ""
-                }`}
-              >
-                {step}
-              </span>
-            ))}
-          </div>
-        </div>
+              {/* ===== REMARK / REJECT ===== */}
 
-        {/* ===== REMARK / REJECT ===== */}
-        {(statusType === "REMARKED" || statusType === "REJECTED") &&
+              {(statusType === "REMARKED" || statusType === "REJECTED") &&
+                application.remark && (
+                  <div
+                    className={` mt-4 p-4 rounded-lg border ${style.border} ${style.bg}`}
+                  >
+                    <div className="flex items-start">
+                      {" "}
+                      {/* Label */}
+                      <p className={`text-sm font-bold ${style.text}`}>
+                        {statusType === "REMARKED"
+                          ? "Remark:"
+                          : "Rejection Reason:"}
+                      </p>
+                      {/* Remark Text (NOT bold) */}
+                      <p className={`text-sm pl-2 ${style.text}`}>
+                        {application.remark}
+                      </p>
+                    </div>
+
+                    {/* Remarked By */}
+
+                    {application.remarkedBy && (
+                      <p className={`text-xs mt-2 ${style.text}`}>
+                        <span className="font-bold">By:</span>{" "}
+                        {application.remarkedBy}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+              {/* {(statusType === "REMARKED" || statusType === "REJECTED") &&
           application.remark && (
             <div
               className={`mt-4 p-4 rounded-lg border ${style.border} ${style.bg}`}
             >
-              <h4 className={`text-sm font-semibold ${style.text} mb-1`}>
-                {statusType === "REMARKED" ? "Remark" : "Rejection Reason"}
+              <h4 className={`text-sm font-bold ${style.text} mb-1`}>
+                {statusType === "REMARKED" ? "Remark: " : "Rejection Reason"}  <span className={`text-sm text ${style.text}`}>{application.remark}</span>
               </h4>
-              <p className="text-sm text-gray-700">
-                {application.remark}
-              </p>
+             
               {application.remarkedBy && (
-                <p className="text-xs text-gray-500 mt-2">
-                  By: {application.remarkedBy}
+                <p className={`text-xs text ${style.text} mt-2`}>
+                  <span className="font-bold" >By:</span> {application.remarkedBy}
                 </p>
               )}
             </div>
-          )}
+          )} */}
 
-        {/* ===== FOOTER ===== */}
-        <div className="mt-5 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-600">
-          <span>
-            <span className="font-medium">Mobile:</span> {application.mobileNo}
-          </span>
-          <span>
-            <span className="font-medium">Category:</span>{" "}
-            {application.membershipCategory ?? "—"}
-          </span>
-        </div>
+              {/* ===== FOOTER ===== */}
+              <div className="mt-5 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-600">
+                <span>
+                  <span className="font-medium">Mobile:</span>{" "}
+                  {application.mobileNo}
+                </span>
+                <span>
+                  <span className="font-medium">Category:</span>{" "}
+                  {application.membershipCategory ?? "—"}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+
+        {formMode === "view" && selectedAppId && (
+          <ViewMembershipForm
+            applicationId={selectedAppId}
+            onClose={() => setFormMode(null)}
+          />
+        )}
+
+        {formMode === "edit" && selectedAppId && (
+          <EditMembershipForm
+            applicationId={selectedAppId}
+            onClose={() => setFormMode(null)}
+          />
+        )}
       </div>
-    );
-  })}
-
-  {
-    formMode === "view" && selectedAppId &&
-     <ViewMembershipForm 
-     applicationId={selectedAppId} 
-     onClose={()=>setFormMode(null)}/>
-  }
-
-  {
-    formMode === "edit" && selectedAppId &&
-    <EditMembershipForm
-    applicationId={selectedAppId}
-    onClose={()=>setFormMode(null)}/>
-  }
-</div>
-
+    </div>
   );
 }

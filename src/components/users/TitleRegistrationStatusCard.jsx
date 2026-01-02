@@ -104,8 +104,6 @@ export default function TitleRegistrationStatusCard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  // const[viewFormOpen,setViewFormOpen]=useState(false);
-  // const[editForm,setEditForm]=useState(false);
   const [selectedAppId, setSelectedAppId] = useState(null);
 const [formMode, setFormMode] = useState(null); // "view" | "edit"
 
@@ -148,7 +146,9 @@ const [formMode, setFormMode] = useState(null); // "view" | "edit"
     return (
       d.title?.toLowerCase().includes(term) ||
       d.director?.toLowerCase().includes(term) ||
-      d.language?.toLowerCase().includes(term)
+      d.language?.toLowerCase().includes(term) ||
+      d.producerName?.toLowerCase().includes(term)||
+      d.id?.toString().toLowerCase().includes(term)
     );
   });
 
@@ -229,7 +229,7 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
                   Application ID: {detail.id}
                 </p> */}
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
-                        <p>Application No: <span className="font-bold text-lg">{detail.id}</span></p>
+                        <p>Application No: <span className="font-bold text-lg">#{detail.id}</span></p>
                         <p>Submitted Date: <span className="font-mono font-medium">{new Date(detail.date).toLocaleDateString()}</span></p>
                         <p>Director: <span className="font-medium">{detail.director}</span></p>
                 

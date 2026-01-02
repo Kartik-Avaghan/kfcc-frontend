@@ -11,12 +11,15 @@ import {
   Phone,
   ShieldCheck,
   Power,
+  FileText,
+  Search,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 
 function ONMMeeting() {
   const [members, setMembers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const[searchTerm,setSearchTerm]=useState("");
   const [selectedMemberId, setSelectedMemberId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [meetingDetails, setMeetingDetails] = useState([]);
@@ -153,10 +156,19 @@ function ONMMeeting() {
     }
   };
 
+
+  const filteredApplications = meetingDetails.filter((meeting) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      meeting.id.toString().includes(term) ||
+      meeting.title.toLowerCase().includes(term)
+    );
+  });
+
   return (
     <>
       {/* ACTION BUTTONS */}
-      <div className="flex justify-between items-center  mt-10 px-20">
+      <div className="flex justify-between items-center  mt-10 px-18">
         <button
           onClick={openCreateMeeting}
           className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
@@ -183,16 +195,29 @@ function ONMMeeting() {
     </span> */}
         </div>
 
+         {/* SEARCH */}
+      <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+        <Search className="w-5 h-5 text-gray-600" />
+        <input
+          type="text"
+          placeholder="Search by title, director, language..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full focus:outline-none"
+        />
+      </div>
+
         {/* Empty State */}
-        {!loading && meetingDetails.length === 0 && (
+        {!loading && filteredApplications.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-gray-500">
+            <FileText className="w-12 h-12 mb-3 text-gray-400" />
             <p className="text-lg font-medium">No active meetings found</p>
           </div>
         )}
 
         {/* Meeting Cards */}
         <div className="grid grid-cols-1 gap-8">
-          {meetingDetails.map((meeting) => {
+          {filteredApplications.map((meeting) => {
             const createdAt = new Date(meeting.createdAt);
 
             return (

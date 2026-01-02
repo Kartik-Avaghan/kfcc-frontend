@@ -198,7 +198,7 @@ export default function EditMembershipForm({ applicationId, onClose }) {
           </p>
         </div>
 
-        {/* ================= FORM ================= */}
+        {/*  FORM  */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           {/* Firm Details */}
           <Section title="Firm Details">

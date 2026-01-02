@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Users, CheckSquare, Square, Search } from "lucide-react";
+import { Users, CheckSquare, Square, Search, User } from "lucide-react";
 import { notify } from "../../Utils/notify";
 import { useNavigate } from "react-router-dom";
 
@@ -139,24 +139,21 @@ function ONMMemberList() {
       <div className="flex items-center gap-3 mb-6">
         <Users className="w-8 h-8 text-blue-600" />
         <h1 className="text-2xl font-bold text-blue-900">
-          Select Members for Voting
+          Select Members To Vote Membership Application
         </h1>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative flex mb-8 max-w-xl">
-        <Search
-          size={22}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-        />
-        <input
-          type="text"
-          placeholder="Search members..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-12 py-2 border border-gray-400 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-      </div>
+     {/* SEARCH */}
+       <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+         <Search className="w-5 h-5 text-gray-600" />
+         <input
+           type="text"
+           placeholder="Search by title, director, language..."
+           value={search}
+           onChange={(e) => setSearch(e.target.value)}
+           className="w-full focus:outline-none"
+         />
+       </div>
 
       {/* Loading */}
       {loading && <p className="text-gray-500">Loading members...</p>}
@@ -165,8 +162,8 @@ function ONMMemberList() {
       <div className=" flex items-center justify-center">
         {!loading && filteredMembers.length === 0 ? (
           <div className="text-center text-gray-500">
+            <User className="w-10 h-10 mx-auto  text-gray-400" />
             <p className="text-lg font-medium">No members found</p>
-            
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
