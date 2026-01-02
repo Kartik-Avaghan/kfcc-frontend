@@ -23,7 +23,7 @@ function TitleRegistrationVotingDashboard() {
   const [voteApplication, setVoteApplication] = useState(null);
   const [votedApplications, setVotedApplications] = useState(new Set());
 
-  /* ================= FETCH ================= */
+  /*  FETCH  */
   useEffect(() => {
     const fetchApplications = async () => {
       try {

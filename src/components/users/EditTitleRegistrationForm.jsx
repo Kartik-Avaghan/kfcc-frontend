@@ -141,7 +141,7 @@ export default function EditTitleRegistrationForm({ applicationId, onClose }) {
 >
   <div
     onClick={(e) => e.stopPropagation()}
-    className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-8 animate-fadeIn max-h-screen overflow-y-auto"
+    className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl animate-fadeIn max-h-screen overflow-y-auto"
   >
 
     {/* HEADER */}
@@ -162,7 +162,7 @@ export default function EditTitleRegistrationForm({ applicationId, onClose }) {
 
 
     {/* Form */}
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="p-8 space-y-6">
       {/* Film Title */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1 mt-6">

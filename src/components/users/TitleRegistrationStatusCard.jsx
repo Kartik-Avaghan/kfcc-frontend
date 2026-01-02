@@ -129,7 +129,7 @@ const [formMode, setFormMode] = useState(null); // "view" | "edit"
         if (!response.ok) throw new Error("Failed to fetch applications");
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         
         setApplications(Array.isArray(data) ? data : []);
       } catch (error) {

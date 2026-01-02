@@ -107,6 +107,8 @@ export default function MembershipCard() {
         if (!res.ok) throw new Error("Failed to fetch applications");
 
         const data = await res.json();
+        // console.log("Membership data",data);
+        
         setApplications(data);
       } catch (err) {
         notify(err.message, "error");
