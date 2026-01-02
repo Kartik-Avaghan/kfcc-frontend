@@ -32,6 +32,7 @@ const STATUS_FLOW = {
 const getStatusType = (status) => {
   if (status?.includes("REJECTED")) return "REJECTED";
   if (status?.includes("REMARKED")) return "REMARKED";
+  if (status?.includes("HOLD")) return "HOLD";
   if (status === "FINAL_APPROVED") return "APPROVED";
   return "IN_PROGRESS";
 };
@@ -52,6 +53,7 @@ const STATUS_STYLES = {
     bar: "bg-yellow-600",
     icon: AlertTriangle,
   },
+
   REJECTED: {
     bg: "bg-red-50",
     border: "border-red-200",
@@ -65,6 +67,13 @@ const STATUS_STYLES = {
     text: "text-green-700",
     bar: "bg-green-600",
     icon: CheckCircle,
+  },
+  HOLD: {
+    bg: "bg-orange-50",
+    border: "border-orange-200",
+    text: "text-orange-700",
+    bar: "bg-orange-600",
+    icon: AlertTriangle,
   },
 };
 
@@ -149,13 +158,13 @@ export default function MembershipCard() {
             <div
               className={` w-12 h-12 rounded-full ${style.bar} text-white flex items-center justify-center font-bold text-lg`}
             >
-              {application.applicantName?.charAt(0)}
+              {application.membershipCategory?.charAt(0)}
             </div>
 
             {/* Name & ID */}
             <div>
               <h2 className="text-lg font-bold text-gray-900">
-                {application.applicantName}
+                {application.membershipCategory}
               </h2>
               <p className="text-xs text-gray-500">
                 Application #{application.applicationId}
@@ -182,6 +191,8 @@ export default function MembershipCard() {
             {statusType === "IN_PROGRESS" && "Application is under process"}
             {statusType === "REMARKED" && "Application needs clarification"}
             {statusType === "REJECTED" && "Application has been rejected"}
+            {statusType === "HOLD" && "Application has been put on hold"}
+
           </p>
         </div>
 
@@ -199,7 +210,7 @@ export default function MembershipCard() {
 
                 {i < STEPS.length - 1 && (
                   <div
-                    className={`absolute top-4 left-1/2 w-full h-1
+                    className={`absolute top-4 left-1/2 w-full h-0.5
                       ${i < stepIndex ? style.bar : "bg-gray-200"}`}
                     style={{ transform: "translateY(-50%)" }}
                   />

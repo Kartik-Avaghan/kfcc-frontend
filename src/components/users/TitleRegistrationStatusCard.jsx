@@ -50,6 +50,15 @@ const getStatusType = (status) => {
 
 /*  STATUS STYLES  */
 const STATUS_STYLE = {
+  //  PENDING: {
+  //   bar: "bg-blue-600",
+  //   text: "text-blue-700",
+  //   bg: "bg-blue-50",
+  //   border: "border-blue-600",
+  //   badge: "border-blue-200",
+  //   icon: Clock,
+  //   message: "Application is currently under review",
+  // },
   IN_PROGRESS: {
     bar: "bg-blue-600",
     text: "text-blue-700",
@@ -57,7 +66,7 @@ const STATUS_STYLE = {
     border: "border-blue-600",
     badge: "border-blue-200",
     icon: Clock,
-    message: "Your application is currently under process",
+    message: "Application is currently under review",
   },
   REMARKED: {
     bar: "bg-yellow-600",
@@ -66,7 +75,7 @@ const STATUS_STYLE = {
     border: "border-yellow-600",
     badge: "border-yellow-200",
     icon: AlertTriangle,
-    message: "Action required — please review remarks",
+    message: "Application needs attention - please review remarks",
   },
   REJECTED: {
     bar: "bg-red-600",
@@ -84,7 +93,7 @@ const STATUS_STYLE = {
     border: "border-green-600",
     badge: "border-green-200",
     icon: CheckCircle,
-    message: "Application approved successfully",
+    message: "Application has been approved successfully",
   },
 };
 
@@ -113,6 +122,8 @@ export default function TitleRegistrationStatusCard() {
         if (!response.ok) throw new Error("Failed to fetch applications");
 
         const data = await response.json();
+        console.log(data);
+        
         setApplications(Array.isArray(data) ? data : []);
       } catch (error) {
         notify(error.message, "error");
@@ -197,9 +208,20 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
                 <h3 className="text-xl font-semibold text-gray-800">
                   {detail.title}
                 </h3>
-                <p className="text-sm text-gray-600">
+                {/* <p className="text-sm text-gray-600">
                   Application ID: {detail.id}
-                </p>
+                </p> */}
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                        <p>Application ID: <span className="font-mono font-medium">{detail.id}</span></p>
+                        <p>Submitted Date: <span className="font-mono font-medium">{new Date(detail.date).toLocaleDateString()}</span></p>
+                        <p>Director: <span className="font-medium">{detail.director}</span></p>
+                
+
+                        {detail.acceptedDate && (
+                          <p>Accepted Date: <span className="font-medium">{new Date(detail.acceptedDate).toLocaleDateString()}</span></p>
+                        )}
+                    
+                      </div>
               </div>
 
               <button
@@ -231,7 +253,7 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
             {/* PROGRESS */}
             <div className="relative w-full mb-16">
               {/* BAR */}
-              <div className="relative w-full h-2 bg-gray-200 rounded-full">
+              <div className="relative w-full h-0.5 bg-gray-200 rounded-full">
                 <div
                   className={`absolute left-0 top-0 h-full rounded-full ${style.bar}`}
                   style={{
