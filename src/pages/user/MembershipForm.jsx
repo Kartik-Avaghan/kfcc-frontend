@@ -635,7 +635,7 @@ const MembershipForm = () => {
           className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white"
         >
           <Plus size={20} className="mr-2" />
-          Apply For MembershipForm
+          Apply For Membership
         </button>
       </div>
     )}

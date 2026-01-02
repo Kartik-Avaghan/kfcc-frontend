@@ -7,6 +7,8 @@ import {
   XCircle,
   FileText,
 } from "lucide-react";
+import ViewMembershipForm from "../membershipformView/ViewMembershipForm";
+import EditMembershipForm from "./EditMembershipForm";
 
 
 const STATUS_FLOW = {
@@ -83,6 +85,9 @@ const STEPS = ["Submitted", "Staff", "ONM Committee", "EC Members", "Final Appro
 export default function MembershipCard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const[viewFormOpen,setViewFormOpen]=useState(false);
+  const[selectedAppId,setSelectedAppId]=useState(null);
+  const[formMode,setFormMode]=useState(null); // "view" | "edit"
 
   /* ===== FETCH API ===== */
   useEffect(() => {
@@ -112,6 +117,17 @@ export default function MembershipCard() {
 
     fetchApplications();
   }, []);
+
+
+  const handleOpenForm=(details)=>{
+    setSelectedAppId(details.applicationId);
+    if(getStatusType(details.status)==="REMARKED"){
+      setFormMode("edit");
+    }
+    else{
+      setFormMode("view");
+    }
+  }
 
   /* ===== LOADING ===== */
   if (loading) {
@@ -166,19 +182,32 @@ export default function MembershipCard() {
               <h2 className="text-lg font-bold text-gray-900">
                 {application.membershipCategory}
               </h2>
-              <p className="text-xs text-gray-500">
-                Application #{application.applicationId}
+              <p className="text-md text-gray-500">
+                Application No: <span className="font-bold text-lg">#{application.applicationId}</span>
               </p>
             </div>
           </div>
 
           {/* Status Pill */}
-          <span
+          {/* <span
             className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${style.text} bg-white border ${style.border}`}
           >
             <StatusIcon size={14} />
             {application.status.replaceAll("_", " ")}
-          </span>
+          </span> */}
+
+           <button
+                onClick={() => handleOpenForm(application)}
+                className={`px-6 py-2 rounded-xl text-white transition ${
+                  statusType === "REMARKED"
+                    ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                    : "bg-blue-900 hover:bg-blue-800 hover:cursor-pointer"
+                }`}
+              >
+                {statusType === "REMARKED"
+                  ? "Edit Application"
+                  : "View Details"}
+              </button>
         </div>
 
         {/* ===== STATUS MESSAGE ===== */}
@@ -266,6 +295,20 @@ export default function MembershipCard() {
       </div>
     );
   })}
+
+  {
+    formMode === "view" && selectedAppId &&
+     <ViewMembershipForm 
+     applicationId={selectedAppId} 
+     onClose={()=>setFormMode(null)}/>
+  }
+
+  {
+    formMode === "edit" && selectedAppId &&
+    <EditMembershipForm
+    applicationId={selectedAppId}
+    onClose={()=>setFormMode(null)}/>
+  }
 </div>
 
   );

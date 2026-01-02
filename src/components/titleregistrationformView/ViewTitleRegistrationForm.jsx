@@ -31,7 +31,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
 
   const ONM_BLOCKED_ROLES = [
     "TITLE_COMMITTEE_VOTER","TITLE_COMMITTEE_LEADER","TITLE_COMMITTEE",
-    "EC_MEMBER",
+    "EC_MEMBER","PRODUCER","USER",
   ];
 
   const isRestrictedUser = roles.some((role) =>

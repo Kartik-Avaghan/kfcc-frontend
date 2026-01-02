@@ -9,6 +9,8 @@ import {
   FileText,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
+import ViewTitleRegistrationForm from "../titleregistrationformView/ViewTitleRegistrationForm";
+import EditTitleRegistrationForm from "./EditTitleRegistrationForm";
 
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
@@ -102,6 +104,11 @@ export default function TitleRegistrationStatusCard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  // const[viewFormOpen,setViewFormOpen]=useState(false);
+  // const[editForm,setEditForm]=useState(false);
+  const [selectedAppId, setSelectedAppId] = useState(null);
+const [formMode, setFormMode] = useState(null); // "view" | "edit"
+
 
   /*  FETCH  */
   useEffect(() => {
@@ -145,7 +152,17 @@ export default function TitleRegistrationStatusCard() {
     );
   });
 
-  /* ================= UI ================= */
+  const handleOpenForm = (detail) => {
+  if (getStatusType(detail.status) === "REMARKED") {
+    setFormMode("edit");
+  } else {
+    setFormMode("view");
+  }
+  setSelectedAppId(detail.id);
+};
+
+
+ 
   return (
     <div className="p-16 max-w-7xl mx-auto">
   {/* HEADER */}
@@ -202,7 +219,7 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
           className={`bg-white rounded-2xl shadow-lg border-l-4 ${style.border} overflow-hidden`}
         >
           {/* CARD HEADER */}
-          <div className={`px-6 py-4 ${style.bg} border-b`}>
+          <div className={`px-6 py-4 ${style.bg} border-b border-gray-200`}>
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-semibold text-gray-800">
@@ -212,7 +229,7 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
                   Application ID: {detail.id}
                 </p> */}
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
-                        <p>Application ID: <span className="font-mono font-medium">{detail.id}</span></p>
+                        <p>Application No: <span className="font-bold text-lg">{detail.id}</span></p>
                         <p>Submitted Date: <span className="font-mono font-medium">{new Date(detail.date).toLocaleDateString()}</span></p>
                         <p>Director: <span className="font-medium">{detail.director}</span></p>
                 
@@ -225,10 +242,11 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
               </div>
 
               <button
+                onClick={() => handleOpenForm(detail)}
                 className={`px-6 py-2 rounded-xl text-white transition ${
                   statusType === "REMARKED"
-                    ? "bg-yellow-600 hover:bg-yellow-700"
-                    : "bg-blue-900 hover:bg-blue-800"
+                    ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                    : "bg-blue-900 hover:bg-blue-800 hover:cursor-pointer"
                 }`}
               >
                 {statusType === "REMARKED"
@@ -301,14 +319,14 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
               statusType === "REJECTED") &&
               detail.remark && (
                 <div
-                  className={`mt-4 p-4 rounded-lg border ${style.bg}`}
+                  className={`mt-4 p-4 rounded-lg border ${style.bg} ${style.text}`}
                 >
-                  <p className="text-sm text-gray-700">
-                    {detail.remark}
+                  <p className={`text-sm text ${style.text} `}>
+                   <span className="font-bold">Remarks:</span> {detail.remark}
                   </p>
                   {detail.remarkedBy && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      By: {detail.remarkedBy}
+                    <p className={`text-xs text ${style.text} mt-2`}>
+                      <span className="font-bold" >By:</span> {detail.remarkedBy}
                     </p>
                   )}
                 </div>
@@ -318,6 +336,35 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
       );
     })}
   </div>
+
+  {/* {viewFormOpen && <ViewTitleRegistrationForm applicationId={viewFormOpen} onClose={()=>setViewFormOpen(false)}/>}
+
+    {editForm && <EditTitleRegistrationForm applicationId={editForm} onClose={()=>setEditForm(false)}/>} */}
+
+
+    {formMode === "view" && selectedAppId && (
+  <ViewTitleRegistrationForm
+    applicationId={selectedAppId}
+    onClose={() => {
+      setFormMode(null);
+      setSelectedAppId(null);
+    }}
+  />
+)}
+
+{formMode === "edit" && selectedAppId && (
+  <EditTitleRegistrationForm
+    applicationId={selectedAppId}
+    onClose={() => {
+      setFormMode(null);
+      setSelectedAppId(null);
+    }}
+  />
+)}
+
+
+
+
 </div>
 
   );
