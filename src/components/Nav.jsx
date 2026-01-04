@@ -56,7 +56,7 @@ function Nav() {
         icon: CreditCard,
         path: "producer/titleRegistrationform",
       },
-      { name: "Public Clearance", icon: Globe, path: "/producer/projects" },
+      { name: "Public Clearance", icon: Globe, path: "/producer/publicityClearenceform" },
     ],
 
     // ONM_COMMITTEE: [
@@ -67,9 +67,9 @@ function Nav() {
 
     ONM_COMMITTEE_VOTER: [
       { name: "Vote", icon: Globe, path: "/onm/voting/membershipDashboard" },
-      { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
-      { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
-      { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
+      // { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
+      // { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
+      // { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
     ],
 
     EC_MEMBER: [

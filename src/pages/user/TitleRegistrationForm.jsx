@@ -150,24 +150,38 @@ function TitleRegistrationForm() {
             </button>
 
             {/* Header */}
-            <div className="text-center">
+
+             {/* Header */}
+  <div className="text-center space-y-2">
+    <h2 className="text-2xl font-bold text-blue-900">
+      ಶೀರ್ಷಿಕೆ ನೋಂದಣಿ ಅರ್ಜಿ / TITLE REGISTRATION APPLICATION
+    </h2>
+    {/* <h3 className="text-lg font-semibold text-blue-900">
+      TITLE REGISTRATION APPLICATION
+    </h3> */}
+    <p className="text-sm text-blue-900">
+      ದಯವಿಟ್ಟು ಅಗತ್ಯವಿರುವ ಎಲ್ಲಾ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ / Please fill all required details carefully
+    </p>
+  </div>
+            {/* <div className="text-center">
               <h2 className="text-3xl font-bold text-blue-950">
                 Title Registration
               </h2>
               <p className="text-gray-500 mt-2 text-sm">
                 Please fill out all required details carefully.
               </p>
-            </div>
+            </div> */}
 
             {/* Film Details */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Film Details
+              <h3 className="text-lg font-semibold text-blue-900 border-b pb-2">
+                ಚಿತ್ರದ ವಿವರಗಳು / Film Details
+
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Film Title <span className="text-red-500">*</span>
+                  <label className="block  font-semibold text-gray-700 mb-1">
+                   ಚಿತ್ರದ ಶೀರ್ಷಿಕೆ / Film Title <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -180,8 +194,8 @@ function TitleRegistrationForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Film Title In Kannada<span className="text-red-500">*</span>
+                  <label className="block  font-semibold text-gray-700 mb-1">
+                   ಕನ್ನಡದಲ್ಲಿ ಚಿತ್ರದ ಶೀರ್ಷಿಕೆ /   Film Title In Kannada<span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -195,8 +209,8 @@ function TitleRegistrationForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Is this your First Film?
+                  <label className="block  font-semibold text-gray-700 mb-1">
+                   ಇದು ನಿಮ್ಮ ಮೊದಲ ಚಿತ್ರವೇ? / Is this your First Film?
                   </label>
                   <select
                     name="isFirstFilm"
@@ -212,8 +226,8 @@ function TitleRegistrationForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Language
+                  <label className="block  font-semibold text-gray-700 mb-1">
+                    ಭಾಷೆ / Language
                   </label>
                   <select
                     name="language"
@@ -234,8 +248,8 @@ function TitleRegistrationForm() {
 
                 {formData.language === "Other" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Enter the Language<span className="text-red-500">*</span>
+                    <label className="block  font-semibold text-gray-700 mb-1">
+                     ಭಾಷೆಯನ್ನು ನಮೂದಿಸಿ / Enter the Language<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -299,12 +313,12 @@ function TitleRegistrationForm() {
             {/* Extra Info for non-first films */}
             {formData.isFirstFilm === false && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                  Previous Registrations
+                <h3 className="text-lg font-semibold text-blue-900 border-b pb-2">
+                  ಹಿಂದಿನ ನೋಂದಣಿಗಳ ವಿವರಗಳು / Previous Registrations
                 </h3>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Previously Registered?
+                  <label className="block  font-semibold text-gray-700 mb-1">
+                   ಹಿಂದೆ ನೋಂದಾಯಿಸಲಾಗಿದೆಯೇ? / Previously Registered?
                   </label>
                   <select
                     name="previouslyRegistered"
@@ -319,8 +333,8 @@ function TitleRegistrationForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Previously Registered Details
+                  <label className="block font-semibold text-gray-700 mb-1">
+                   ಹಿಂದಿನ ನೋಂದಣಿ ವಿವರಗಳು / Previously Registered Details
                   </label>
                   <input
                     type="text"
@@ -336,13 +350,13 @@ function TitleRegistrationForm() {
 
             {/* Crew Info */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Crew Details
+              <h3 className="text-lg font-semibold text-blue-900 border-b pb-2">
+               ತಾಂತ್ರಿಕ ತಂಡದ ವಿವರಗಳು /  Crew Details
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Director
+                  <label className="block font-semibold text-gray-700 mb-1">
+                   ನಿರ್ದೇಶಕರು / Director
                   </label>
                   <input
                     type="text"
@@ -354,8 +368,8 @@ function TitleRegistrationForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Music Director
+                  <label className="block font-semibold text-gray-700 mb-1">
+                   ಸಂಗೀತ ನಿರ್ದೇಶಕರು /  Music Director
                   </label>
                   <input
                     type="text"
@@ -367,8 +381,8 @@ function TitleRegistrationForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Lead Artist
+                  <label className="block font-semibold text-gray-700 mb-1">
+                      ಮುಖ್ಯ ಕಲಾವಿದ /Lead Artist
                   </label>
                   <input
                     type="text"
@@ -384,14 +398,14 @@ function TitleRegistrationForm() {
 
             {/* Category & Institutes */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Additional Info
+              <h3 className="text-lg font-semibold text-blue-900 border-b pb-2">
+               ಹೆಚ್ಚುವರಿ ಮಾಹಿತಿ / Additional Info
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category
+                  <label className="block font-semibold text-gray-700 mb-1">
+                    ವರ್ಗ / Category
                   </label>
                   <select
                     name="category"
@@ -418,8 +432,8 @@ function TitleRegistrationForm() {
 
                 {formData.category === "Other" && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Enter the Category<span className="text-red-500">*</span>
+                    <label className="block font-semibold text-gray-700 mb-1">
+                      ವರ್ಗ ನಮೂದಿಸಿ /Enter the Category<span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -440,8 +454,8 @@ function TitleRegistrationForm() {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Films By Institutes
+                  <label className="block font-semibold text-gray-700 mb-1">
+                     ಸಂಸ್ಥೆಗಳಿಂದ ನಿರ್ಮಿತ ಚಿತ್ರಗಳು /  Films By Institutes
                   </label>
                   <input
                     type="text"
@@ -454,8 +468,8 @@ function TitleRegistrationForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Attach Supporting Documents (Max 5)
+                  <label className="block font-semibold text-gray-700 mb-1">
+                   ದಾಖಲೆಗಳನ್ನು ಲಗತ್ತಿಸಿ (ಗರಿಷ್ಠ 5) /  Attach  Documents (Max 5)
                   </label>
                   <div className="flex items-center w-full gap-4">
                     <input
@@ -526,9 +540,9 @@ function TitleRegistrationForm() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="w-56 py-3 bg-blue-950 text-white font-semibold rounded-xl shadow hover:bg-blue-800 hover:shadow-lg transition-all"
+                className="w-2xl py-3 bg-blue-950 text-white font-semibold rounded-xl shadow hover:bg-blue-800 hover:shadow-lg transition-all"
               >
-                Submit Application
+                ಅರ್ಜಿ ಸಲ್ಲಿಸಿ / Submit Application
               </button>
             </div>
           </form>

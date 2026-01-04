@@ -27,6 +27,7 @@ import TitleRegistrationVotingDashboard from "../pages/title-committe/TitleRegis
 import ECTitleRegistrationDashboard from "../pages/ec-members/ECTitleRegistrationDashboard";
 import SecretryTitleRegistrationDashboard from "../pages/secretry/SecretryTitleRegistrationDashboard";
 import Register from "../pages/Register";
+import PublicityClearenceForm from "../pages/user/PublicityClearenceForm";
 
 
 
@@ -51,6 +52,7 @@ function CustomRouter() {
           {/*user  */}
           <Route path="user/membershipform" element={<MembershipForm />} />
           <Route path="producer/titleRegistrationform" element={<TitleRegistrationForm/>}/>
+          <Route path="producer/publicityClearenceform" element={<PublicityClearenceForm/>}/>
 
 
           {/* staff */}
