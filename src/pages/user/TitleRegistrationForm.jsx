@@ -122,17 +122,7 @@ function TitleRegistrationForm() {
 
   return (
     <>
-      {!openModal && (
-        <div className="flex justify-between items-center mt-10 px-18">
-          <button
-            onClick={() => setOpenModal(true)}
-            className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
-          >
-            <Plus size={20} className="mr-2" />
-            Apply For TitleRegistration
-          </button>
-        </div>
-      )}
+      
 
       {openModal && (
         <div className="  flex justify-center items-start  py-12 px-4 sm:px-6 lg:px-8">
@@ -549,7 +539,7 @@ function TitleRegistrationForm() {
         </div>
       )}
 
-      {!openModal && <TitleRegistrationStatusCard />}
+      {!openModal && <TitleRegistrationStatusCard  setOpenModal={setOpenModal}/>}
     </>
   );
 }

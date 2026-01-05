@@ -73,19 +73,30 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
         <div className="bg-linear-to-r from-blue-950 to-blue-800 text-white p-6 relative ">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 hover:text-gray-300 hover:cursor-pointer"
+            className="absolute top-4 right-4 hover:text-gray-300 hover:cursor-pointer p-1"
           >
             <X />
           </button>
 
-          <h2 className="text-2xl font-bold">Membership Application</h2>
-          <p className="text-blue-100 mt-1">
-            Application ID: {data.applicationId}
-          </p>
+          <div className="flex justify-between items-end mt-2">
 
-          {/* <span className="inline-flex mt-3 px-3 py-1 rounded-full text-sm bg-white/10 border border-white/20">
-            Status: {data.membershipStatus}
-          </span> */}
+            <div>
+              <h2 className="text-2xl font-bold">Membership Application</h2>
+              <p className="text-blue-100 mt-1">
+                Application ID: {data.applicationId}
+              </p>
+            </div>
+
+            {
+              data.membershipAcceptanceDate && (
+                <span className=" flex items-center p-4 text-center h-8  rounded-full text-sm bg-white/10 border border-white/20">
+                  Approved At: { new Date(data.membershipAcceptanceDate).toLocaleDateString("en-IN") }
+                </span>
+              ) 
+            }
+      
+          </div>
+
         </div>
 
         {/* CONTENT */}

@@ -7,6 +7,10 @@ import {
   XCircle,
   FileText,
   Search,
+  Plus,
+  Eye,
+  ChevronLeft,
+  ChevronDown,
 } from "lucide-react";
 import ViewMembershipForm from "../membershipformView/ViewMembershipForm";
 import EditMembershipForm from "./EditMembershipForm";
@@ -85,7 +89,7 @@ const STEPS = [
   "Final Approval",
 ];
 
-export default function MembershipCard() {
+export default function MembershipCard({ setOpenModal }) {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -110,7 +114,7 @@ export default function MembershipCard() {
         if (!res.ok) throw new Error("Failed to fetch applications");
 
         const data = await res.json();
-        console.log("Membership data",data);
+        console.log("Membership data", data);
 
         setApplications(data);
       } catch (err) {
@@ -135,37 +139,64 @@ export default function MembershipCard() {
   const filteredApplications = applications.filter((app) => {
     const term = searchTerm.toLowerCase();
     return (
-    app.membershipCategory?.toLowerCase().includes(term)||
-    app.applicationId?.toString().toLowerCase().includes(term) ||
-    app.applicantName?.toLowerCase().includes(term)
-    )
+      app.membershipCategory?.toLowerCase().includes(term) ||
+      app.applicationId?.toString().toLowerCase().includes(term) ||
+      app.applicantName?.toLowerCase().includes(term)
+    );
   });
 
   return (
-    <div className="p-16 max-w-7xl mx-auto">
+    <div className="px-16 py-8 max-w-7xl mx-auto">
       {/* HEADER */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-blue-900">
-          Membership Applications
-        </h1>
-        <p className="text-blue-900 text-sm mt-1">
-          Track and manage your membership applications status
-        </p>
+      <div className="mb-10 flex justify-between items-center w-full mt-2">
+        <div>
+          <h1 className="text-2xl font-bold text-blue-900">
+            Membership Applications
+          </h1>
+          <p className="text-blue-900 text-sm mt-1">
+            Track and manage your membership applications status
+          </p>
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center ">
+            <button
+              onClick={() => setOpenModal(true)}
+              className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
+            >
+              <Plus size={20} className="mr-2" />
+              Apply For Membership
+            </button>
+          </div>
+        </div>
       </div>
 
+      {/* Filters */}
+      <div className="flex justify-between items-center mb-10 mt-4">
+        <div className="flex items-center gap-2  min-w-lg border-2 border-gray-300 rounded-xl p-3">
+          <Search className="w-5 h-5 text-gray-600" />
+          <input
+            type="text"
+            placeholder="Search by title, director, language..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full focus:outline-none"
+          />
+        </div>
 
-      
-
-      {/* SEARCH */}
-      <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
-        <Search className="w-5 h-5 text-gray-600" />
-        <input
-          type="text"
-          placeholder="Search by title, director, language..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full focus:outline-none"
-        />
+        <div className="flex items-center gap-2 max-w-md border-2 border-gray-300 rounded-xl p-3 px-6">
+          <select
+            type="text"
+            placeholder="status"
+            className="w-full focus:outline-none"
+          >
+            <option value="">All Statuses</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="FINAL_APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="EC_HOLD">Hold</option>
+          </select>
+        </div>
       </div>
 
       {/* LOADING */}
@@ -207,10 +238,10 @@ export default function MembershipCard() {
 
                   {/* Name & ID */}
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900">
+                    <h2 className="text-lg font-bold text-gray-900 mb-0">
                       {application.membershipCategory}
                     </h2>
-                    <p className="text-md text-gray-500">
+                    <p className="text-md text-gray-500 -mt-1">
                       Application No:{" "}
                       <span className="font-bold text-lg">
                         #{application.applicationId}
@@ -221,24 +252,27 @@ export default function MembershipCard() {
 
                 {/* Status Pill */}
                 {/* <span
-            className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${style.text} bg-white border ${style.border}`}
-          >
-            <StatusIcon size={14} />
-            {application.status.replaceAll("_", " ")}
-          </span> */}
-
-                <button
-                  onClick={() => handleOpenForm(application)}
-                  className={`px-6 py-2 rounded-xl text-white transition ${
-                    statusType === "REMARKED"
-                      ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                      : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
-                  }`}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${style.text} bg-white border ${style.border}`}
                 >
-                  {statusType === "REMARKED"
-                    ? "Edit Application"
-                    : "View Details"}
-                </button>
+                  <StatusIcon size={14} />
+                  {application.status.replaceAll("_", " ")}
+                </span> */}
+                <span>
+                  <button
+                    onClick={() => handleOpenForm(application)}
+                    className={`px-6 py-3 items-center rounded-xl text-white transition flex ${
+                      statusType === "REMARKED"
+                        ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                        : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
+                    }`}
+                  >
+                    {" "}
+                    <Eye size={20} className={`mr-2`} />
+                    {statusType === "REMARKED"
+                      ? "Edit Application"
+                      : "View Details"}
+                  </button>
+                </span>
               </div>
 
               {/* ===== STATUS MESSAGE ===== */}
@@ -354,13 +388,24 @@ export default function MembershipCard() {
               {/* ===== FOOTER ===== */}
               <div className="mt-5 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-600">
                 <span>
-                  <span className="font-medium">Mobile:</span>{" "}
-                  {application.mobileNo}
+                  <span className="font-medium">Submitted At:</span>{" "}
+                  {new Date(application.submittedAt).toLocaleDateString(
+                    "en-In"
+                  )}
                 </span>
-                <span>
-                  <span className="font-medium">Category:</span>{" "}
-                  {application.membershipCategory ?? "—"}
-                </span>
+                {
+                  application.expiryDate  && (
+                    <span>
+                      <span className="font-medium">Expire At:</span>{" "}
+                      <span>
+                        {new Date(application.expiryDate).toLocaleDateString(
+                          "en-In"
+                        )}
+                      </span>
+                    </span>
+                  )
+                }
+                
               </div>
             </div>
           );
