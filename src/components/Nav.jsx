@@ -57,6 +57,9 @@ function Nav() {
         path: "producer/titleRegistrationform",
       },
       { name: "Public Clearance", icon: Globe, path: "/producer/publicityClearenceform" },
+      // { name: "Title Registration", icon: CreditCard, path: "/om/dsddf/dashboard" },
+      // { name: "Title Registration", icon: CreditCard, path: "/om/asddfgg/dashboard" },
+      // { name: "Title Registration", icon: CreditCard, path: "/om/dsfsfc/dashboard" },
     ],
 
     // ONM_COMMITTEE: [
@@ -94,7 +97,7 @@ function Nav() {
 
 
      TITLE_COMMITTEE_VOTER: [
-      { name: "Vote", icon: Globe, path: "/titleCommittee/voting/titleRegistrationDashboard" },
+      { name: "Title Vote", icon: Globe, path: "/titleCommittee/voting/titleRegistrationDashboard" },
       { name: "Title Registration", icon: CreditCard, path: "/titleCommittee/dashboard" },
       { name: "Remarked Titles", icon: MessageSquare, path: "/titleCommittee/meetings" },
       { name: "Public Clearance", icon: Globe, path: "/titleCommittee/meetings" },
@@ -169,7 +172,7 @@ function Nav() {
             <img src={logo} alt="KFCC" className="size-14 rounded-full" />
             <div>
               <h1 className="text-2xl font-bold">KFCC</h1>
-              <p className="text-xs text-blue-200">Karnataka Film Chamber</p>
+              {/* <p className="text-xs text-blue-200">Karnataka Film Chamber</p> */}
             </div>
           </div>
         </div>
@@ -198,7 +201,10 @@ function Nav() {
         </div>
 
         {/* Menu */}
-        <div className="flex-1 p-6 overflow-y-auto  scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-900">
+        {/* <div className="flex-1 p-6 overflow-y-auto  scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-900"> */}
+        <div className="flex-1 p-6 overflow-y-auto scrollbar-modern">
+       
+
           <p className="text-xs font-semibold text-blue-300 uppercase mb-4">
             Main Menu
           </p>
@@ -227,7 +233,7 @@ function Nav() {
         </div>
 
         {/* Logout */}
-        <div className="p-6">
+        <div className="p-6 flex flex-col justify-center items-center ">
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-red-600 transition"
@@ -235,7 +241,11 @@ function Nav() {
             <LogOut className="w-5 h-5" />
             Logout
           </button>
+
+          <p className="text-xs text-gray-400 mt-2"> © Developed By thincnext</p>
         </div>
+
+        
       </div>
     </div>
   );

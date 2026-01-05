@@ -145,7 +145,7 @@ function TitleRegistrationDashboard() {
 
                 <button onClick={()=> setSelectedRegistrationId(detail)}  className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700">
                   <Eye size={16} />
-                  View Title Registration Form
+                  View Details
                 </button>
               </div>
             </div>

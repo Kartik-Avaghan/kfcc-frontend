@@ -591,7 +591,7 @@ const MembershipForm = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/user/getDetail`,
+          `${import.meta.env.VITE_API_BASE_URL}/user/userDetails`,
           {
             method: "GET",
             headers: {
@@ -618,13 +618,13 @@ const MembershipForm = () => {
     fetchUserData();
   }, []);
 
-  const handleUserData = (e) => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleUserData = (e) => {
+  //   const { name, value } = e.target;
+  //   setUserData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   return (
     <>
@@ -632,7 +632,7 @@ const MembershipForm = () => {
       <div className="flex justify-between items-center mt-10 px-18">
         <button
           onClick={() => setOpenModal(true)}
-          className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white"
+          className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
         >
           <Plus size={20} className="mr-2" />
           Apply For Membership
@@ -641,7 +641,7 @@ const MembershipForm = () => {
     )}
 
       {openModal && (
-        <div className="relative max-w-6xl mx-auto p-8 bg-white rounded-lg space-y-6 mt-6">
+        <div className=" max-w-6xl mx-auto p-8 bg-white  space-y-6 mt-6">
            <button
         type="button"
         onClick={() => setOpenModal(false)}
@@ -675,7 +675,7 @@ const MembershipForm = () => {
                     type="text"
                     name="firstName"
                     value={userData.firstName}
-                    onChange={handleUserData}
+                    // onChange={handleUserData}
                     placeholder="first name"
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                   />
@@ -684,7 +684,7 @@ const MembershipForm = () => {
                     type="text"
                     name="middleName"
                     value={userData.middleName}
-                    onChange={handleUserData}
+                    // onChange={handleUserData}
                     placeholder="middle name"
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                   />
@@ -693,7 +693,7 @@ const MembershipForm = () => {
                     type="text"
                     name="lastName"
                     value={userData.lastName}
-                    onChange={handleUserData}
+                    // onChange={handleUserData}
                     placeholder="last name"
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                   />
@@ -814,7 +814,7 @@ const MembershipForm = () => {
                   type="text"
                   name="bloodGroup"
                   value={userData.bloodGroup}
-                  onChange={handleUserData}
+                  // onChange={handleUserData}
                   placeholder="blood group"
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                 />

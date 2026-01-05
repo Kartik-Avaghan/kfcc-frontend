@@ -84,9 +84,10 @@ function Register() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-blue-50 px-4">
-      <div className="w-full max-w-sm bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-2xl p-8 transition-all">
+      <div className="w-full max-w-3xl bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-2xl p-8 transition-all">
 
         {/* Header */}
+        {step === 1 && (
         <div className="flex flex-col items-center mb-8">
           <img
             src={logo}
@@ -100,6 +101,7 @@ function Register() {
             Create your account using mobile verification
           </p>
         </div>
+        )}
 
         {/* STEP 1 – MOBILE NUMBER */}
         {step === 1 && (
@@ -135,115 +137,151 @@ function Register() {
         )}
 
         {/* STEP 2 – OTP + DETAILS */}
-        {step === 2 && (
-          <form onSubmit={handleRegister} className="space-y-4 animate-fadeIn">
+{step === 2 && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fadeIn ">
 
-            {/* OTP */}
-            <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                name="otp"
-                maxLength={6}
-                value={formData.otp}
-                onChange={handleChange}
-                placeholder="Enter OTP"
-                className="w-full border border-gray-300 rounded-lg py-2.5 px-4 pl-10
-                  focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
+    {/* LEFT SIDE – INFO */}
+    <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-4">
 
-            {/* First Name */}
-            <div className="relative">
-              <User className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-full border rounded-lg py-2.5 px-4 pl-10"
-                required
-              />
-            </div>
+      <img
+        src={logo}
+        alt="logo"
+        className="w-16 h-16 rounded-full shadow-md"
+      />
 
-            {/* Middle Name */}
-            <input
-              type="text"
-              name="middleName"
-              placeholder="Middle Name"
-              value={formData.middleName}
-              onChange={handleChange}
-              className="w-full border rounded-lg py-2.5 px-4"
-            />
+      <h2 className="text-3xl font-bold text-blue-950">
+        Register
+      </h2>
 
-            {/* Last Name */}
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="w-full border rounded-lg py-2.5 px-4"
-            />
+      <p className="text-gray-500 text-sm max-w-xs">
+        Create your account using mobile verification
+      </p>
 
-            {/* Email */}
-            <div className="relative">
-              <Mail className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full border rounded-lg py-2.5 px-4 pl-10"
-              />
-            </div>
+      <p className="text-sm text-gray-600">
+        Already have an account?{" "}
+        <Link to="/login" className="text-blue-600 underline font-medium">
+          Login
+        </Link>
+      </p>
+    </div>
 
-            {/* Blood Group */}
-            <div className="relative">
-              <Droplet className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                name="bloodGroup"
-                placeholder="Blood Group"
-                value={formData.bloodGroup}
-                onChange={handleChange}
-                className="w-full border rounded-lg py-2.5 px-4 pl-10"
-              />
-            </div>
+    {/* RIGHT SIDE – FORM */}
+    <form
+      onSubmit={handleRegister}
+      className="space-y-4 w-full"
+    >
+      {/* OTP */}
+      <div className="relative">
+        <Lock className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
+        <input
+          type="text"
+          name="otp"
+          maxLength={6}
+          value={formData.otp}
+          onChange={handleChange}
+          placeholder="Enter OTP"
+          className="w-full border border-gray-300 rounded-lg py-2.5 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+      </div>
 
-            {/* DOB */}
-            <div className="relative">
-              <Calendar className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
-              <input
-                type="date"
-                name="dob"
-                value={formData.dob}
-                onChange={handleChange}
-                className="w-full border rounded-lg py-2.5 px-4 pl-10"
-              />
-            </div>
+      {/* NAME ROW */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <input
+          type="text"
+          name="firstName"
+          placeholder="First Name"
+          value={formData.firstName}
+          onChange={handleChange}
+          className="border rounded-lg py-2.5 px-4 focus:ring-2 focus:ring-blue-500"
+          required
+        />
+        <input
+          type="text"
+          name="middleName"
+          placeholder="Middle Name"
+          value={formData.middleName}
+          onChange={handleChange}
+          className="border rounded-lg py-2.5 px-4 focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Last Name"
+          value={formData.lastName}
+          onChange={handleChange}
+          className="border rounded-lg py-2.5 px-4 focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-600 text-white py-2.5 rounded-lg
-                shadow-md hover:bg-green-700 active:scale-[0.98] transition-all"
-            >
-              {loading ? "Registering..." : "Register"}
-            </button>
-          </form>
-        )}
+      {/* EMAIL */}
+      <div className="relative">
+        <Mail className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full border rounded-lg py-2.5 px-4 pl-10 focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      {/* BLOOD GROUP */}
+      <div className="relative">
+        <Droplet className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
+        <select
+          name="applicantBloodGroup"
+          value={formData.applicantBloodGroup}
+          onChange={handleChange}
+          className="w-full border rounded-lg py-2.5 px-4 pl-10 focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select Blood Group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+      </div>
+
+      {/* DOB */}
+      <div className="relative">
+        <Calendar className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
+        <input
+          type="date"
+          name="dob"
+          value={formData.dob}
+          onChange={handleChange}
+          className="w-full border rounded-lg py-2.5 px-4 pl-10 focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      {/* SUBMIT */}
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-green-600 text-white py-2.5 rounded-lg shadow-md hover:bg-green-700 active:scale-[0.98] transition-all"
+      >
+        {loading ? "Registering..." : "Register"}
+      </button>
+    </form>
+  </div>
+)}
+
 
         {/* Footer */}
+        {step === 1 && (
         <div className="w-full mt-6 text-center ">
           Already have an account?{" "}
           <Link to="/login" className="text-blue-600 underline">
             Login
           </Link>
         </div>
+        )}
 
       </div>
     </div>

@@ -246,7 +246,7 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
                 className={`px-6 py-2 rounded-xl text-white transition ${
                   statusType === "REMARKED"
                     ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                    : "bg-blue-900 hover:bg-blue-800 hover:cursor-pointer"
+                    : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
                 }`}
               >
                 {statusType === "REMARKED"

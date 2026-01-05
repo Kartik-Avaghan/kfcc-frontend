@@ -177,16 +177,16 @@ function TitleRegistrationCommitteDashboard() {
             <button
               onClick={() => setSelectedApplicationId(member)}
               className="bg-blue-600 text-white px-6 py-2 rounded-xl
-                         flex items-center gap-2 hover:bg-blue-700"
+                         flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
             >
               <Eye size={16} />
-              View Title Registration Form
+              View Details
             </button>
 
             <button
               onClick={() => setVoteResult(member)}
               className="bg-green-600 text-white px-6 py-2 rounded-xl
-                         flex items-center gap-2 hover:bg-green-700"
+                         flex items-center gap-2 hover:bg-green-700 cursor-pointer"
             >
               <Vote size={16} />
               Voting Result
@@ -221,12 +221,12 @@ function TitleRegistrationCommitteDashboard() {
             </div>
 
             {/* Status */}
-            <div className="px-6 pb-6">
+            {/* <div className="px-6 pb-6">
               <span className="text-sm text-gray-500">Current Status:</span>
               <span className="ml-2 bg-gray-100 px-3 py-1 rounded text-sm font-semibold">
                 {member.status}
               </span>
-            </div>
+            </div> */}
           </div>
   ))}
 </div>

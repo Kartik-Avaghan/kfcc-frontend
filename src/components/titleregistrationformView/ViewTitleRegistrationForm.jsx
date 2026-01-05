@@ -61,7 +61,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
         <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 hover:text-gray-300"
+            className="absolute top-4 right-4 hover:text-gray-300 cursor-pointer" 
           >
             <X />
           </button>
@@ -69,16 +69,16 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
           <h2 className="text-2xl font-bold">Title Registration</h2>
           <p className="text-blue-100 mt-1">Application ID: {data.id}</p>
 
-          <span className="inline-flex mt-3 px-3 py-1 rounded-full text-sm bg-white/10 border border-white/20">
+          {/* <span className="inline-flex mt-3 px-3 py-1 rounded-full text-sm bg-white/10 border border-white/20">
             Status: {data.status}
-          </span>
+          </span> */}
         </div>
 
         {/* CONTENT */}
         <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-gray-50">
           {/* TITLE DETAILS */}
           <InfoSection title="Title Details" icon={Film}>
-            <Field label="Title (English)" value={data.title} />
+            <Field label="Title (English)"   value={data.title}  />
             <Field label="Title (Kannada)" value={data.titleInKannada} />
             <Field label="Language" value={data.language} />
             <Field label="Category" value={data.category} />

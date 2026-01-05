@@ -86,7 +86,7 @@ function TitleRegistrationForm() {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/titleRegistration/apply`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `${localStorage.getItem("token")}`,
       },
       body: formPayload,
     })
@@ -126,7 +126,7 @@ function TitleRegistrationForm() {
         <div className="flex justify-between items-center mt-10 px-18">
           <button
             onClick={() => setOpenModal(true)}
-            className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white"
+            className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
           >
             <Plus size={20} className="mr-2" />
             Apply For TitleRegistration
@@ -138,7 +138,7 @@ function TitleRegistrationForm() {
         <div className="  flex justify-center items-start  py-12 px-4 sm:px-6 lg:px-8">
           <form
             onSubmit={handleSubmit}
-            className="relative w-full max-w-5xl bg-white p-8 rounded-2xl shadow-xl space-y-8"
+            className=" w-full max-w-5xl bg-white p-8  space-y-8"
           >
             {/* Top-left Close Button */}
             <button

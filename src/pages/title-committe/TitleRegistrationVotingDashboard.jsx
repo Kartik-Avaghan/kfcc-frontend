@@ -167,10 +167,10 @@ function TitleRegistrationVotingDashboard() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => setViewApplication(app)}
-                      className="bg-blue-600 text-white px-5 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700"
+                      className="bg-blue-600 text-white px-5 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
                     >
                       <Eye size={16} />
-                      View Title Registration Form
+                      View Details
                     </button>
 
                     <button
@@ -179,8 +179,8 @@ function TitleRegistrationVotingDashboard() {
                       className={`px-6 py-2 rounded-xl flex items-center gap-2 text-white
                         ${
                           isVoted
-                            ? "bg-yellow-600 cursor-not-allowed"
-                            : "bg-green-600 hover:bg-green-700"
+                            ? "bg-yellow-600 cursor-not-allowed "
+                            : "bg-green-600 hover:bg-green-700 cursor-pointer"
                         }`}
                     >
                       {isVoted ? (

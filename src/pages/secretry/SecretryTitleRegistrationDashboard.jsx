@@ -122,15 +122,15 @@ function SecretryTitleRegistrationDashboard() {
             className="bg-white rounded-2xl shadow-md hover:shadow-lg transition border-l-4 border-blue-500 overflow-hidden"
           >
             {/* Card Header */}
-            <div className="bg-blue-50 px-6 py-4 border-b">
+            <div className="bg-blue-50 px-6 py-4 border-b border-gray-300">
               <div className="flex flex-col lg:flex-row justify-between gap-4">
                 <div>
                   <h3 className="text-xl font-bold text-gray-800">
                     {detail.title}
                   </h3>
 
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-gray-600 mt-2">
-                    <p><b>ID:</b> #{detail.id}</p>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600 mt-2">
+                    <p><b>Application No:</b> #{detail.id}</p>
                     <p><b>Language:</b> {detail.language}</p>
                     <p><b>Category:</b> {detail.category}</p>
                     <p>
@@ -144,7 +144,7 @@ function SecretryTitleRegistrationDashboard() {
 
                 <button onClick={()=> setSelectedRegistrationId(detail)}  className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700">
                   <Eye size={16} />
-                  View Title Registration Form
+                  View Details
                 </button>
               </div>
             </div>
@@ -175,12 +175,12 @@ function SecretryTitleRegistrationDashboard() {
             </div>
 
             {/* Status */}
-            <div className="px-6 pb-6">
+            {/* <div className="px-6 pb-6">
               <span className="text-sm text-gray-500">Current Status:</span>
               <span className="ml-2 bg-gray-100 px-3 py-1 rounded text-sm font-semibold">
                 {detail.status}
               </span>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
