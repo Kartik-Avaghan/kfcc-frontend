@@ -26,6 +26,53 @@ const DOCUMENT_TYPES = [
   "OTHERS",
 ];
 
+
+
+const DOCUMENT_TYPE_LABELS = {
+  CBCF_CERTIFICATE: {
+    en: "CBCF Certificate",
+    kn: "ಸಿಬಿಎಫ್ ಪ್ರಮಾಣಪತ್ರ",
+  },
+  HOARDINGS: {
+    en: "Hoardings",
+    kn: "ಹೋರ್ಡಿಂಗ್‌ಗಳು",
+  },
+  POSTER_DESIGNS: {
+    en: "Poster Designs",
+    kn: "ಪೋಸ್ಟರ್ ವಿನ್ಯಾಸಗಳು",
+  },
+  PHOTOCARDS: {
+    en: "Photocards",
+    kn: "ಫೋಟೋ ಕಾರ್ಡ್‌ಗಳು",
+  },
+  SLIDES: {
+    en: "Slides",
+    kn: "ಸ್ಲೈಡ್ಸ್",
+  },
+  BLOCK_DESIGNS: {
+    en: "Block Designs",
+    kn: "ಬ್ಲಾಕ್ ವಿನ್ಯಾಸಗಳು",
+  },
+  ART_PULLS: {
+    en: "Art Pulls",
+    kn: "ಆರ್ಟ್ ಪುಲ್ಸ್",
+  },
+  STICKERS: {
+    en: "Stickers",
+    kn: "ಸ್ಟಿಕ್ಕರ್‌ಗಳು",
+  },
+  NEWSPAPER_PUBLICITY: {
+    en: "Newspaper Publicity",
+    kn: "ಪತ್ರಿಕಾ ಪ್ರಚಾರ",
+  },
+  OTHERS: {
+    en: "Others",
+    kn: "ಇತರೆ ದಾಖಲೆಗಳು",
+  },
+};
+
+
+
 function PublicityClearanceForm({ titleId, onClose }) {
   const [loading, setLoading] = useState(false);
 
@@ -109,10 +156,10 @@ function PublicityClearanceForm({ titleId, onClose }) {
     <div className="flex items-center justify-between px-8 py-5 border-b bg-gradient-to-r from-blue-800 to-blue-600">
      <div className="flex flex-col   gap-2">
         <div className="flex">
-            <FileText className="w-7 h-7 text-white " />
+            {/* <FileText className="w-7 h-7 text-white " /> */}
 
   <h2 className="text-xl font-semibold text-white px-2">
-    Publicity Clearance Application
+    Publicity Clearance Application / ಪ್ರಚಾರ ಅನುಮತಿ ಅರ್ಜಿ
   </h2>
         </div>
 
@@ -120,8 +167,8 @@ function PublicityClearanceForm({ titleId, onClose }) {
         
   
 
-  <p className="text-lg text-white">
-    Application No: <span className="font-medium">{titleId}</span>
+  <p className="text-lg text-white pl-2">
+    <span className="text-sm">Application No / ಅರ್ಜಿ ಸಂಖ್ಯೆ:</span> <span className="font-medium">{titleId}</span>
   </p>
 </div>
 
@@ -143,15 +190,15 @@ function PublicityClearanceForm({ titleId, onClose }) {
     >
       {/* CBCF Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-300 ">
-          CBCF Certificate Details
+        <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-300 pb-1 ">
+          CBCF Certificate Details / ಸಿಬಿಎಫ್ ಪ್ರಮಾಣಪತ್ರ ವಿವರಗಳು
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
               <Hash className="w-4 h-4 text-blue-700" />
-              CBCF Certificate No
+              CBCF Certificate No / ಸಿಬಿಎಫ್ ಪ್ರಮಾಣಪತ್ರ ಸಂಖ್ಯೆ
             </label>
             <input
               type="number"
@@ -166,7 +213,7 @@ function PublicityClearanceForm({ titleId, onClose }) {
           <div>
             <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
               <Calendar className="w-4 h-4 text-blue-700" />
-              CBCF Certificate Date
+              CBCF Certificate Date / ಸಿಬಿಎಫ್ ಪ್ರಮಾಣಪತ್ರ ದಿನಾಂಕ
             </label>
             <input
               type="date"
@@ -182,8 +229,8 @@ function PublicityClearanceForm({ titleId, onClose }) {
 
       {/* Upload Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-300">
-          Publicity Clearance Documents To Upload
+        <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-300 pb-1">
+          Publicity Clearance Documents To Upload / ಪ್ರಚಾರ ಅನುಮತಿಗೆ ಸಂಬಂಧಿಸಿದ ದಾಖಲೆಗಳನ್ನು ಅಪ್ಲೋಡ್ ಮಾಡಿ
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 ">
@@ -194,7 +241,15 @@ function PublicityClearanceForm({ titleId, onClose }) {
             >
               <label className="flex items-center gap-2 font-semibold text-gray-800 pb-2">
                 <ImageIcon className="w-4 h-4 text-blue-700" />
-                {type.replaceAll("_", " ")}
+                
+                
+  <span className="text-sm font-semibold text-gray-700">
+    {DOCUMENT_TYPE_LABELS[type].en} / {DOCUMENT_TYPE_LABELS[type].kn}
+  </span>
+  
+
+
+
               </label>
 
               <input
@@ -232,7 +287,7 @@ function PublicityClearanceForm({ titleId, onClose }) {
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-blue-700" />
-          Remark (Optional)
+          Remark (Optional) / ಟಿಪ್ಪಣಿ (ಐಚ್ಛಿಕ)
         </label>
         <textarea
           name="remark"
@@ -240,7 +295,7 @@ function PublicityClearanceForm({ titleId, onClose }) {
           onChange={handleChange}
           rows="3"
           className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="Enter any additional remarks..."
+          placeholder="Enter any additional remarks... / ಯಾವುದೇ ಹೆಚ್ಚುವರಿ ಟಿಪ್ಪಣಿಗಳನ್ನು ನಮೂದಿಸಿ..."
         />
       </div>
 
@@ -249,18 +304,18 @@ function PublicityClearanceForm({ titleId, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 transition"
+          className="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-red-500 hover:cursor-pointer hover:text-white transition"
         >
-          Cancel
+          Cancel / ರದ್ದುಮಾಡಿ
         </button>
 
         <button
           type="submit"
           disabled={loading}
-          className="px-7 py-2.5 rounded-xl bg-blue-600 text-white flex items-center gap-2 hover:bg-blue-700 transition disabled:opacity-50"
+          className="px-7 py-2.5 rounded-xl bg-green-600 text-white flex items-center gap-2 hover:cursor-pointer hover:bg-green-700 transition disabled:opacity-50"
         >
-          <CheckCircle className="w-4 h-4" />
-          {loading ? "Submitting..." : "Submit Application"}
+          {/* <CheckCircle className="w-4 h-4" /> */}
+          {loading ? "Submitting..." : "Submit Application / ಅರ್ಜಿ ಸಲ್ಲಿಸಿ "}
         </button>
       </div>
     </form>
