@@ -33,16 +33,16 @@ export default function ViewPublicityClearenceForm({
   const user = useSelector((state) => state.user.user);
   const roles = user?.roles || [];
 
-//   const BLOCKED_ROLES = [
-//     "TITLE_COMMITTEE_VOTER",
-//     "TITLE_COMMITTEE_LEADER",
-//     "TITLE_COMMITTEE",
-//     "EC_MEMBER",
-//     "PRODUCER",
-//     "USER",
-//   ];
+  const BLOCKED_ROLES = [
+    // "TITLE_COMMITTEE_VOTER",
+    // "TITLE_COMMITTEE_LEADER",
+    // "TITLE_COMMITTEE",
+    // "EC_MEMBER",
+    "PRODUCER",
+    "USER",
+  ];
 
-//   const isRestrictedUser = roles.some((r) => BLOCKED_ROLES.includes(r));
+  const isRestrictedUser = roles.some((r) => BLOCKED_ROLES.includes(r));
 
   useEffect(() => {
     if (!applicationId) return;
@@ -162,7 +162,7 @@ export default function ViewPublicityClearenceForm({
         </div>
 
         {/* ACTION BUTTONS */}
-        {/* {!isRestrictedUser && ( */}
+        {!isRestrictedUser && (
           <div className="border-t border-gray-300 p-4 flex justify-between gap-4">
             <ActionBtn
               color="green"
@@ -183,7 +183,7 @@ export default function ViewPublicityClearenceForm({
               onClick={() => setShowReject(true)}
             />
           </div>
-        {/* )} */}
+        )} 
 
         {/* IMAGE PREVIEW */}
         {preview && (

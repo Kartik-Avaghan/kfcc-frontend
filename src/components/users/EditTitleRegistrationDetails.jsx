@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { notify } from "../../Utils/notify";
 import { X } from "lucide-react";
 
-export default function EditTitleRegistrationForm({ applicationId, onClose }) {
+ function EditTitleRegistrationDetails({ applicationId, onClose }) {
   const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -437,5 +437,7 @@ export default function EditTitleRegistrationForm({ applicationId, onClose }) {
 </div>
   );
 }
+
+export default EditTitleRegistrationDetails
 
 

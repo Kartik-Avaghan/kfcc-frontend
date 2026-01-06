@@ -15,6 +15,7 @@ import {
 import { notify } from "../../Utils/notify";
 import PublicityClearenceForm from "../../components/users/PublicityClearenceForm";
 import ViewPublicityClearenceForm from "../../components/publicityClearenceFormView/ViewPublicityClearenceForm";
+import EditPublicityClearenceDetails from "../../components/users/EditPublicityClearenceDetails";
 
 /*  STATUS CONFIG  */
 
@@ -95,7 +96,7 @@ function PublicityClearenceDashboard() {
   const [titleRegisteredData, setTitleRegisteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedTitleId, setSelectedTitleId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [formMode, setFormMode] = useState(null);
 
   useEffect(() => {
@@ -138,13 +139,16 @@ function PublicityClearenceDashboard() {
       .includes(searchTerm.toLowerCase())
   );
 
-  const handleOpenForm = (details) => {
-    if (getStatusType(details.publicityClearanceStatus) === "REMARKED") {
+  const handleOpenForm = (item) => {
+    const statusType = getStatusType(item.publicityClearanceStatus);
+
+    if (statusType === "REMARKED") {
       setFormMode("edit");
     } else {
       setFormMode("view");
     }
-    setSelectedTitleId(details.id);
+
+    setSelectedId(item.publicityClearanceId);
   };
 
   return (
@@ -226,10 +230,10 @@ function PublicityClearenceDashboard() {
 
                 {isNotSubmitted ? (
                   <button
-                   onClick={() => {
-    setFormMode("apply");
-    setSelectedTitleId(item.title.id);
-  }}
+                    onClick={() => {
+                      setFormMode("apply");
+                      setSelectedId(item.title.id);
+                    }}
                     className="px-6 h-12 rounded-xl bg-blue-600 text-white hover:cursor-pointer"
                   >
                     Apply Publicity Clearance
@@ -358,31 +362,35 @@ function PublicityClearenceDashboard() {
         })}
       </div>
 
-      {selectedTitleId && (
+      {/* APPLY FORM */}
+      {formMode === "apply" && selectedId && (
         <PublicityClearenceForm
-          titleId={selectedTitleId}
-          onClose={() => setSelectedTitleId(null)}
+          titleId={selectedId}
+          onClose={() => {
+            setFormMode(null);
+            setSelectedId(null);
+          }}
         />
       )}
 
-      {/* EDIT MODE */}
-      {/* {formMode === "edit" && selectedTitleId && (
-        <PublicityClearenceForm
-          titleId={selectedTitleId}
+      {/* EDIT FORM */}
+      {formMode === "edit" && selectedId && (
+        <EditPublicityClearenceDetails
+          applicationId={selectedId}
           onClose={() => {
             setFormMode(null);
-            setSelectedTitleId(null);
+            setSelectedId(null);
           }}
         />
-      )} */}
+      )}
 
-      {/* VIEW MODE */}
-      {formMode === "view" && selectedTitleId && (
+      {/* VIEW FORM */}
+      {formMode === "view" && selectedId && (
         <ViewPublicityClearenceForm
-          applicationId={selectedTitleId}
+          applicationId={selectedId}
           onClose={() => {
             setFormMode(null);
-            setSelectedTitleId(null);
+            setSelectedId(null);
           }}
         />
       )}

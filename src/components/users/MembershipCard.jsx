@@ -13,7 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import ViewMembershipForm from "../membershipformView/ViewMembershipForm";
-import EditMembershipForm from "./EditMembershipForm";
+import EditMembershipDetails from "./EditMembershipDetails";
 
 const STATUS_FLOW = {
   SUBMITTED: 0,
@@ -419,7 +419,7 @@ export default function MembershipCard({ setOpenModal }) {
         )}
 
         {formMode === "edit" && selectedAppId && (
-          <EditMembershipForm
+          <EditMembershipDetails
             applicationId={selectedAppId}
             onClose={() => setFormMode(null)}
           />

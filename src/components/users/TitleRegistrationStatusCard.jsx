@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 import ViewTitleRegistrationForm from "../titleregistrationformView/ViewTitleRegistrationForm";
-import EditTitleRegistrationForm from "./EditTitleRegistrationForm";
+import EditTitleRegistrationDetails from "./EditTitleRegistrationDetails";
 
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
@@ -399,7 +399,7 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
       )}
 
       {formMode === "edit" && selectedAppId && (
-        <EditTitleRegistrationForm
+        <EditTitleRegistrationDetails
           applicationId={selectedAppId}
           onClose={() => {
             setFormMode(null);

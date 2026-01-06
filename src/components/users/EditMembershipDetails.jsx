@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { notify } from "../../Utils/notify";
 import { X, Plus, Trash2 } from "lucide-react";
 
-export default function EditMembershipForm({ applicationId, onClose }) {
+ function EditMembershipDetails({ applicationId, onClose }) {
   const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -232,3 +232,6 @@ const Input = ({ label, ...props }) => (
     />
   </div>
 );
+
+
+export default EditMembershipDetails
