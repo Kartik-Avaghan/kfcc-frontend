@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.jpeg";
+import logo from "../assets/logo.png";
 import { Send, Phone, Lock } from "lucide-react";
 import { notify } from "../Utils/notify";
 import { useDispatch } from "react-redux";
@@ -41,8 +41,10 @@ function Login() {
           method: "POST",
         }
       );
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error("Failed to send OTP");
+        notify(data.message, "error");
+        return;
       }
       setOtpSent(true);
       notify("OTP sent successfully", "success");
@@ -124,7 +126,7 @@ function Login() {
               <Phone className="h-5 w-5" /> <span className="text-md">+91</span>
             </div>
             <input
-              type="text"
+              type="number"
               name="phone"
               maxLength={10}
               value={userDetails.phone}

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Search } from "lucide-react";
-import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
+import ViewMembershipForm from "../components/membershipformView/ViewMembershipForm";
 
 
-function SecretryMembershipDashboard() {
+function MembershipRequests() {
  
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
@@ -27,11 +27,10 @@ function SecretryMembershipDashboard() {
 
         const data = await response.json();
 
-        setMemberships(
-          data.filter((item) => item.status === "ONM_APPROVED")
-        );
+        setMemberships(data);
+        
       } catch (err) {
-         notify(err.message || "Failed to load data", "error");
+        console.log("API error:", err.message);
       } finally {
         setLoading(false);
       }
@@ -40,13 +39,22 @@ function SecretryMembershipDashboard() {
     fetchMemberships();
   }, [selectedApplicationId]);
 
- 
+  /* ---------------- LOADING ---------------- */
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[60vh] text-blue-600">
+        <Loader2 className="animate-spin mr-2" />
+        Loading membership applications...
+      </div>
+    );
+  }
 
   const filteredApplications = memberships.filter((member) => {
     const term = searchTerm.toLowerCase();
     return (
-      member.applicantName.toLowerCase().includes(term) ||
-      member.applicationId.toLowerCase().includes(term)
+      member.applicantName?.toLowerCase().includes(term) ||
+      member.membershipCategory?.toLowerCase().includes(term) ||
+      member.applicationId?.toString().toLowerCase().includes(term)
     );
   });
 
@@ -68,25 +76,29 @@ function SecretryMembershipDashboard() {
       </span> */}
     </div>
 
-{/* Search */}
-    <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
-     <Search className="w-5 h-5 text-gray-600" />
-     <input
-       type="text"
-       placeholder="Search by title, director, language..."
-       value={searchTerm}
-       onChange={(e) => setSearchTerm(e.target.value)}
-       className="w-full focus:outline-none"
-     />
-   </div>
+  
+    
 
-     {/* LOADING */}
+
+     {/* SEARCH */}
+      <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+        <Search className="w-5 h-5 text-gray-600" />
+        <input
+          type="text"
+          placeholder="Search by title, director, language..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full focus:outline-none"
+        />
+      </div>
+
+    {/* LOADING */}
       {loading && (
         <div className="text-center text-gray-500 mt-20">
           Loading applications...
         </div>
       )}
-    
+
       {/* EMPTY */}
       {!loading && filteredApplications.length === 0 && (
         <div className="flex flex-col items-center mt-24 text-gray-500">
@@ -94,8 +106,6 @@ function SecretryMembershipDashboard() {
           <p className="text-xl font-medium">No applications found</p>
         </div>
       )}
-
-  
 
   
     <div className="grid grid-cols-1 gap-8 w-full">
@@ -115,7 +125,7 @@ function SecretryMembershipDashboard() {
 
                 <div className="flex flex-wrap mt-2 gap-8 text-sm text-gray-600">
                   <p>
-                    <span className="font-medium">Application ID:</span> #{member.applicationId}
+                    <span className="text-md  ">Application ID:</span> <span className="text-lg font-bold">#{member.applicationId}</span>
                   </p>
                   {/* <p>
                     <span className="font-medium">Category:</span>{" "}
@@ -211,4 +221,4 @@ function SecretryMembershipDashboard() {
   );
 }
 
-export default SecretryMembershipDashboard;
+export default MembershipRequests;

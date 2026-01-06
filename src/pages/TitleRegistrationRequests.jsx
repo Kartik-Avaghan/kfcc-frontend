@@ -1,11 +1,9 @@
-
-
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, Film, User, Building, Search, FileText } from "lucide-react";
-import { notify } from "../../Utils/notify";
-import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
+import { notify } from "../Utils/notify";
+import ViewTitleRegistrationForm from "../components/titleregistrationformView/ViewTitleRegistrationForm";
 
-function ECTitleRegistrationDashboard() {
+function TitleRegistrationRequests() {
   const [registerDetails, setRegisterDetails] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +15,9 @@ function ECTitleRegistrationDashboard() {
         setLoading(true);
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/titleRegistration/pending/requests`,
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/titleRegistration/pending/requests`,
           {
             method: "GET",
             headers: {
@@ -33,11 +33,7 @@ function ECTitleRegistrationDashboard() {
 
         const data = await response.json();
 
-        setRegisterDetails(
-          Array.isArray(data)
-            ? data.filter((item) => item.status === "TITLE_COMMITTEE_APPROVED")
-            : []
-        );
+        setRegisterDetails(data);
       } catch (err) {
         notify(err.message || "Failed to load data", "error");
       } finally {
@@ -61,13 +57,11 @@ function ECTitleRegistrationDashboard() {
     );
   });
 
-
   const handleApplicationActionSuccess = (applicationId) => {
-  setRegisterDetails((prev) =>
-    prev.filter((item) => item.id !== applicationId)
-  );
-};
-
+    setRegisterDetails((prev) =>
+      prev.filter((item) => item.id !== applicationId)
+    );
+  };
 
   return (
     <div className="p-16 max-w-7xl mx-auto">
@@ -83,38 +77,30 @@ function ECTitleRegistrationDashboard() {
         </div>
       </div>
 
-     
-
       {/* Search */}
-     <div className="mt-6 mb-10 max-w-xl">
-   <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
-      <Search className="w-5 h-5 text-gray-600" />
-      <input
-        type="text"
-        placeholder="Search by title, director, language..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full focus:outline-none"
-      />
-    </div>
-</div>
+      <div className="mt-6 mb-10 max-w-xl">
+        <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
+          <Search className="w-5 h-5 text-gray-600" />
+          <input
+            type="text"
+            placeholder="Search by title, director, language..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full focus:outline-none"
+          />
+        </div>
+      </div>
 
+      {/* Empty State */}
+      {!loading && registerDetails.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-24 text-gray-500">
+          <FileText className="w-12 h-12 mb-3 text-gray-400" />
+          <p className="text-lg font-medium">No applications found</p>
+        </div>
+      )}
 
-
-     {/* LOADING */}
-       {loading && (
-         <div className="text-center text-gray-500 mt-20">
-           Loading applications...
-         </div>
-       )}
-     
-       {/* EMPTY */}
-       {!loading && filteredDetails.length === 0 && (
-         <div className="flex flex-col items-center mt-24 text-gray-500">
-           <FileText className="w-10 h-10 mb-3" />
-           <p className="text-xl font-medium">No applications found</p>
-         </div>
-       )}
+      {/* Loading */}
+      {loading && <p className="text-center mt-10 text-gray-500">Loading...</p>}
 
       {/* Cards */}
       <div className="grid grid-cols-1 gap-6 mt-6">
@@ -131,20 +117,23 @@ function ECTitleRegistrationDashboard() {
                     {detail.title}
                   </h3>
 
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600 mt-2">
-                    <p><b>Application No:</b> #{detail.id}</p>
-                    <p><b>Language:</b> {detail.language}</p>
-                    <p><b>Category:</b> {detail.category}</p>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-600 mt-2">
                     <p>
-                      <b>Submitted:</b>{" "}
-                      {detail.createdAt
-                        ? new Date(detail.createdAt).toLocaleDateString()
-                        : "-"}
+                      <b>ID:</b> #{detail.id}
+                    </p>
+                    <p>
+                      <b>Language:</b> {detail.language}
+                    </p>
+                    <p>
+                      <b>Category:</b> {detail.category}
                     </p>
                   </div>
                 </div>
 
-                <button onClick={()=> setSelectedRegistrationId(detail)}  className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 cursor-pointer">
+                <button
+                  onClick={() => setSelectedRegistrationId(detail)}
+                  className="bg-blue-600 text-white h-12 py-2 px-6 rounded-xl flex items-center gap-2 hover:bg-blue-700"
+                >
                   <Eye size={16} />
                   View Details
                 </button>
@@ -158,7 +147,9 @@ function ECTitleRegistrationDashboard() {
                 label="Producer"
                 value={
                   detail.producer
-                    ? `${detail.producer.firstName} ${detail.producer.lastName ?? ""}`
+                    ? `${detail.producer.firstName} ${
+                        detail.producer.lastName ?? ""
+                      }`
                     : "-"
                 }
               />
@@ -177,20 +168,21 @@ function ECTitleRegistrationDashboard() {
             </div>
 
             {/* Status */}
-            {/* <div className="px-6 pb-6">
-              <span className="text-sm text-gray-500">Current Status:</span>
-              <span className="ml-2 bg-gray-100 px-3 py-1 rounded text-sm font-semibold">
-                {detail.status}
+            <div className="px-6 pb-6">
+              <span className="text-sm text-gray-500">Submitted At:</span>
+              <span className="ml-2 px-3 py-1 rounded text-sm font-semibold">
+                {new Date(detail.createdAt).toLocaleDateString("en-IN")}
               </span>
-            </div> */}
+            </div>
           </div>
         ))}
       </div>
 
       {selectedRegistrationId && (
         <ViewTitleRegistrationForm
-        applicationId = {selectedRegistrationId.id}
-        onClose={() => setSelectedRegistrationId(null)}
+          applicationId={selectedRegistrationId.id}
+          onClose={() => setSelectedRegistrationId(null)}
+          onActionSuccess={handleApplicationActionSuccess}
         />
       )}
     </div>
@@ -209,5 +201,4 @@ function InfoCard({ icon, label, value }) {
   );
 }
 
-export default ECTitleRegistrationDashboard;
-
+export default TitleRegistrationRequests;

@@ -15,7 +15,7 @@ import {
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../Redux/Reducer";
-import logo from "../assets/logo.jpeg";
+import logo from "../assets/logo.png";
 
 function Nav() {
   const navigate = useNavigate();
@@ -39,27 +39,28 @@ function Nav() {
       {
         name: "Membership",
         icon: FileText,
-        path: "/staff/membershipdashboard",
+        path: "/membership/requests",
       },
       {
         name: "Title Registration",
         icon: CreditCard,
-        path: "/staff/titleregistrationdashboard",
+        path: "/title/requests",
       },
       { name: "Public Clearance", icon: Globe, path: "/staff/publiclearence" },
     ],
 
     PRODUCER: [
-      // { name: "Dashboard", icon: BarChart3, path: "/producer/dashboard" },
       {
         name: "Title Registration",
         icon: CreditCard,
         path: "producer/titleRegistrationform",
       },
-      { name: "Public Clearance", icon: Globe, path: "/producer/publicityClearenceform" },
-      // { name: "Title Registration", icon: CreditCard, path: "/om/dsddf/dashboard" },
-      // { name: "Title Registration", icon: CreditCard, path: "/om/asddfgg/dashboard" },
-      // { name: "Title Registration", icon: CreditCard, path: "/om/dsfsfc/dashboard" },
+      {
+        name: "Public Clearance",
+        icon: Globe,
+        path: "/producer/publicityClearenceform",
+      },
+      
     ],
 
     // ONM_COMMITTEE: [
@@ -70,20 +71,7 @@ function Nav() {
 
     ONM_COMMITTEE_VOTER: [
       { name: "Vote", icon: Globe, path: "/onm/voting/membershipDashboard" },
-      // { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
-      // { name: "Remarked Titles", icon: MessageSquare, path: "/om/meetings" },
-      // { name: "Public Clearance", icon: Globe, path: "/om/meetings" },
-    ],
-
-    EC_MEMBER: [
-      {
-        name: "Membership Request",
-        icon: FileText,
-        path: "/ecmember/membershipDashboard",
-      },
-      { name: "Title Registration", icon: CreditCard, path: "/ecmember/titleRegistrationDashboard" },
-      // { name: "Remarked Titles", icon: MessageSquare, path: "/ec/meetings" },
-      { name: "Public Clearance", icon: Globe, path: "/ec/meetis" },
+      // { name: "A Category Request", icon: CreditCard, path: "/om/dashboard" },
     ],
 
     ONM_COMMITTEE_LEADER: [
@@ -95,30 +83,53 @@ function Nav() {
       { name: "Manage Voters", icon: Users, path: "/onmleader/memberslist" },
     ],
 
-
-     TITLE_COMMITTEE_VOTER: [
-      { name: "Title Vote", icon: Globe, path: "/titleCommittee/voting/titleRegistrationDashboard" },
-      { name: "Title Registration", icon: CreditCard, path: "/titleCommittee/dashboard" },
-      { name: "Remarked Titles", icon: MessageSquare, path: "/titleCommittee/meetings" },
-      { name: "Public Clearance", icon: Globe, path: "/titleCommittee/meetings" },
+    TITLE_COMMITTEE_VOTER: [
+      {
+        name: "Title Requests",
+        icon: Globe,
+        path: "/titleCommittee/voting/titleRegistrationDashboard",
+      },
     ],
 
-     TITLE_COMMITTEE_LEADER: [
+    TITLE_COMMITTEE_LEADER: [
       {
-        name: "Title Registration ",
-        icon: FileText,
+        name: "Title Requests ",
+        icon: CreditCard,
         path: "/titleCommitteLeader/titleRegistrationDashboard",
       },
-      { name: "Manage Voters", icon: Users, path: "/titleCommitteLeader/memberslist" },
+      {
+        name: "Manage Voters",
+        icon: Users,
+        path: "/titleCommitteLeader/memberslist",
+      },
+    ],
+
+    EC_MEMBER: [
+      {
+        name: "Membership Request",
+        icon: FileText,
+        path: "/membership/requests",
+      },
+      {
+        name: "Title Registration",
+        icon: CreditCard,
+        path: "/title/requests",
+      },
+      { name: "Public Clearance", icon: Globe, path: "/ec/meetis" },
+      // { name: "A Category Request", icon: MessageSquare, path: "/ec/meetings" },
     ],
 
     SECRETARY: [
       {
-         name: "Membership Request",
+        name: "Membership Request",
         icon: FileText,
-        path: "/secretry/membershipDashboard",
+        path: "/membership/requests",
       },
-      { name: "Title Registration", icon: FileText, path: "/secretry/titleRegistrationDashboard" },
+      {
+        name: "Title Request",
+        icon: CreditCard,
+        path: "/title/requests",
+      },
     ],
 
     MANAGER: [
@@ -128,7 +139,14 @@ function Nav() {
         path: "manager/managerdashboard",
       },
       { name: "ONM Meetings", icon: Users, path: "/manager/onmMeeting" },
-      { name: "Title Committee Meetings", icon: Users, path: "/manager/titlecommitteMeeting" },
+      {
+        name: "Title Committee Meetings",
+        icon: Users,
+        path: "/manager/titlecommitteMeeting",
+      },
+      {
+        name: "Public Clearance", icon: Globe, path: "/manager/publicclearance"
+      }
     ],
 
     PRESIDENT: [
@@ -149,10 +167,10 @@ function Nav() {
   //     index === self.findIndex((i) => i.path === item.path)
   // );
 
-  const roles = Array.isArray(user?.roles) ? user.roles :[];
+  const roles = Array.isArray(user?.roles) ? user.roles : [];
 
   const menuItems = roles
-    .flatMap((role) => roleMenus[role] || [] )
+    .flatMap((role) => roleMenus[role] || [])
     .filter(
       (item, index, self) =>
         index === self.findIndex((i) => i.path === item.path)
@@ -199,8 +217,6 @@ function Nav() {
         {/* Menu */}
         {/* <div className="flex-1 p-6 overflow-y-auto  scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-900"> */}
         <div className="flex-1 p-6 overflow-y-auto scrollbar-modern">
-       
-
           <p className="text-xs font-semibold text-blue-300 uppercase mb-4">
             Main Menu
           </p>
@@ -238,10 +254,11 @@ function Nav() {
             Logout
           </button>
 
-          <p className="text-xs text-gray-400 mt-2"> © Developed By thincnext</p>
+          <p className="text-xs text-gray-400 mt-2">
+            {" "}
+            © Developed By thincnext
+          </p>
         </div>
-
-        
       </div>
     </div>
   );
