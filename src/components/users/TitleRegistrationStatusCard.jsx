@@ -225,9 +225,7 @@ const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
                 <h3 className="text-xl font-semibold text-gray-800">
                   {detail.title}
                 </h3>
-                {/* <p className="text-sm text-gray-600">
-                  Application ID: {detail.id}
-                </p> */}
+                
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
                         <p>Application No: <span className="font-bold text-lg">#{detail.id}</span></p>
                         <p>Submitted Date: <span className="font-mono font-medium">{new Date(detail.date).toLocaleDateString()}</span></p>
