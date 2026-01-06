@@ -13,6 +13,7 @@ import {
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 import VoteMembershipForm from "../../components/onmcommitte/VoteMembershipForm";
 // import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
+import { notify } from "../../Utils/notify";
 
 function MembershipVotingDashboard() {
   const [memberships, setMemberships] = useState([]);

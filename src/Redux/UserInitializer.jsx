@@ -33,7 +33,7 @@ function UserInitializer({ children }) {
         dispatch(
           userLogin({
             id: data.id,
-            name: data.name,
+            name: data.firstName,
             phone: data.sub,
             roles: data.roles,
           })

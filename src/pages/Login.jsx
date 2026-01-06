@@ -5,12 +5,9 @@ import { Send, Phone, Lock } from "lucide-react";
 import { notify } from "../Utils/notify";
 import { useDispatch } from "react-redux";
 import { userLogin } from "../Redux/Reducer";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
-
-  
-
   const [userDetails, setUserDetails] = useState({
     phone: "",
     otp: "",
@@ -34,75 +31,73 @@ function Login() {
       return notify("Please enter your phone number", "error");
     if (userDetails.phone.length !== 10)
       return notify("Please enter a valid 10-digit phone number", "error");
-   
- 
-        try{
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/request-otp?mobileNo=${userDetails.phone}`,{
-                method:"POST",
-            
-            });
-            if (!response.ok) {
-                throw new Error("Failed to send OTP");
-                
-            }
-            setOtpSent(true);
-            notify("OTP sent successfully", "success");
 
-        }catch(error){
-            notify(error.message, "error");
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/request-otp?mobileNo=${
+          userDetails.phone
+        }`,
+        {
+          method: "POST",
         }
-        
- 
+      );
+      if (!response.ok) {
+        throw new Error("Failed to send OTP");
+      }
+      setOtpSent(true);
+      notify("OTP sent successfully", "success");
+    } catch (error) {
+      notify(error.message, "error");
+    }
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!userDetails.otp) {
-    notify("Please enter OTP", "error");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/auth/verify-otp?mobileNo=${userDetails.phone}&otp=${userDetails.otp}`,
-      { method: "POST" }
-    );
-
-    if (!response.ok) {
-      throw new Error("Invalid OTP");
+    if (!userDetails.otp) {
+      notify("Please enter OTP", "error");
+      return;
     }
 
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/verify-otp?mobileNo=${
+          userDetails.phone
+        }&otp=${userDetails.otp}`,
+        { method: "POST" }
+      );
 
-    // store token
-    localStorage.setItem("token", `Bearer ${data.token}`);
+      if (!response.ok) {
+        throw new Error("Invalid OTP");
+      }
 
-    // decode token
-    const decodedToken = jwtDecode(data.token);
+      const data = await response.json();
 
-    
+      // store token
+      localStorage.setItem("token", `Bearer ${data.token}`);
 
-    // dispatch normalized user data
-    dispatch(
-      userLogin({
-        id: decodedToken.userid,
-        name: decodedToken.username,
-        phone: decodedToken.sub,
-        roles: decodedToken.userrole,
-      })
-    );
+      // decode token
+      const decodedToken = jwtDecode(data.token);
 
-    // clear form
-    setUserDetails({ phone: "", otp: "" });
+      // dispatch normalized user data
+      dispatch(
+        userLogin({
+          id: decodedToken.userid,
+          name: decodedToken.username,
+          phone: decodedToken.sub,
+          roles: decodedToken.userrole,
+        })
+      );
 
-    // navigate
-    navigate("/dashboard");
-  } catch (error) {
-    notify(error.message, "error");
-  }
-};
+      // clear form
+      setUserDetails({ phone: "", otp: "" });
 
+      // navigate
+      navigate("/dashboard");
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-100 via-white to-blue-50 px-4">
@@ -126,7 +121,7 @@ function Login() {
           {/* Phone Number Field */}
           <div className="relative">
             <div className="absolute left-3 top-3 text-gray-400 flex gap-1 ">
-              <Phone className="h-5 w-5" /> <span className="text-md">+91</span> 
+              <Phone className="h-5 w-5" /> <span className="text-md">+91</span>
             </div>
             <input
               type="text"

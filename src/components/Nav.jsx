@@ -165,7 +165,7 @@ function Nav() {
 
   return (
     <div className="fixed inset-y-0 left-0 w-72">
-      <div className="h-full bg-gradient-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
+      <div className="h-full bg-linear-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
         {/* Header */}
         <div className="p-6 border-b border-blue-800">
           <div className="flex items-center space-x-3">
@@ -186,14 +186,10 @@ function Nav() {
             <div>
               {user && (
                 <>
-                  {" "}
                   <p className="font-medium">Welcome {user?.name}</p>
                   <p className="text-xs text-blue-200 capitalize">
                     {user?.roles?.join(", ")}
                   </p>
-                  {/* <p className="text-xs text-blue-200 capitalize">
-                {user?.roles?.toLowerCase()}
-              </p> */}
                 </>
               )}
             </div>
@@ -233,10 +229,10 @@ function Nav() {
         </div>
 
         {/* Logout */}
-        <div className="p-6 flex flex-col justify-center items-center ">
+        <div className="p-4 flex flex-col justify-center items-center ">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-red-600 transition"
+            className="w-full flex items-center justify-center gap-2 p-3 rounded-xl hover:bg-red-600 transition-all cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
             Logout

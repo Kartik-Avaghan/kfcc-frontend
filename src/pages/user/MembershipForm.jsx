@@ -19,7 +19,6 @@ import { notify } from "../../Utils/notify";
 import MembershipCard from "../../components/users/MembershipCard";
 
 const MembershipForm = () => {
-  const today = new Date();
 
   const BASE_MEMBERSHIP_FEE = 59000;
   const KALYAN_NIDHI_FEE = 22500;
@@ -628,30 +627,16 @@ const MembershipForm = () => {
 
   return (
     <>
-    {!openModal && (
-      <div className="flex justify-between items-center mt-10 px-18">
-        <button
-          onClick={() => setOpenModal(true)}
-          className="flex items-center bg-blue-700 hover:bg-blue-800 px-5 py-3 rounded-lg text-white hover:cursor-pointer"
-        >
-          <Plus size={20} className="mr-2" />
-          Apply For Membership
-        </button>
-      </div>
-    )}
-
       {openModal && (
         <div className=" max-w-6xl mx-auto p-8 bg-white  space-y-6 mt-6">
-           <button
-        type="button"
-        onClick={() => setOpenModal(false)}
-        className="absolute top-4 left-4 flex items-center justify-center h-9 w-9 text-gray-700  hover:text-gray-400 transition"
-      >
-            <ChevronLeft size={24} />
-
-      </button>
-
           <div className="text-center space-y-2">
+            <button
+              type="button"
+              onClick={() => setOpenModal(false)}
+              className="flex items-center justify-center h-9 w-9 text-gray-700  hover:text-gray-400 transition cursor-pointer"
+            >
+              <ChevronLeft size={24} />
+            </button>
             <h2 className="text-3xl font-bold text-blue-900 mb-2">
               ಸದಸ್ಯತ್ವದ ಅರ್ಜಿಯೊಂದಿಗೆ ಲಗತ್ತಿಸಬೇಕದ ವಿವರಗಳು
             </h2>
@@ -1684,7 +1669,7 @@ const MembershipForm = () => {
         </div>
       )}
 
-{!openModal && (<MembershipCard />)}
+      {!openModal && (<MembershipCard setOpenModal={setOpenModal} />)}
      
     </>
   );
