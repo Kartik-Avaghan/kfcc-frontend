@@ -6,7 +6,6 @@ import UserInitializer from "../Redux/UserInitializer";
 import Auth from "../Auth/Auth";
 import Dashboard from "../pages/Dashboard";
 import MembershipForm from "../pages/user/MembershipForm";
-import TitleRegistrationDashboard from "../pages/staff/TitleRegistrationDashboard";
 
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import ONMMembershipDashboard from "../pages/onmcommitte-leader/ONMMembershipDashboard";
@@ -21,8 +20,8 @@ import TitleCommitteMeeting from "../pages/manager/TitleCommitteMeeting";
 import KFCCMemberList from "../pages/titlecommitte-leader/KFCCMemberList";
 import TitleRegistrationCommitteDashboard from "../pages/titlecommitte-leader/TitleRegistrationCommitteDashboard";
 import TitleRegistrationVotingDashboard from "../pages/title-committe/TitleRegistrationVotingDashboard";
-import ECTitleRegistrationDashboard from "../pages/ec-members/ECTitleRegistrationDashboard";
-import SecretryTitleRegistrationDashboard from "../pages/secretry/SecretryTitleRegistrationDashboard";
+
+
 import PublicityClearenceDashboard from "../pages/user/PublicityClearenceDashboard";
 import StaffPublicityClearenceDashboard from "../pages/staff/StaffPublicityClearenceDashboard";
 import Signup from "../pages/Signup";
@@ -66,10 +65,6 @@ function CustomRouter() {
 
           
           {/* staff */}
-          <Route
-            path="staff/titleregistrationdashboard"
-            element={<TitleRegistrationDashboard />}
-          />
           <Route path="staff/publicityClearenceDashboard" element={<StaffPublicityClearenceDashboard/>}/>
 
 
@@ -88,19 +83,21 @@ function CustomRouter() {
           {/* onmcommitte-voter */}
           <Route path="onm/voting/membershipDashboard" element={<MembershipVotingDashboard/>}/>
 
-          {/* ec-member */}
-          <Route path="ecmember/titleRegistrationDashboard" element={<ECTitleRegistrationDashboard/>}/>
+       
 
-          {/* secretry */}
-          <Route path="secretry/titleRegistrationDashboard" element={<SecretryTitleRegistrationDashboard/>}/>
-
-
+  
           {/* titlecommitte-leader */}
           <Route path="titleCommitteLeader/memberslist" element={<KFCCMemberList/>} />
           <Route path="titleCommitteLeader/titleRegistrationDashboard" element={<TitleRegistrationCommitteDashboard/>}/>
 
           {/* titlecommitte-voter */}
           <Route path="titleCommittee/voting/titleRegistrationDashboard" element={<TitleRegistrationVotingDashboard/>}/>
+
+
+          {/* ec-member */}
+ 
+
+          {/* secretry */}
 
         </Route>
       </Routes>

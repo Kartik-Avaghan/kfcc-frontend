@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Eye, FileText, Loader2, Users, Phone, CheckCircle, Calendar, Search } from "lucide-react";
 import ViewMembershipForm from "../components/membershipformView/ViewMembershipForm";
+import { notify } from "../Utils/notify";
 
-
-function StaffMembershipDashboard() {
+function MembershipRequests() {
  
   const [memberships, setMemberships] = useState([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);

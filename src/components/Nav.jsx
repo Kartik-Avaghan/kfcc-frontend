@@ -9,8 +9,6 @@ import {
   Settings,
   Globe,
   CreditCard,
-  MessageSquare,
-  File,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -159,13 +157,6 @@ function Nav() {
     ],
   };
 
-  // const menuItems = roleMenus[user?.roles] || [];
-  // const menuItems = user?.roles
-  // ?.flatMap((role) => roleMenus[role] || [])
-  // .filter(
-  //   (item, index, self) =>
-  //     index === self.findIndex((i) => i.path === item.path)
-  // );
 
   const roles = Array.isArray(user?.roles) ? user.roles : [];
 
@@ -230,7 +221,7 @@ function Nav() {
                   to={item.path}
                   className={({ isActive }) =>
                     `group flex items-center justify-between p-4 rounded-xl transition-all
-           ${isActive ? "bg-blue-800" : "hover:bg-blue-900"}`
+                    ${isActive ? "bg-blue-800" : "hover:bg-blue-900"}`
                   }
                 >
                   <div className="flex items-center space-x-3">
@@ -255,7 +246,6 @@ function Nav() {
           </button>
 
           <p className="text-xs text-gray-400 mt-2">
-            {" "}
             © Developed By thincnext
           </p>
         </div>
