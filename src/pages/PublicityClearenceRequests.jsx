@@ -1,5 +1,5 @@
 import React from 'react'
-import { notify } from '../../Utils/notify';
+import { notify } from '../Utils/notify';
 import { useEffect, useState } from 'react';
 import {
   Search,
@@ -11,9 +11,9 @@ import {
   CircleParking,
   FileText,
 } from "lucide-react";
-import ViewPublicityClearenceForm from '../../components/publicityClearenceFormView/ViewPublicityClearenceForm';
+import ViewPublicityClearenceForm from '../components/publicityClearenceFormView/ViewPublicityClearenceForm';
 
-function StaffPublicityClearenceDashboard() {
+function PublicityClearenceRequests() {
     const [publicityClearances, setPublicityClearances] = useState([]);
       const [selectedApplicationId, setSelectedApplicationId] = useState(null);
       const [loading, setLoading] = useState(true);
@@ -38,9 +38,8 @@ function StaffPublicityClearenceDashboard() {
     
             const data = await response.json();
     
-            setPublicityClearances(
-              data.filter((item) => item.publicityClearanceStatus === "SUBMITTED")
-            );
+            setPublicityClearances(data);
+             
           } catch (err) {
             notify(err.message || "Failed to load data", "error");
           } finally {
@@ -215,4 +214,4 @@ function StaffPublicityClearenceDashboard() {
   )
 }
 
-export default StaffPublicityClearenceDashboard
+export default PublicityClearenceRequests

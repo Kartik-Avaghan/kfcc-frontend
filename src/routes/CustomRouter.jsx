@@ -23,11 +23,12 @@ import TitleRegistrationVotingDashboard from "../pages/title-committe/TitleRegis
 
 
 import PublicityClearenceDashboard from "../pages/user/PublicityClearenceDashboard";
-import StaffPublicityClearenceDashboard from "../pages/staff/StaffPublicityClearenceDashboard";
+
 import Signup from "../pages/Signup";
 
 import MembershipRequests from "../pages/MembershipRequests";
 import TitleRegistrationRequests from "../pages/TitleRegistrationRequests";
+import PublicityClearenceRequests from "../pages/PublicityClearenceRequests";
 
 function CustomRouter() {
   return (
@@ -54,18 +55,19 @@ function CustomRouter() {
 
           {/* Comman membership requests */}
           <Route
-            path="/membership/requests"
+            path="membership/requests"
             element={<MembershipRequests />}
           />
             <Route
-            path="/title/requests"
+            path="title/requests"
             element={<TitleRegistrationRequests />}
           />
+          <Route path="publicityClearence/requests" element={<PublicityClearenceRequests/>}/>
           
 
           
           {/* staff */}
-          <Route path="staff/publicityClearenceDashboard" element={<StaffPublicityClearenceDashboard/>}/>
+          
 
 
           {/* manager */}

@@ -44,7 +44,7 @@ function Nav() {
         icon: CreditCard,
         path: "/title/requests",
       },
-      { name: "Public Clearance", icon: Globe, path: "/staff/publicityClearenceDashboard" },
+      { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
     ],
 
     PRODUCER: [
@@ -60,6 +60,13 @@ function Nav() {
       },
       
     ],
+
+    VP_PRODUCER: [
+      
+      { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
+      
+    ],
+
 
     // ONM_COMMITTEE: [
     //   { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
@@ -128,6 +135,7 @@ function Nav() {
         icon: CreditCard,
         path: "/title/requests",
       },
+       { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
     ],
 
     MANAGER: [
@@ -142,9 +150,7 @@ function Nav() {
         icon: Users,
         path: "/manager/titlecommitteMeeting",
       },
-      {
-        name: "Public Clearance", icon: Globe, path: "/manager/publicclearance"
-      }
+       { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
     ],
 
     PRESIDENT: [
