@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 import PublicityClearenceForm from "../../components/users/PublicityClearenceForm";
+import ViewPublicityClearenceForm from "../../components/publicityClearenceFormView/ViewPublicityClearenceForm";
 
 /*  STATUS CONFIG  */
 
@@ -95,6 +96,7 @@ function PublicityClearenceDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedTitleId, setSelectedTitleId] = useState(null);
+  const [formMode, setFormMode] = useState(null);
 
   useEffect(() => {
     fetchTitleRegisteredData();
@@ -135,6 +137,15 @@ function PublicityClearenceDashboard() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  const handleOpenForm = (details) => {
+    if (getStatusType(details.publicityClearanceStatus) === "REMARKED") {
+      setFormMode("edit");
+    } else {
+      setFormMode("view");
+    }
+    setSelectedTitleId(details.id);
+  };
 
   return (
     <div className="p-16 max-w-7xl mx-auto">
@@ -215,20 +226,24 @@ function PublicityClearenceDashboard() {
 
                 {isNotSubmitted ? (
                   <button
-                    onClick={() => setSelectedTitleId(item.title.id)}
-                    className="px-6 h-12 rounded-xl bg-blue-600 text-white"
+                   onClick={() => {
+    setFormMode("apply");
+    setSelectedTitleId(item.title.id);
+  }}
+                    className="px-6 h-12 rounded-xl bg-blue-600 text-white hover:cursor-pointer"
                   >
                     Apply Publicity Clearance
                   </button>
                 ) : (
                   <button
+                    onClick={() => handleOpenForm(item)}
                     className={`px-6 h-12 rounded-xl text-white ${
-                      statusType === "REMARKED" 
-                        ? "bg-yellow-600"
-                        : "bg-blue-600"
+                      statusType === "REMARKED"
+                        ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                        : "bg-blue-600 hover:bg-blue-700 hover:cursor-pointer"
                     }`}
                   >
-                    {statusType === "REMARKED" 
+                    {statusType === "REMARKED"
                       ? "Edit Application"
                       : "View Details"}
                   </button>
@@ -236,29 +251,41 @@ function PublicityClearenceDashboard() {
               </div>
 
               {/* Body */}
-              <div className="p-6 grid grid-cols-2 gap-4 text-sm">
-                <p>
-                  <User className="inline w-4 h-4" /> Director:{" "}
-                  {item.title.director}
-                </p>
-                <p>
-                  <User className="inline w-4 h-4" /> Lead Actor:{" "}
-                  {item.title.leadActor}
-                </p>
-                <p>
-                  <Languages className="inline w-4 h-4" /> Language:{" "}
-                  {item.title.language}
-                </p>
-                <p>
-                  <Film className="inline w-4 h-4" /> Category:{" "}
-                  {item.title.category}
-                </p>
-              </div>
+              {isNotSubmitted && (
+                <div className="p-6 grid grid-cols-2 gap-4 text-sm">
+                  <p>
+                    <User className="inline w-4 h-4" /> Director:{" "}
+                    {item.title.director}
+                  </p>
+                  <p>
+                    <User className="inline w-4 h-4" /> Lead Actor:{" "}
+                    {item.title.leadActor}
+                  </p>
+                  <p>
+                    <Languages className="inline w-4 h-4" /> Language:{" "}
+                    {item.title.language}
+                  </p>
+                  <p>
+                    <Film className="inline w-4 h-4" /> Category:{" "}
+                    {item.title.category}
+                  </p>
+                </div>
+              )}
+
+              {/* STATUS BADGE */}
+              {/* <div className="w-fit mb-10">
+                  <span
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border ${style.badge} ${style.text}`}
+                  >
+                    <Icon size={16} />
+                    {item.status}
+                  </span>
+                </div> */}
 
               {/* Status + Progress */}
               {!isNotSubmitted && (
                 <>
-                  <div className="flex items-center justify-between ">
+                  <div className="flex items-center mt-8  justify-between ">
                     {STEPS.map((step, i) => (
                       <div
                         key={i}
@@ -286,7 +313,7 @@ function PublicityClearenceDashboard() {
                     ))}
                   </div>
 
-                  <div className="flex justify-between text-xs text-gray-600 mt-2">
+                  <div className="flex justify-between text-xs text-gray-600 mt-2 ">
                     {STEPS.map((step, i) => (
                       <span
                         key={i}
@@ -299,8 +326,9 @@ function PublicityClearenceDashboard() {
                     ))}
                   </div>
 
+                  {/* message */}
                   <div
-                    className={`mx-6 my-4 p-3 rounded-lg border ${style.border} flex gap-2`}
+                    className={`mx-6 my-6 p-3 rounded-lg border ${style.border} flex gap-2`}
                   >
                     {/* <StatusIcon className={style.text} /> */}
                     <p className={`text-sm ${style.bg} ${style.text}`}>
@@ -308,22 +336,21 @@ function PublicityClearenceDashboard() {
                     </p>
                   </div>
 
-                  {
-                    statusType === "REMARKED" && (
+                  {statusType === "REMARKED" && (
                     <div
-                    className={`flex flex-col mx-6 my-4 p-3 rounded-lg border ${style.border} flex gap-2`}
-                  >
-                    {/* <StatusIcon className={style.text} /> */}
-                    <p className={`text-sm ${style.bg} ${style.text}`}>
-                      <span className="font-bold">Remarks :</span> {item.remark}
-                    </p>
-                    <p className={`text-sm ${style.bg} ${style.text}`}>
-                      <span className="font-bold">Remarked by :</span> {item.remarkedBy || "N/A"}
-                    </p>
-                  </div>)
-                  }
-
-                  
+                      className={`flex flex-col mx-6 my-4 p-3 rounded-lg border ${style.border} flex gap-2`}
+                    >
+                      {/* <StatusIcon className={style.text} /> */}
+                      <p className={`text-sm ${style.bg} ${style.text}`}>
+                        <span className="font-bold">Remarked by :</span>{" "}
+                        {item.remarkBy || "N/A"}
+                      </p>
+                      <p className={`text-sm ${style.bg} ${style.text}`}>
+                        <span className="font-bold">Remarks :</span>{" "}
+                        {item.remark}
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -335,6 +362,28 @@ function PublicityClearenceDashboard() {
         <PublicityClearenceForm
           titleId={selectedTitleId}
           onClose={() => setSelectedTitleId(null)}
+        />
+      )}
+
+      {/* EDIT MODE */}
+      {/* {formMode === "edit" && selectedTitleId && (
+        <PublicityClearenceForm
+          titleId={selectedTitleId}
+          onClose={() => {
+            setFormMode(null);
+            setSelectedTitleId(null);
+          }}
+        />
+      )} */}
+
+      {/* VIEW MODE */}
+      {formMode === "view" && selectedTitleId && (
+        <ViewPublicityClearenceForm
+          applicationId={selectedTitleId}
+          onClose={() => {
+            setFormMode(null);
+            setSelectedTitleId(null);
+          }}
         />
       )}
     </div>
