@@ -28,6 +28,7 @@ import ECTitleRegistrationDashboard from "../pages/ec-members/ECTitleRegistratio
 import SecretryTitleRegistrationDashboard from "../pages/secretry/SecretryTitleRegistrationDashboard";
 import Register from "../pages/Register";
 import PublicityClearenceDashboard from "../pages/user/PublicityClearenceDashboard";
+import StaffPublicityClearenceDashboard from "../pages/staff/StaffPublicityClearenceDashboard";
 
 
 
@@ -64,6 +65,7 @@ function CustomRouter() {
             path="staff/titleregistrationdashboard"
             element={<TitleRegistrationDashboard />}
           />
+          <Route path="staff/publicityClearenceDashboard" element={<StaffPublicityClearenceDashboard/>}/>
 
 
           {/* manager */}

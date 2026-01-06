@@ -26,7 +26,7 @@ const DOCUMENT_TYPES = [
   "OTHERS",
 ];
 
-function PublicityClearanceForm({ titleId, onClose, onSuccess }) {
+function PublicityClearanceForm({ titleId, onClose }) {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -90,7 +90,7 @@ function PublicityClearanceForm({ titleId, onClose, onSuccess }) {
       }
 
       notify("Publicity clearance submitted successfully", "success");
-      onSuccess?.();
+      // onSuccess?.();
       onClose();
     } catch (error) {
       notify(error.message, "error");
