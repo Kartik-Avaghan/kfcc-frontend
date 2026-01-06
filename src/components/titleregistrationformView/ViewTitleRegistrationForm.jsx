@@ -15,6 +15,7 @@ import TitleRegistrationAccept from "./TitleRegistrationAccept";
 import TitleRegistrationRemark from "./TitleRegistrationRemark";
 import TitleRegistrationReject from "./TitleRegistrationReject";
 import { useSelector } from "react-redux";
+import { notify } from "../../Utils/notify";
 
 export default function ViewTitleRegistrationForm({ applicationId, onClose,onActionSuccess }) {
   const [data, setData] = useState(null);
@@ -49,7 +50,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
     )
       .then((res) => res.json())
       .then(setData)
-      .catch((err) => console.error("Error fetching title registration:", err));
+      .catch((err) => notify(err.message || "Failed to load data", "error"));
   }, [applicationId]);
 
   if (!data) return null;

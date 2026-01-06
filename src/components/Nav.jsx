@@ -46,7 +46,7 @@ function Nav() {
         icon: CreditCard,
         path: "/title/requests",
       },
-      { name: "Public Clearance", icon: Globe, path: "/staff/publiclearence" },
+      { name: "Public Clearance", icon: Globe, path: "/staff/publicityClearenceDashboard" },
     ],
 
     PRODUCER: [

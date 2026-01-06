@@ -24,6 +24,7 @@ import TitleRegistrationVotingDashboard from "../pages/title-committe/TitleRegis
 import ECTitleRegistrationDashboard from "../pages/ec-members/ECTitleRegistrationDashboard";
 import SecretryTitleRegistrationDashboard from "../pages/secretry/SecretryTitleRegistrationDashboard";
 import PublicityClearenceDashboard from "../pages/user/PublicityClearenceDashboard";
+import StaffPublicityClearenceDashboard from "../pages/staff/StaffPublicityClearenceDashboard";
 import Signup from "../pages/Signup";
 
 import MembershipRequests from "../pages/MembershipRequests";
@@ -69,6 +70,7 @@ function CustomRouter() {
             path="staff/titleregistrationdashboard"
             element={<TitleRegistrationDashboard />}
           />
+          <Route path="staff/publicityClearenceDashboard" element={<StaffPublicityClearenceDashboard/>}/>
 
 
           {/* manager */}
