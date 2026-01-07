@@ -69,7 +69,7 @@ function TitleRegistrationRequests() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-blue-900">
-            Applied Title Registration Applications
+            Title Registration Applications
           </h1>
           <p className="text-sm text-gray-600">
             Review and verify submitted title registration requests
@@ -132,7 +132,7 @@ function TitleRegistrationRequests() {
 
                 <button
                   onClick={() => setSelectedRegistrationId(detail)}
-                  className="bg-blue-600 text-white h-12 py-2 px-6 rounded-xl flex items-center gap-2 hover:bg-blue-700"
+                  className="bg-blue-600 text-white h-12 py-2 px-6 rounded-xl flex items-center gap-2 hover:bg-blue-700 cursor-pointer"
                 >
                   <Eye size={16} />
                   View Details

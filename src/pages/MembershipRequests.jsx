@@ -56,7 +56,7 @@ function MembershipRequests() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-blue-900">
-            Applied Membership Applications
+            Membership Applications
           </h1>
           <p className="text-sm text-gray-600">
             Review and verify submitted membership requests
@@ -103,27 +103,20 @@ function MembershipRequests() {
           >
             <div className="bg-blue-50 px-6 py-6 border-b border-gray-300">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="space-y-1">
-                  <h3 className="text-xl font-semibold text-gray-800">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 m-0">
                     {member.applicantName}
                   </h3>
 
-                  <div className="flex flex-wrap mt-2 gap-8 text-sm text-gray-600">
+                  <div className="flex flex-wrap gap-8 text-sm text-gray-600">
                     <p>
                       <span className="text-md  ">Application ID:</span>{" "}
                       <span className="text-lg font-bold">
                         #{member.applicationId}
                       </span>
                     </p>
-                    {/* <p>
-                    <span className="font-medium">Category:</span>{" "}
-                    {member.membershipCategory || "—"}
-                  </p> */}
-                    {/* <p>
-                    <span className="font-medium">Submitted At: </span>{" "}
-                    {  member?.submittedAt ? new Date(member.submittedAt).toLocaleDateString("en-IN") : "—"}
-                  </p> */}
                   </div>
+                  
                 </div>
 
                 <button
@@ -131,7 +124,7 @@ function MembershipRequests() {
                   className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg hover:cursor-pointer"
                 >
                   <Eye className="w-4 h-4" />
-                  View Membership Form
+                  View Details
                 </button>
               </div>
             </div>

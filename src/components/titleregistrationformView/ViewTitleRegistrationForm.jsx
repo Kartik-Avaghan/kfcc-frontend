@@ -59,7 +59,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-xl overflow-hidden flex flex-col">
         {/* HEADER */}
-        <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6 relative">
+        <div className="bg-linear-to-r from-blue-900 to-blue-700 text-white p-6 relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 hover:text-gray-300 cursor-pointer" 
@@ -213,6 +213,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
   );
 }
 
+// eslint-disable-next-line no-unused-vars
 function InfoSection({ title, icon: Icon, children }) {
   return (
     <div className="rounded-2xl p-4 space-y-3 bg-white shadow-sm">
@@ -238,13 +239,13 @@ function Doc({ label, file, onView }) {
   const hasFile = file && file !== "";
 
   return (
-    <div className="flex items-center justify-between border rounded-lg px-3 py-2">
+    <div className="flex items-center justify-between border border-gray-400 rounded-lg px-3 py-2">
       <span className="text-sm text-gray-600">{label}</span>
 
       {hasFile ? (
         <button
           onClick={() => onView(file)}
-          className="text-blue-600 text-sm underline"
+          className="text-white text-sm cursor-pointer bg-blue-600 px-3 py-1 rounded-md "
         >
           View
         </button>
@@ -258,6 +259,7 @@ function Doc({ label, file, onView }) {
   );
 }
 
+// eslint-disable-next-line no-unused-vars
 function ActionBtn({ color, icon: Icon, text, onClick }) {
   const colors = {
     green: "bg-green-600 hover:bg-green-700",
@@ -273,4 +275,5 @@ function ActionBtn({ color, icon: Icon, text, onClick }) {
       {text}
     </button>
   );
+
 }

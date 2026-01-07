@@ -207,9 +207,9 @@ function ApplyForIdCard() {
             <button
               type="submit"
               disabled={submitting}
-              className="px-8 h-11 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+              className="px-6 h-11 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
             >
-              {submitting ? "Submitting..." : "Apply for ID Card"}
+              {submitting ? "Submitting..." : "Apply"}
             </button>
           </div>
         </form>
