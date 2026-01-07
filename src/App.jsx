@@ -8,7 +8,7 @@ function App() {
 
   return (
   <div>
-    <BrowserRouter>
+    <BrowserRouter >
     <CustomRouter/>
     </BrowserRouter>
   </div>

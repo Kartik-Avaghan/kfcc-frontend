@@ -29,6 +29,8 @@ import Signup from "../pages/Signup";
 import MembershipRequests from "../pages/MembershipRequests";
 import TitleRegistrationRequests from "../pages/TitleRegistrationRequests";
 import PublicityClearenceRequests from "../pages/PublicityClearenceRequests";
+import ApplyForIdCard from "../pages/user/ApplyForIdCard";
+import IdCardRequests from "../pages/staff/IdCardRequests";
 
 function CustomRouter() {
   return (
@@ -52,6 +54,7 @@ function CustomRouter() {
           <Route path="user/membershipform" element={<MembershipForm />} />
           <Route path="producer/titleRegistrationform" element={<TitleRegistrationForm/>}/>
           <Route path="producer/publicityClearenceform" element={<PublicityClearenceDashboard/>}/>
+          <Route path="producer/applyforIdCard" element={<ApplyForIdCard/>}/>
 
           {/* Comman membership requests */}
           <Route
@@ -64,9 +67,11 @@ function CustomRouter() {
           />
           <Route path="publicityClearence/requests" element={<PublicityClearenceRequests/>}/>
           
+          
 
           
           {/* staff */}
+          <Route path="idcard/requests" element={<IdCardRequests/>}/>
           
 
 

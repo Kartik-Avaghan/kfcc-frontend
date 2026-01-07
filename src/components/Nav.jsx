@@ -9,6 +9,8 @@ import {
   Settings,
   Globe,
   CreditCard,
+  IdCard,
+  Film,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -41,22 +43,32 @@ function Nav() {
       },
       {
         name: "Title Registration",
-        icon: CreditCard,
+        icon: Film,
         path: "/title/requests",
       },
       { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
+        {
+        name: "ID Card Requests",
+        icon: IdCard,
+        path: "/idcard/requests",
+      },
     ],
 
     PRODUCER: [
       {
         name: "Title Registration",
-        icon: CreditCard,
+        icon: Film,
         path: "producer/titleRegistrationform",
       },
       {
         name: "Public Clearance",
         icon: Globe,
         path: "/producer/publicityClearenceform",
+      },
+      {
+        name: "Apply For ID",
+        icon: IdCard,
+        path: "/producer/applyforIdCard",
       },
       
     ],
@@ -91,7 +103,7 @@ function Nav() {
     TITLE_COMMITTEE_VOTER: [
       {
         name: "Title Requests",
-        icon: Globe,
+        icon: Film,
         path: "/titleCommittee/voting/titleRegistrationDashboard",
       },
     ],
@@ -99,7 +111,7 @@ function Nav() {
     TITLE_COMMITTEE_LEADER: [
       {
         name: "Title Requests ",
-        icon: CreditCard,
+        icon: Film,
         path: "/titleCommitteLeader/titleRegistrationDashboard",
       },
       {
@@ -116,8 +128,8 @@ function Nav() {
         path: "/membership/requests",
       },
       {
-        name: "Title Registration",
-        icon: CreditCard,
+        name: "Title Request",
+        icon: Film,
         path: "/title/requests",
       },
       { name: "Public Clearance", icon: Globe, path: "/ec/meetis" },
@@ -132,10 +144,15 @@ function Nav() {
       },
       {
         name: "Title Request",
-        icon: CreditCard,
+        icon: Film,
         path: "/title/requests",
       },
        { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
+        {
+        name: "ID Card Requests",
+        icon: IdCard,
+        path: "/idcard/requests",
+      },
     ],
 
     MANAGER: [
@@ -151,6 +168,11 @@ function Nav() {
         path: "/manager/titlecommitteMeeting",
       },
        { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
+        {
+        name: "ID Card Requests",
+        icon: IdCard,
+        path: "/idcard/requests",
+      },
     ],
 
     PRESIDENT: [
