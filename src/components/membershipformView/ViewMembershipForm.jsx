@@ -117,7 +117,8 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
             <Field label="District" value={data.applicantDistrict} />
             <Field label="State" value={data.applicantState} />
             <Field label="Pin Code" value={data.applicantPinCode} />
-
+            
+        
             <Doc
               label="Applicant Image"
               file={data.applicantImage}
@@ -391,7 +392,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
 // eslint-disable-next-line no-unused-vars
 function InfoSection({ title, icon: Icon, children }) {
   return (
-    <div className="  rounded-2xl p-4 space-y-3">
+    <div className=" rounded-2xl p-4 space-y-4">
       <h3 className="text-lg font-semibold flex items-center gap-2">
         <Icon className="w-5 h-5 text-blue-600" />
         {title}
@@ -416,13 +417,13 @@ function Doc({ label, file, onView }) {
     file !== null && file !== undefined && file !== "" && file !== false;
 
   return (
-    <div className="flex items-center justify-around border rounded-lg px-3 py-2">
+    <div className="flex  items-center justify-around border border-gray-400 rounded-lg px-3 py-2">
       <span className="text-sm text-gray-600">{label}</span>
 
       {hasFile ? (
         <button
           onClick={() => onView(file)}
-          className="text-blue-600 text-sm underline hover:cursor-pointer"
+          className="text-white text-sm cursor-pointer bg-blue-600 px-3 py-1 rounded-md "
         >
           View
         </button>
