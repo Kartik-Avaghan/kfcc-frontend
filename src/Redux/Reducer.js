@@ -18,7 +18,7 @@ const userSlice = createSlice({
         phone: payload.phone,
         roles: Array.isArray(payload.roles)
           ? payload.roles
-          : [payload.roles], // ✅ enforce array
+          : [payload.roles], // enforce array
       };
             state.isAuthenticated = true;
         },
