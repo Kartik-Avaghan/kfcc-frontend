@@ -46,8 +46,12 @@ function Nav() {
         icon: Film,
         path: "/title/requests",
       },
-      { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
-        {
+      {
+        name: "Public Clearance",
+        icon: Globe,
+        path: "/publicityClearence/requests",
+      },
+      {
         name: "ID Card Requests",
         icon: IdCard,
         path: "/idcard/requests",
@@ -68,17 +72,54 @@ function Nav() {
       {
         name: "Apply For ID",
         icon: IdCard,
-        path: "/producer/applyforIdCard",
+        path: "/applyforIdCard",
       },
-      
+    ],
+
+    DISTRIBUTOR: [
+      {
+        name: "Apply For ID",
+        icon: IdCard,
+        path: "/applyforIdCard",
+      },
+    ],
+
+    EXHIBITOR: [
+      {
+        name: "Apply For ID",
+        icon: IdCard,
+        path: "/applyforIdCard",
+      },
+    ],
+    STUDIO: [
+      {
+        name: "Apply For ID",
+        icon: IdCard,
+        path: "/applyforIdCard",
+      },
+    ],
+    HONORARY_MEMBER: [
+      {
+        name: "Apply For ID",
+        icon: IdCard,
+        path: "/applyforIdCard",
+      },
+    ],
+    TEMPORARY_MEMBER: [
+      {
+        name: "Apply For ID",
+        icon: IdCard,
+        path: "/applyforIdCard",
+      },
     ],
 
     VP_PRODUCER: [
-      
-      { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
-      
+      {
+        name: "Public Clearance",
+        icon: Globe,
+        path: "/publicityClearence/requests",
+      },
     ],
-
 
     // ONM_COMMITTEE: [
     //   { name: "Title Registration", icon: CreditCard, path: "/om/dashboard" },
@@ -147,8 +188,12 @@ function Nav() {
         icon: Film,
         path: "/title/requests",
       },
-       { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
-        {
+      {
+        name: "Public Clearance",
+        icon: Globe,
+        path: "/publicityClearence/requests",
+      },
+      {
         name: "ID Card Requests",
         icon: IdCard,
         path: "/idcard/requests",
@@ -167,8 +212,12 @@ function Nav() {
         icon: Users,
         path: "/manager/titlecommitteMeeting",
       },
-       { name: "Public Clearance", icon: Globe, path: "/publicityClearence/requests" },
-        {
+      {
+        name: "Public Clearance",
+        icon: Globe,
+        path: "/publicityClearence/requests",
+      },
+      {
         name: "ID Card Requests",
         icon: IdCard,
         path: "/idcard/requests",
@@ -184,7 +233,6 @@ function Nav() {
       { name: "Final Approvals", icon: Settings, path: "/president/approvals" },
     ],
   };
-
 
   const roles = Array.isArray(user?.roles) ? user.roles : [];
 
@@ -273,9 +321,7 @@ function Nav() {
             Logout
           </button>
 
-          <p className="text-xs text-gray-400 mt-2">
-            © Developed By thincnext
-          </p>
+          <p className="text-xs text-gray-400 mt-2">© Developed By thincnext</p>
         </div>
       </div>
     </div>

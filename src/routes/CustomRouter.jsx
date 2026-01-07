@@ -54,7 +54,7 @@ function CustomRouter() {
           <Route path="user/membershipform" element={<MembershipForm />} />
           <Route path="producer/titleRegistrationform" element={<TitleRegistrationForm/>}/>
           <Route path="producer/publicityClearenceform" element={<PublicityClearenceDashboard/>}/>
-          <Route path="producer/applyforIdCard" element={<ApplyForIdCard/>}/>
+         
 
           {/* Comman membership requests */}
           <Route
@@ -66,6 +66,7 @@ function CustomRouter() {
             element={<TitleRegistrationRequests />}
           />
           <Route path="publicityClearence/requests" element={<PublicityClearenceRequests/>}/>
+          <Route path="applyforIdCard" element={<ApplyForIdCard/>}/>
           
           
 
