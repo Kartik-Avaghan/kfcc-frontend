@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 import VoteMembershipForm from "../../components/onmcommitte/VoteMembershipForm";
-// import ViewMembershipForm from "../../components/staff/ViewMembershipForm";
 import { notify } from "../../Utils/notify";
 
 function MembershipVotingDashboard() {
@@ -53,7 +52,7 @@ function MembershipVotingDashboard() {
     fetchMemberships();
   }, [selectedApplicationId]);
 
-  /* ---------------- LOADING ---------------- */
+  /*  LOADING  */
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[60vh] text-blue-600">
@@ -166,7 +165,7 @@ function MembershipVotingDashboard() {
                       className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg hover:cursor-pointer"
                     >
                       <Eye className="w-4 h-4" />
-                      View Membership Form
+                      View Details
                     </button>
 
                     {/* <button

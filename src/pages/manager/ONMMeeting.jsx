@@ -31,7 +31,7 @@ function ONMMeeting() {
         const response = await fetch(
           `${
             import.meta.env.VITE_API_BASE_URL
-          }/onm/meetings/status?status=ACTIVE`,
+          }/onm/meetings`,
           {
             method: "GET",
             headers: {
@@ -219,14 +219,15 @@ function ONMMeeting() {
         <div className="grid grid-cols-1 gap-8">
           {filteredApplications.map((meeting) => {
             const createdAt = new Date(meeting.createdAt);
+             const isTerminated = meeting.status === "TERMINATED";
 
             return (
               <div
                 key={meeting.id}
-                className="bg-white rounded-2xl shadow-md border-l-4 border-blue-600 overflow-hidden hover:shadow-lg transition"
+                className={`bg-white rounded-2xl shadow-md  overflow-hidden hover:shadow-lg transition ${isTerminated ? "border-l-4 border-gray-400" : "border-l-4 border-blue-600"} `}
               >
                 {/* Card Header */}
-                <div className="bg-blue-50 px-6 py-5 border-b border-gray-300">
+                <div className={` px-6 py-5 border-b border-gray-300  ${isTerminated ? "bg-gray-100" : "bg-blue-50"}`}>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                       <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
@@ -246,13 +247,19 @@ function ONMMeeting() {
                     </div>
 
                     {/* Terminate Button */}
-                    <button
+                    {
+                      meeting.status == "ACTIVE" && (
+                         <button
                       onClick={() => handleTerminateMeeting(meeting.id)}
                       className="flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-red-700 hover:cursor-pointer transition shadow"
                     >
                       <Power className="w-4 h-4" />
                       Terminate
                     </button>
+
+                      ) 
+                    }
+                   
                   </div>
                 </div>
 
@@ -294,7 +301,7 @@ function ONMMeeting() {
                   </div>
 
                   {/* Status */}
-                  <div className="flex items-start gap-3">
+                  {/* <div className="flex items-start gap-3">
                     <div className="p-2 bg-green-100 rounded-lg">
                       <ShieldCheck className="w-5 h-5 text-green-600" />
                     </div>
@@ -306,7 +313,21 @@ function ONMMeeting() {
                         {meeting.status}
                       </span>
                     </div>
-                  </div>
+                  </div> */}
+
+                  <div className="flex items-start gap-3">
+                                      <div className={`p-2  rounded-lg ${isTerminated ? "bg-red-100" : "bg-green-100"}`}>
+                                        <ShieldCheck className={`w-5 h-5 ${isTerminated ? "text-red-600" : "text-green-600"}`} />
+                                      </div>
+                                      <div>
+                                        <p className="text-xs text-gray-500 font-medium pl-1 pb-1">
+                                          Status
+                                        </p>
+                                        <span className={`inline-flex  px-3 py-1 rounded-full text-sm font-semibold ${isTerminated ? "bg-red-200 text-red-700 " : "bg-green-100 text-green-700"}`}>
+                                          {meeting.status}
+                                        </span>
+                                      </div>
+                                    </div>
                 </div>
               </div>
             );

@@ -312,7 +312,7 @@ function TitleCommitteMeeting() {
                       <p className="text-xs text-gray-500 font-medium pl-1 pb-1">
                         Status
                       </p>
-                      <span className={`inline-flex  px-3 py-0 rounded-full text-sm font-semibold ${isTerminated ? "bg-red-200 text-red-700 " : "bg-green-100 text-green-700"}`}>
+                      <span className={`inline-flex  px-3 py-1 rounded-full text-sm font-semibold ${isTerminated ? "bg-red-200 text-red-700 " : "bg-green-100 text-green-700"}`}>
                         {meeting.status}
                       </span>
                     </div>
