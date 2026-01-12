@@ -13,17 +13,21 @@ import {
   Map,
   Hash,
   ChevronLeft,
+  Check,
+  Send,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { notify } from "../../Utils/notify";
 import MembershipCard from "../../components/users/MembershipCard";
 
 const MembershipForm = () => {
-
   const BASE_MEMBERSHIP_FEE = 59000;
   const KALYAN_NIDHI_FEE = 22500;
 
   const [openModal, setOpenModal] = useState(false);
+  const [proposerOtpSent, setProposerOtpSent] = useState(false);
+  const [proposerOtp, setProposerOtp] = useState("");
+
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
 
@@ -256,29 +260,26 @@ const MembershipForm = () => {
       const newPartners = [...formData.partners];
       newPartners[index][name] = files ? files[0] : value;
       setFormData((prev) => ({ ...prev, partners: newPartners }));
-    } 
+    }
     // else if (section === "applicant") {
     //   setFormData((prev) => ({
     //     ...prev,
     //     [name]: files ? files[0] : value,
     //   }));
-    // } 
-
+    // }
     else if (section === "applicant") {
-  setFormData((prev) => ({
-    ...prev,
-    [name]:
-      name === "applicantPinCode"
-        ? value === ""
-          ? ""
-          : Number(value)
-        : files
-        ? files[0]
-        : value,
-  }));
-}
-
-    else if (section === "proposer") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]:
+          name === "applicantPinCode"
+            ? value === ""
+              ? ""
+              : Number(value)
+            : files
+            ? files[0]
+            : value,
+      }));
+    } else if (section === "proposer") {
       setFormData((prev) => ({
         ...prev,
         proposer: {
@@ -307,8 +308,6 @@ const MembershipForm = () => {
     newNominee[idx][key] = value;
     setFormData((prev) => ({ ...prev, nominees: newNominee }));
   };
-
- 
 
   const handleCheckboxChange = (key, checked) => {
     setFormData((prev) => {
@@ -380,31 +379,94 @@ const MembershipForm = () => {
     }));
   };
 
-  // const addProposer = () => {
-  //   if (formData.proposer.length < 2) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       proposer: [
-  //         ...prev.proposer,
-  //         {
-  //           proposerReferenceId: "",
-  //           proposerDate: today.toISOString().split("T")[0],
-  //           proposerName: "",
-  //           proposerAddress: "",
-  //           proposerPhNo: "",
-  //           proposerDesignation: "",
-  //         },
-  //       ],
-  //     }));
-  //   }
-  // };
+  const handleProposerSendOtp = async () => {
+    // Implement OTP sending logic here
+    if (!formData.proposer.proposerMembershipId) {
+      notify("Please enter Proposer Membership ID", "error");
+      return;
+    }
 
-  // const removeProposer = (idx) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     proposer: prev.proposer.filter((_, i) => i !== idx),
-  //   }));
-  // };
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/membership/proposer/send-otp/${
+          formData.proposer.proposerMembershipId
+        }`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const data = response.ok ? await response.text() : await response.json();
+
+      if (!response.ok) {
+        notify(data.message, "error");
+        return;
+      }
+
+      notify(data, "success");
+      setProposerOtpSent(true);
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  };
+
+  const handleProposerVerification = async () => {
+    if (!proposerOtp) {
+      notify("Please enter OTP", "error");
+    }
+
+    try {
+      const apidata = {
+        proposerMembershipId: formData.proposer.proposerMembershipId,
+        otp: proposerOtp,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/membership/proposer/verify-otp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(apidata),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        notify(data.message, "error");
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        proposer: {
+          ...prev.proposer,
+          proposerName: [data.firstName, data.middleName, data.lastName]
+            .filter(Boolean)
+            .join(" "),
+          proposerAddress: data.address,
+          proposerDesignation: data.designation,
+          proposerMobileNo: data.mobile,
+        },
+      }));
+
+      notify("Proposer Verified", "success");
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  };
+
+  const maskMobile = (mobile) => {
+    if (!mobile) return "";
+    const str = mobile.toString();
+    return "XXXXXXX" + str.slice(-3);
+  };
 
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -450,10 +512,7 @@ const MembershipForm = () => {
       form.append("proprietorPan", formData.proprietor.proprietorPan);
 
     if (formData.proprietor.proprietorAadhaar)
-      form.append(
-        "proprietorAadhaar",
-        formData.proprietor.proprietorAadhaar
-      );
+      form.append("proprietorAadhaar", formData.proprietor.proprietorAadhaar);
 
     if (formData.proprietor.proprietorESignature)
       form.append(
@@ -491,7 +550,7 @@ const MembershipForm = () => {
       })
       .then((data) => {
         console.log("Success:", setFormData(data));
-        notify("membership form is successfully submited","success")
+        notify("membership form is successfully submited", "success");
 
         // alert("membership form is successfully submited");
 
@@ -1388,7 +1447,7 @@ const MembershipForm = () => {
                       <button
                         type="button"
                         onClick={() => removeNominee(idx)}
-                        className="text-red-600 text-sm underline"
+                        className="text-red-600 text-sm underline cursor-pointer"
                       >
                         Remove Nominee
                       </button>
@@ -1401,7 +1460,7 @@ const MembershipForm = () => {
                 <button
                   type="button"
                   onClick={addNominee}
-                  className="flex gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg mt-3"
+                  className="flex gap-1 bg-blue-600 text-white px-4 py-2.5 rounded-lg mt-3 cursor-pointer hover:bg-blue-800 transition-all"
                 >
                   <Plus size={24} />
                   Add Nominee
@@ -1416,18 +1475,58 @@ const MembershipForm = () => {
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold mb-2 ">
-                    ಪ್ರತಿಪಾದಕ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Proposer Membership ID
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.proposer.proposerMembershipId}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    name="proposerMembershipId"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
+                <div className="flex gap-4">
+                  <div>
+                    <label className="block font-semibold mb-2 ">
+                      ಪ್ರತಿಪಾದಕ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Proposer Membership ID
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.proposer.proposerMembershipId}
+                      onChange={(e) => handleInputChange(e, "proposer")}
+                      name="proposerMembershipId"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="flex items-end">
+                    <button
+                      className="bg-blue-600 flex gap-2 items-center py-2 px-4 rounded-md text-white cursor-pointer hover:bg-blue-800 transition-all"
+                      type="button"
+                      onClick={() => handleProposerSendOtp()}
+                    >
+                      <Send size={15}/> Send Otp
+                    </button>
+                  </div>
+
                 </div>
+
+                {proposerOtpSent && (
+                  <div className="flex gap-4">
+                    <div>
+                      <label className="block font-semibold mb-2 ">
+                        Enter Otp:
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="XXXXXX"
+                        onChange={(e) => setProposerOtp(e.target.value)}
+                        name="proposerMembershipOtp"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex items-end">
+                      <button
+                        className="bg-blue-600 flex items-center gap-2 py-2 px-4 rounded-md text-white cursor-pointer "
+                        type="button"
+                        onClick={() => handleProposerVerification()}
+                      >
+                        <Check size={20} /> Verify
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <label className="block font-semibold mb-2">
@@ -1437,8 +1536,8 @@ const MembershipForm = () => {
                     type="text"
                     name="proposerName"
                     value={formData.proposer.proposerName}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    disabled
+                    className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-200"
                   />
                 </div>
 
@@ -1450,8 +1549,8 @@ const MembershipForm = () => {
                     type="text"
                     name="proposerAddress"
                     value={formData.proposer.proposerAddress}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                   />
                 </div>
 
@@ -1462,9 +1561,9 @@ const MembershipForm = () => {
                   <input
                     type="tel"
                     name="proposerMobileNo"
-                    value={formData.proposer.proposerMobileNo}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    value={maskMobile(formData.proposer.proposerMobileNo)}
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                   />
                 </div>
 
@@ -1476,8 +1575,8 @@ const MembershipForm = () => {
                     type="text"
                     name="proposerDesignation"
                     value={formData.proposer.proposerDesignation}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                   />
                 </div>
               </div>
@@ -1682,8 +1781,7 @@ const MembershipForm = () => {
         </div>
       )}
 
-      {!openModal && (<MembershipCard setOpenModal={setOpenModal} />)}
-     
+      {!openModal && <MembershipCard setOpenModal={setOpenModal} />}
     </>
   );
 };
