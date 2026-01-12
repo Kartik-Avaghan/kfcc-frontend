@@ -41,7 +41,7 @@ const MembershipForm = () => {
     applicantPinCode: "",
 
     // -------- DOCUMENT FILES --------
-    applicantImage: null,
+    applicantPhoto: null,
     applicantPan: null,
     applicantAadhaar: null,
     applicantAddressProof: null,
@@ -57,8 +57,8 @@ const MembershipForm = () => {
       proprietorPanNo: "",
       proprietorAadhaarNo: "",
 
-      proprietorPanImg: null, // FILE
-      proprietorAadhaarImg: null, // FILE
+      proprietorPan: null, // FILE
+      proprietorAadhaar: null, // FILE
       proprietorESignature: null, // FILE
     },
 
@@ -72,9 +72,9 @@ const MembershipForm = () => {
         partnerPanNo: "",
         partnerAadhaarNo: "",
 
-        partnerPanImg: null, // FILE
-        partnerAadhaarImg: null, // FILE
-        partnerESignature: null, // FILE
+        partnerPan: null, // FILE
+        partnerAadhaar: null, // FILE
+        partnerSignature: null, // FILE
 
         partnershipDeed: null,
         moa: null,
@@ -162,25 +162,25 @@ const MembershipForm = () => {
       labelKn: "ಆಧಾರ್ ಸಂಖ್ಯೆ",
     },
     {
-      key: "partnerPanImg",
+      key: "partnerPan",
       type: "file",
       labelEn: "PAN Card",
       labelKn: "ಪ್ಯಾನ್ ಕಾರ್ಡ್",
     },
     {
-      key: "partnerAadhaarImg",
+      key: "partnerAadhaar",
       type: "file",
       labelEn: "Aadhaar Card",
       labelKn: "ಆಧಾರ್ ಕಾರ್ಡ್",
     },
     {
-      key: "partnerESignature",
+      key: "partnerSignature",
       type: "file",
       labelEn: "E-Signature",
       labelKn: "ಇ-ಸಹಿ",
     },
     {
-      key: "partnerShipDeed",
+      key: "partnershipDeed",
       type: "file",
       labelEn: "Partnership Deed",
       labelKn: "ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ",
@@ -256,12 +256,29 @@ const MembershipForm = () => {
       const newPartners = [...formData.partners];
       newPartners[index][name] = files ? files[0] : value;
       setFormData((prev) => ({ ...prev, partners: newPartners }));
-    } else if (section === "applicant") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files ? files[0] : value,
-      }));
-    } else if (section === "proposer") {
+    } 
+    // else if (section === "applicant") {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     [name]: files ? files[0] : value,
+    //   }));
+    // } 
+
+    else if (section === "applicant") {
+  setFormData((prev) => ({
+    ...prev,
+    [name]:
+      name === "applicantPinCode"
+        ? value === ""
+          ? ""
+          : Number(value)
+        : files
+        ? files[0]
+        : value,
+  }));
+}
+
+    else if (section === "proposer") {
       setFormData((prev) => ({
         ...prev,
         proposer: {
@@ -291,13 +308,7 @@ const MembershipForm = () => {
     setFormData((prev) => ({ ...prev, nominees: newNominee }));
   };
 
-  // const handleCheckboxChange = (key, value) => {
-  //   setFormData((prev) => {
-  //     let total = prev.totalAmountToPay;
-  //     if (key === "kalyanNidhi") total = value ? total + 22500 : total - 22500;
-  //     return { ...prev, [key]: value, totalAmountToPay: total };
-  //   });
-  // };
+ 
 
   const handleCheckboxChange = (key, checked) => {
     setFormData((prev) => {
@@ -327,9 +338,9 @@ const MembershipForm = () => {
             partnerPanNo: "",
             partnerAadhaarNo: "",
 
-            partnerPanImg: null, // FILE
-            partnerAadhaarImg: null, // FILE
-            partnerESignature: null,
+            partnerPan: null, // FILE
+            partnerAadhaar: null, // FILE
+            partnerSignature: null,
           },
         ],
       }));
@@ -412,6 +423,7 @@ const MembershipForm = () => {
       membershipFee: formData.membershipFee,
       kalyanNidhi: formData.kalyanNidhi ? 1 : 0,
       totalAmountToPay: formData.totalAmountToPay,
+      // applicantPinCode:formData.applicantPinCode ? Number(formData.applicantPinCode) : null,
     };
 
     // 1 JSON payload (CORRECT)
@@ -421,8 +433,8 @@ const MembershipForm = () => {
     );
 
     // applicant
-    if (formData.applicantImage)
-      form.append("applicantImage", formData.applicantImage);
+    if (formData.applicantPhoto)
+      form.append("applicantPhoto", formData.applicantPhoto);
     if (formData.applicantPan)
       form.append("applicantPan", formData.applicantPan);
     if (formData.applicantAadhaar)
@@ -434,13 +446,13 @@ const MembershipForm = () => {
     if (formData.firmSeal) form.append("firmSeal", formData.firmSeal);
 
     // proprietor
-    if (formData.proprietor.proprietorPanImg)
-      form.append("proprietorPanImg", formData.proprietor.proprietorPanImg);
+    if (formData.proprietor.proprietorPan)
+      form.append("proprietorPan", formData.proprietor.proprietorPan);
 
-    if (formData.proprietor.proprietorAadhaarImg)
+    if (formData.proprietor.proprietorAadhaar)
       form.append(
-        "proprietorAadhaarImg",
-        formData.proprietor.proprietorAadhaarImg
+        "proprietorAadhaar",
+        formData.proprietor.proprietorAadhaar
       );
 
     if (formData.proprietor.proprietorESignature)
@@ -450,17 +462,17 @@ const MembershipForm = () => {
       );
 
     formData.partners.forEach((p, i) => {
-      if (p.partnerPanImg)
-        // form.append("partnerPanImg[]", p.partnerPanImg);
-        form.append(`partnerPanImg_${i}`, p.partnerPanImg);
+      if (p.partnerPan)
+        // form.append("partnerPan[]", p.partnerPan);
+        form.append(`partnerPan_${i}`, p.partnerPan);
 
-      if (p.partnerAadhaarImg)
-        // form.append("partnerAadhaarImg[]", p.partnerAadhaarImg);
-        form.append(`partnerAadhaarImg_${i}`, p.partnerAadhaarImg);
+      if (p.partnerAadhaar)
+        // form.append("partnerAadhaar[]", p.partnerAadhaar);
+        form.append(`partnerAadhaar_${i}`, p.partnerAadhaar);
 
-      if (p.partnerESignature)
-        // form.append("partnerESignature[]", p.partnerESignature);
-        form.append(`partnerESignature_${i}`, p.partnerESignature);
+      if (p.partnerSignature)
+        // form.append("partnerSignature[]", p.partnerSignature);
+        form.append(`partnerSignature_${i}`, p.partnerSignature);
     });
 
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/apply`, {
@@ -498,7 +510,7 @@ const MembershipForm = () => {
           applicantPinCode: "",
 
           // -------- DOCUMENT FILES --------
-          applicantImage: null,
+          applicantPhoto: null,
           applicantPan: null,
           applicantAadhaar: null,
           applicantAddressProof: null,
@@ -517,8 +529,8 @@ const MembershipForm = () => {
             proprietorPanNo: "",
             proprietorAadhaarNo: "",
 
-            proprietorPanImg: null, // FILE
-            proprietorAadhaarImg: null, // FILE
+            proprietorPan: null, // FILE
+            proprietorAadhaar: null, // FILE
             proprietorESignature: null, // FILE
           },
 
@@ -532,13 +544,13 @@ const MembershipForm = () => {
               partnerPanNo: "",
               partnerAadhaarNo: "",
 
-              partnerPanImg: null, // FILE
-              partnerAadhaarImg: null, // FILE
-              partnerESignature: null, // FILE
+              partnerPan: null, // FILE
+              partnerAadhaar: null, // FILE
+              partnerSignature: null, // FILE
             },
           ],
 
-          // partnerShipDeed: null,
+          // partnershipDeed: null,
           //     moa: null,
           //     aoa: null,
 
@@ -779,7 +791,7 @@ const MembershipForm = () => {
                       ಪಿನ್ ಕೋಡ್ / Pincode
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       name="applicantPinCode"
                       value={formData.applicantPinCode || ""}
                       onChange={(e) => handleInputChange(e, "applicant")}
@@ -1181,15 +1193,15 @@ const MembershipForm = () => {
                 </label>
                 <input
                   type="file"
-                  name="proprietorPanImg"
+                  name="proprietorPan"
                   accept="image/*"
                   onChange={(e) => handleInputChange(e, "proprietor")}
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px] cursor-pointer file:cursor-pointer"
                 />
-                {formData.proprietor.proprietorPanImg && (
+                {formData.proprietor.proprietorPan && (
                   <img
                     src={URL.createObjectURL(
-                      formData.proprietor.proprietorPanImg
+                      formData.proprietor.proprietorPan
                     )}
                     alt="PAN Preview"
                     className="mt-2 h-24 rounded border"
@@ -1204,15 +1216,15 @@ const MembershipForm = () => {
                 </label>
                 <input
                   type="file"
-                  name="proprietorAadhaarImg"
+                  name="proprietorAadhaar"
                   accept="image/*"
                   onChange={(e) => handleInputChange(e, "proprietor")}
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px] cursor-pointer file:cursor-pointer"
                 />
-                {formData.proprietor.proprietorAadhaarImg && (
+                {formData.proprietor.proprietorAadhaar && (
                   <img
                     src={URL.createObjectURL(
-                      formData.proprietor.proprietorAadhaarImg
+                      formData.proprietor.proprietorAadhaar
                     )}
                     alt="Aadhaar Preview"
                     className="mt-2 h-24 rounded border"
