@@ -15,6 +15,9 @@ import {
   ChevronLeft,
   Check,
   Send,
+  Calendar,
+  CreditCard,
+  Fingerprint,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { notify } from "../../Utils/notify";
@@ -875,6 +878,10 @@ const MembershipForm = () => {
                   placeholder="blood group"
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                 />
+
+                
+
+                
                 {/* <select
               name="applicantBloodGroup"
               value={formData.applicantBloodGroup}
@@ -918,19 +925,40 @@ const MembershipForm = () => {
             </select>
           </div> */}
 
-              {/* Image */}
+
+          <div className="mt-1">
+                <label className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-blue-700" />
+                      ಹುಟ್ಟಿದ ದಿನಾಂಕ / Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="proprietorDob"
+                      value={formData.proprietor.proprietorDob}
+                      onChange={(e) => handleInputChange(e, "proprietor")}
+                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    />
+                  </div>
+
+              
+
+             
+
+
               <div>
-                <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-blue-700" />
-                  ಅರ್ಜಿದಾರರ ಚಿತ್ರ / Applicant Image
-                </label>
-                <input
-                  type="file"
-                  name="applicantImage"
-                  onChange={(e) => handleInputChange(e, "applicant")}
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-                />
-              </div>
+                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                       <Fingerprint className="w-4 h-4 text-blue-700" />
+                      ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
+                    </label>
+                    <input
+                      type="number"
+                      name="proprietorAadhaarNo"
+                      value={formData.proprietor.proprietorAadhaarNo}
+                      onChange={(e) => handleInputChange(e, "proprietor")}
+                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                      placeholder="Enter Aadhaar number"
+                    />
+                  </div>
 
               {/* Image */}
               <div>
@@ -945,6 +973,22 @@ const MembershipForm = () => {
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                 />
               </div>
+
+
+               <div>
+                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                       <CreditCard className="w-4 h-4 text-blue-700" />
+                      ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
+                    </label>
+                    <input
+                      type="text"
+                      name="proprietorPanNo"
+                      value={formData.proprietor.proprietorPanNo}
+                      onChange={(e) => handleInputChange(e, "proprietor")}
+                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                      placeholder="Enter PAN number"
+                    />
+                  </div>
 
               {/* Image */}
               <div>
@@ -988,6 +1032,8 @@ const MembershipForm = () => {
                 />
               </div>
 
+              
+
               <div>
                 <label className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-blue-700" />
@@ -1017,6 +1063,9 @@ const MembershipForm = () => {
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                 />
               </div>
+
+
+              
 
               {/* <div>
             <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -1114,6 +1163,21 @@ const MembershipForm = () => {
                 </select>
               </div>
 
+
+              {/* Image */}
+              <div>
+                <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-blue-700" />
+                  ಅರ್ಜಿದಾರರ ಚಿತ್ರ / Applicant Image
+                </label>
+                <input
+                  type="file"
+                  name="applicantImage"
+                  onChange={(e) => handleInputChange(e, "applicant")}
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
+                />
+              </div>
+
               {/* Ownership Type */}
               <div>
                 <label className=" font-semibold text-gray-800 mb-1 flex items-center gap-2">
@@ -1137,15 +1201,15 @@ const MembershipForm = () => {
             </div>
 
             {/* Proprietor Form */}
-            {formData.applicantOwnershipType === "PROPRIETOR" && (
+            {/* {formData.applicantOwnershipType === "PROPRIETOR" && (
               <div className="rounded-lg p-4 mt-1">
                 <h2 className="text-lg font-semibold mb-3">
                   ಮಾಲೀಕರ ವಿವರಗಳು / Proprietor Details
                 </h2>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4"> */}
                   {/* Proprietor Name */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ಮಾಲೀಕರ ಹೆಸರು / Proprietor Name
                     </label>
@@ -1157,10 +1221,10 @@ const MembershipForm = () => {
                       className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                       placeholder="Enter proprietor name"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Proprietor Address */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ವಿಳಾಸ / Address
                     </label>
@@ -1172,24 +1236,13 @@ const MembershipForm = () => {
                       className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                       placeholder="Enter address"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Date of Birth */}
-                  <div>
-                    <label className="block text-sm font-semibold mb-1">
-                      ಹುಟ್ಟಿದ ದಿನಾಂಕ / Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      name="proprietorDob"
-                      value={formData.proprietor.proprietorDob}
-                      onChange={(e) => handleInputChange(e, "proprietor")}
-                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
-                    />
-                  </div>
+                  
 
                   {/* Blood Group */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ರಕ್ತದ ಗುಂಪು / Blood Group
                     </label>
@@ -1210,10 +1263,10 @@ const MembershipForm = () => {
                       <option value="O-">O-</option>
                       <option value="special">Special</option>
                     </select>
-                  </div>
+                  </div> */}
 
                   {/* PAN Number */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
                     </label>
@@ -1225,10 +1278,10 @@ const MembershipForm = () => {
                       className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                       placeholder="Enter PAN number"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Aadhaar Number */}
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
                     </label>
@@ -1240,8 +1293,8 @@ const MembershipForm = () => {
                       className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                       placeholder="Enter Aadhaar number"
                     />
-                  </div>
-                </div>
+                  </div> */}
+                {/* </div> */}
 
                 {/* File Uploads */}
                 {/* <div className="grid grid-cols-3 gap-4 mt-4">
@@ -1319,8 +1372,8 @@ const MembershipForm = () => {
                 )}
               </div>
             </div> */}
-              </div>
-            )}
+              {/* </div> */}
+            {/* )} */}
 
             {/* Partners Form */}
 
