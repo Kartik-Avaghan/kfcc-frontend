@@ -95,6 +95,7 @@ export default function MembershipCard({ setOpenModal }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [formMode, setFormMode] = useState(null); // "view" | "edit"
+  const[statusFilter, setStatusFilter]=useState("");
 
   /* ===== FETCH API ===== */
   useEffect(() => {
@@ -138,11 +139,23 @@ export default function MembershipCard({ setOpenModal }) {
 
   const filteredApplications = applications.filter((app) => {
     const term = searchTerm.toLowerCase();
-    return (
-      app.membershipCategory?.toLowerCase().includes(term) ||
+    // return (
+    //   app.membershipCategory?.toLowerCase().includes(term) ||
+    //   app.applicationId?.toString().toLowerCase().includes(term) ||
+    //   app.applicantName?.toLowerCase().includes(term)
+    // );
+
+    const matchSearch = 
+
+       app.membershipCategory?.toLowerCase().includes(term) ||
       app.applicationId?.toString().toLowerCase().includes(term) ||
-      app.applicantName?.toLowerCase().includes(term)
-    );
+       app.applicantName?.toLowerCase().includes(term)
+
+       const matchesStatus = !statusFilter || app.status == statusFilter ;
+
+       return (matchSearch && matchesStatus);
+      
+    
   });
 
   return (
@@ -187,6 +200,8 @@ export default function MembershipCard({ setOpenModal }) {
         <div className="flex items-center gap-2 max-w-md border-2 border-gray-300 rounded-xl p-3 px-6">
           <select
             type="text"
+            value={statusFilter}
+            onChange={(e)=> setStatusFilter(e.target.value)}
             placeholder="status"
             className="w-full focus:outline-none"
           >

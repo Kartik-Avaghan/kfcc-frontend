@@ -16,23 +16,23 @@ import EditTitleRegistrationDetails from "./EditTitleRegistrationDetails";
 
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
-  DRAFT: 0,
-  SUBMITTED: 1,
+  // DRAFT: 0,
+  SUBMITTED: 0,
 
-  STAFF_APPROVED: 2,
-  STAFF_REJECTED: 2,
-  STAFF_REMARKED: 2,
+  STAFF_APPROVED: 1,
+  STAFF_REJECTED: 1,
+  STAFF_REMARKED: 1,
 
-  TITLE_COMMITTEE_APPROVED: 3,
-  TITLE_COMMITTEE_REJECTED: 3,
-  TITLE_COMMITTEE_REMARKED: 3,
+  TITLE_COMMITTEE_APPROVED: 2,
+  TITLE_COMMITTEE_REJECTED: 2,
+  TITLE_COMMITTEE_REMARKED: 2,
 
-  EC_COMMITTEE_HOLD: 4,
-  EC_COMMITTEE_REJECTED: 4,
-  EC_COMMITTEE_REMARKED: 4,
+  EC_COMMITTEE_HOLD: 3,
+  EC_COMMITTEE_REJECTED: 3,
+  EC_COMMITTEE_REMARKED: 3,
 
   FINAL_APPROVED: 4,
-  REJECTED: 4,
+  // REJECTED: 4,
 };
 
 const STEPS = [
@@ -48,9 +48,13 @@ const getStatusType = (status) => {
   if (!status) return "IN_PROGRESS";
   if (status.includes("REJECTED")) return "REJECTED";
   if (status.includes("REMARKED")) return "REMARKED";
+  if(status.includes("HOLD")) return "HOLD";
   if (status === "FINAL_APPROVED") return "APPROVED";
+  
   return "IN_PROGRESS";
 };
+
+
 
 /*  STATUS STYLES  */
 const STATUS_STYLE = {
@@ -99,6 +103,15 @@ const STATUS_STYLE = {
     icon: CheckCircle,
     message: "Application has been approved successfully",
   },
+    HOLD: {
+    bg: "bg-orange-50",
+    border: "border-orange-400",
+    text: "text-orange-600",
+    bar: "bg-orange-400",
+    badge: "border-orange-100",
+    icon: AlertTriangle,
+    message:"Application has been holded"
+  },
 };
 
 /*  MAIN COMPONENT  */
@@ -108,6 +121,9 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [formMode, setFormMode] = useState(null); // "view" | "edit"
+
+  const[statusFilter, setStatusFilter] = useState("");
+
 
   /*  FETCH  */
   useEffect(() => {
@@ -146,13 +162,27 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
   /* ================= SEARCH ================= */
   const filteredApplications = applications.filter((d) => {
     const term = searchTerm.toLowerCase();
-    return (
-      d.title?.toLowerCase().includes(term) ||
-      d.director?.toLowerCase().includes(term) ||
-      d.language?.toLowerCase().includes(term) ||
+    // return (
+    //   d.title?.toLowerCase().includes(term) ||
+    //   d.director?.toLowerCase().includes(term) ||
+    //   d.language?.toLowerCase().includes(term) ||
+    //   d.producerName?.toLowerCase().includes(term) ||
+    //   d.id?.toString().toLowerCase().includes(term)
+    // );
+
+    const matchSearch = d.title?.toLowerCase().includes(term) ||
+     d.director?.toLowerCase().includes(term) ||
+       d.language?.toLowerCase().includes(term) ||
       d.producerName?.toLowerCase().includes(term) ||
-      d.id?.toString().toLowerCase().includes(term)
-    );
+       d.id?.toString().toLowerCase().includes(term)
+
+     const matchStatus =
+  !statusFilter ||
+  (statusFilter === "REJECTED" && d.status.includes("REJECTED")) ||
+  (statusFilter === "HOLD" && d.status.includes("HOLD")) ||
+  d.status === statusFilter;
+
+       return matchSearch && matchStatus;
   });
 
   const handleOpenForm = (detail) => {
@@ -163,6 +193,16 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
     }
     setSelectedAppId(detail.id);
   };
+
+
+//  const STATUS_BG = {
+//   "": "bg-white text-gray-800 border-gray-300",
+//   SUBMITTED: "bg-blue-700 text-white border-blue-700",
+//   FINAL_APPROVED: "bg-green-700 text-white border-green-700",
+//   REJECTED: "bg-red-600 text-white border-red-600",
+// };
+
+
 
   return (
     <div className="px-16 py-8 max-w-7xl mx-auto">
@@ -204,16 +244,23 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
           />
         </div>
 
-        <div className="flex items-center max-w-md border-2 border-gray-300 rounded-xl p-3 px-6">
+        {/* <div  className={`flex items-center max-w-md rounded-xl p-3 px-6 border transition-colors duration-300 ${
+    STATUS_BG[statusFilter] || STATUS_BG[""]
+  }`}> */}
+  <div  className="flex items-center max-w-md rounded-xl p-3 px-6 border-2 border-gray-300">
           <select
             type="text"
             placeholder="status"
-            className="w-full focus:outline-none"
+            value={statusFilter}
+            onChange={(e)=> setStatusFilter(e.target.value)}
+            className="w-full  focus:outline-none "
           > 
             <option value="">All Statuses</option>
             <option value="SUBMITTED">Submitted</option>
             <option value="FINAL_APPROVED">Approved</option>
-            <option value="REJECTED">Rejected</option>
+             <option value="REJECTED">Rejected</option>
+            <option value="EC_COMMITTEE_HOLD">Hold</option>
+           
           </select>
         </div>
           
@@ -241,6 +288,12 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
           // const stepIndex = STATUS_STEP_INDEX[detail.status] ?? 0;
           const rawStepIndex = STATUS_STEP_INDEX[detail.status] ?? 0;
           const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
+
+          // const stepIndex = STATUS_STEP_INDEX[detail.status] ?? 0;
+
+
+          
+
 
           const statusType = getStatusType(detail.status);
           const style = STATUS_STYLE[statusType];
