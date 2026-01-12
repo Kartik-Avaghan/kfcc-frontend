@@ -173,7 +173,7 @@ function ONMMemberList() {
               return (
                 <div
                   key={member.id}
-                  className={`px-4 py-4 rounded-xl border shadow-sm flex justify-between items-center transition
+                  className={`px-4 py-4 rounded-xl border border-gray-500 shadow-sm flex justify-between items-center transition
                   ${isSelected ? "bg-blue-50 border-blue-400" : "bg-white"}`}
                 >
                   {/* Member Info */}

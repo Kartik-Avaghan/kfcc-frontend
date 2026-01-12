@@ -479,8 +479,9 @@ const MembershipForm = () => {
       })
       .then((data) => {
         console.log("Success:", setFormData(data));
+        notify("membership form is successfully submited","success")
 
-        alert("membership form is successfully submited");
+        // alert("membership form is successfully submited");
 
         // Reset formData to empty/default
         setFormData({

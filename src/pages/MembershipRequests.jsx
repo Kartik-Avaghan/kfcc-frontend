@@ -27,9 +27,7 @@ function MembershipRequests() {
 
         const data = await response.json();
 
-        setMemberships(
-          data.filter((item) => item.status === "SUBMITTED")
-        );
+   setMemberships(data);
       } catch (err) {
         notify(err.message || "Failed to load data", "error");
       } finally {

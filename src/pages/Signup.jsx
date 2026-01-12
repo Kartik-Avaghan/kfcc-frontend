@@ -222,8 +222,8 @@ function Signup() {
               <div className="relative">
                 <Droplet className="absolute left-3 top-2.5 text-gray-400 h-5 w-5" />
                 <select
-                  name="applicantBloodGroup"
-                  value={formData.applicantBloodGroup}
+                  name="bloodGroup"
+                  value={formData.bloodGroup}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg py-2.5 px-4 pl-10 focus:ring-2 focus:ring-blue-500"
                 >

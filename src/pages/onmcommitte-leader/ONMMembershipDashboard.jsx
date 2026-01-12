@@ -128,15 +128,15 @@ function ONMMembershipDashboard() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                   <button
                     onClick={() => setSelectedApplicationId(member)}
-                    className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
+                    className="inline-flex items-center justify-center cursor-pointer gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
                   >
                     <Eye className="w-4 h-4" />
-                    View Membership Form
+                    View Details
                   </button>
 
                   <button
                     onClick={() => setVoteResult(member)}
-                    className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
+                    className="inline-flex items-center justify-center gap-2 cursor-pointer bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 transition shadow-md hover:shadow-lg"
                   >
                     <Vote className="w-4 h-4" />
                     Voting Result

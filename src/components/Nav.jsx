@@ -193,22 +193,18 @@ function Nav() {
         icon: Globe,
         path: "/publicityClearence/requests",
       },
-      {
-        name: "ID Card Requests",
-        icon: IdCard,
-        path: "/idcard/requests",
-      },
+      
     ],
 
     MANAGER: [
-      {
-        name: "Manager Dashboard",
-        icon: BarChart3,
-        path: "manager/managerdashboard",
-      },
+      // {
+      //   name: "Manager Dashboard",
+      //   icon: BarChart3,
+      //   path: "manager/managerdashboard",
+      // },
       { name: "ONM Meetings", icon: Users, path: "/manager/onmMeeting" },
       {
-        name: "Title Committee Meetings",
+        name: "Title Meetings",
         icon: Users,
         path: "/manager/titlecommitteMeeting",
       },
@@ -217,11 +213,7 @@ function Nav() {
         icon: Globe,
         path: "/publicityClearence/requests",
       },
-      {
-        name: "ID Card Requests",
-        icon: IdCard,
-        path: "/idcard/requests",
-      },
+      
     ],
 
     PRESIDENT: [
