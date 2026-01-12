@@ -1544,11 +1544,11 @@ const MembershipForm = () => {
 
                   <div className="flex items-end">
                     <button
-                      className="bg-blue-600 flex gap-2 items-center py-2 px-4 rounded-md text-white cursor-pointer hover:bg-blue-800 transition-all"
+                      className="bg-blue-600 flex gap-2 items-center py-2.5 px-2 rounded-md text-white text-sm cursor-pointer hover:bg-blue-800 transition-all"
                       type="button"
                       onClick={() => handleProposerSendOtp()}
                     >
-                      <Send size={15}/> Send Otp
+                      <Send size={14}/> Send Otp
                     </button>
                   </div>
 
