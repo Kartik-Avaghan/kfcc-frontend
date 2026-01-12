@@ -19,11 +19,13 @@ import { notify } from "../../Utils/notify";
 import MembershipCard from "../../components/users/MembershipCard";
 
 const MembershipForm = () => {
-
   const BASE_MEMBERSHIP_FEE = 59000;
   const KALYAN_NIDHI_FEE = 22500;
 
   const [openModal, setOpenModal] = useState(false);
+  const [proposerOtpSent, setProposerOtpSent] = useState(false);
+  const [proposerOtp, setProposerOtp] = useState("");
+
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
 
@@ -369,31 +371,40 @@ const MembershipForm = () => {
     }));
   };
 
-  // const addProposer = () => {
-  //   if (formData.proposer.length < 2) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       proposer: [
-  //         ...prev.proposer,
-  //         {
-  //           proposerReferenceId: "",
-  //           proposerDate: today.toISOString().split("T")[0],
-  //           proposerName: "",
-  //           proposerAddress: "",
-  //           proposerPhNo: "",
-  //           proposerDesignation: "",
-  //         },
-  //       ],
-  //     }));
-  //   }
-  // };
+  const handleProposerSendOtp = async () => {
+    // Implement OTP sending logic here
+    if (!formData.proposer.proposerMembershipId) {
+      notify("Please enter Proposer Membership ID", "error");
+      return;
+    }
 
-  // const removeProposer = (idx) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     proposer: prev.proposer.filter((_, i) => i !== idx),
-  //   }));
-  // };
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/membership/proposer/send-otp/${
+          formData.proposer.proposerMembershipId
+        }`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );  
+
+      const data = response.ok ? await response.text() : await response.json();
+
+      if (!response.ok) {
+        notify(data.message, "error");
+        return;
+      }
+
+      notify(data, "success");
+      setProposerOtpSent(true);
+
+    } catch (error) {
+      notify(error.message, "error");
+    }
+  };
 
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -1416,6 +1427,42 @@ const MembershipForm = () => {
                   />
                 </div>
 
+                <div className="flex items-end">
+                  <button
+                    className="bg-blue-600 py-2 px-4 rounded-md text-white cursor-pointer "
+                    type="button"
+                    onClick={() => handleProposerSendOtp()}
+                  >
+                    Send Otp
+                  </button>
+                </div>
+
+                {proposerOtpSent && (
+                  <div className="flex gap-4">
+                    <div>
+                      <label className="block font-semibold mb-2 ">
+                        Enter Otp:
+                      </label>
+                      <input
+                        type="number"
+                        onChange={(e) => setProposerOtp(e.target.value)}
+                        name="proposerMembershipOtp"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex items-end">
+                      <button
+                        className="bg-blue-600 py-2 px-4 rounded-md text-white cursor-pointer "
+                        type="button"
+                        onClick={() => handleProposerVerification()}
+                      >
+                        Verify 
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label className="block font-semibold mb-2">
                     ಪ್ರತಿಪಾದಕ ಹೆಸರು / Proposer Name
@@ -1424,8 +1471,8 @@ const MembershipForm = () => {
                     type="text"
                     name="proposerName"
                     value={formData.proposer.proposerName}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    disabled
+                    className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-200"
                   />
                 </div>
 
@@ -1437,8 +1484,8 @@ const MembershipForm = () => {
                     type="text"
                     name="proposerAddress"
                     value={formData.proposer.proposerAddress}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                   />
                 </div>
 
@@ -1450,8 +1497,8 @@ const MembershipForm = () => {
                     type="tel"
                     name="proposerMobileNo"
                     value={formData.proposer.proposerMobileNo}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                   />
                 </div>
 
@@ -1463,8 +1510,8 @@ const MembershipForm = () => {
                     type="text"
                     name="proposerDesignation"
                     value={formData.proposer.proposerDesignation}
-                    onChange={(e) => handleInputChange(e, "proposer")}
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                   />
                 </div>
               </div>
@@ -1669,8 +1716,7 @@ const MembershipForm = () => {
         </div>
       )}
 
-      {!openModal && (<MembershipCard setOpenModal={setOpenModal} />)}
-     
+      {!openModal && <MembershipCard setOpenModal={setOpenModal} />}
     </>
   );
 };
