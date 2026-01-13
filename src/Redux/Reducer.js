@@ -13,7 +13,7 @@ const userSlice = createSlice({
              const payload = action.payload;
 
       state.user = {
-        id: payload.id,
+        // id: payload.id,
         name: payload.name,
         phone: payload.phone,
         roles: Array.isArray(payload.roles)

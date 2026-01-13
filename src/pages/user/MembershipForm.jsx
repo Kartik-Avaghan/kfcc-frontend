@@ -29,19 +29,17 @@ const MembershipForm = () => {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const OTP_DURATION =50;
+  const OTP_DURATION = 60;
   const [endoresmentOtpSent, setEndoresmentOtpSent] = useState({
     PROPOSER: {
-      sent:false,
-      timeleft:0,
-      verified:false,
-
+      sent: false,
+      timeleft: 0,
+      verified: false,
     },
     SECONDER: {
-      sent:false,
-      timeleft:0,
-      verified:false,
-
+      sent: false,
+      timeleft: 0,
+      verified: false,
     },
   });
   const [endoresmentOtp, setEndoresmentOtp] = useState({
@@ -168,12 +166,20 @@ const MembershipForm = () => {
       labelEn: "Date of Birth",
       labelKn: "ಜನ್ಮ ದಿನಾಂಕ",
     },
+    // {
+    //   key: "partnerBloodGroup",
+    //   type: "text",
+    //   labelEn: "Blood Group",
+    //   labelKn: "ರಕ್ತದ ಗುಂಪು",
+    // },
     {
       key: "partnerBloodGroup",
-      type: "text",
+      type: "select",
       labelEn: "Blood Group",
       labelKn: "ರಕ್ತದ ಗುಂಪು",
+      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-","Other"],
     },
+
     {
       key: "partnerPanNo",
       type: "text",
@@ -431,14 +437,14 @@ const MembershipForm = () => {
       }
 
       notify(data, "success");
-     setEndoresmentOtpSent((prev) => ({
-      ...prev,
-      [type]: {
-        sent: true,
-        timeleft: OTP_DURATION,
-        verified: false,
-      },
-    }));
+      setEndoresmentOtpSent((prev) => ({
+        ...prev,
+        [type]: {
+          sent: true,
+          timeleft: OTP_DURATION,
+          verified: false,
+        },
+      }));
     } catch (error) {
       notify(error.message, "error");
     }
@@ -478,16 +484,14 @@ const MembershipForm = () => {
         return;
       }
 
-
       setEndoresmentOtpSent((prev) => ({
-  ...prev,
-  [type]: {
-    ...prev[type],
-    verified: true,
-    timeleft: 0,
-  },
-}));
-
+        ...prev,
+        [type]: {
+          ...prev[type],
+          verified: true,
+          timeleft: 0,
+        },
+      }));
 
       setFormData((prev) => ({
         ...prev,
@@ -506,7 +510,7 @@ const MembershipForm = () => {
         },
       }));
 
-      notify(`${type} Verified`, "success");
+      notify(`${type.toLowerCase()} Verified`, "success");
     } catch (error) {
       notify(error.message, "error");
     }
@@ -518,26 +522,23 @@ const MembershipForm = () => {
     return "XXXXXXX" + str.slice(-3);
   };
 
-
-
   useEffect(() => {
-  const interval = setInterval(() => {
-    setEndoresmentOtpSent((prev) => {
-      const updated = { ...prev };
+    const interval = setInterval(() => {
+      setEndoresmentOtpSent((prev) => {
+        const updated = { ...prev };
 
-      ["PROPOSER", "SECONDER"].forEach((type) => {
-        if (updated[type].timeleft > 0) {
-          updated[type].timeleft -= 1;
-        }
+        ["PROPOSER", "SECONDER"].forEach((type) => {
+          if (updated[type].timeleft > 0) {
+            updated[type].timeleft -= 1;
+          }
+        });
+
+        return updated;
       });
+    }, 1000);
 
-      return updated;
-    });
-  }, 1000);
-
-  return () => clearInterval(interval);
-}, []);
-
+    return () => clearInterval(interval);
+  }, []);
 
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -549,7 +550,6 @@ const MembershipForm = () => {
 
     const payload = {
       ...formData,
-      userId: decodedToken.userid,
       membershipFee: formData.membershipFee,
       kalyanNidhi: formData.kalyanNidhi ? 1 : 0,
       totalAmountToPay: formData.totalAmountToPay,
@@ -588,19 +588,34 @@ const MembershipForm = () => {
         formData.proprietor.proprietorESignature
       );
 
-    formData.partners.forEach((p, i) => {
-      if (p.partnerPan)
-        // form.append("partnerPan[]", p.partnerPan);
-        form.append(`partnerPan_${i}`, p.partnerPan);
+    formData.partners.forEach((p) => {
+      if (p.partnerPan) {
+        form.append("partnerPan", p.partnerPan);
+      }
 
-      if (p.partnerAadhaar)
-        // form.append("partnerAadhaar[]", p.partnerAadhaar);
-        form.append(`partnerAadhaar_${i}`, p.partnerAadhaar);
+      if (p.partnerAadhaar) {
+        form.append("partnerAadhaar", p.partnerAadhaar);
+      }
 
-      if (p.partnerSignature)
-        // form.append("partnerSignature[]", p.partnerSignature);
-        form.append(`partnerSignature_${i}`, p.partnerSignature);
+      if (p.partnerSignature) {
+        form.append("partnerSignature", p.partnerSignature);
+      }
     });
+
+    // Ownership documents (MANDATORY for non-PROPRIETOR)
+    if (formData.applicantOwnershipType !== "PROPRIETOR") {
+      if (formData.partners[0]?.partnershipDeed) {
+        form.append("partnershipDeed", formData.partners[0].partnershipDeed);
+      }
+
+      if (formData.partners[0]?.moa) {
+        form.append("moa", formData.partners[0].moa);
+      }
+
+      if (formData.partners[0]?.aoa) {
+        form.append("aoa", formData.partners[0].aoa);
+      }
+    }
 
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/apply`, {
       method: "POST",
@@ -692,7 +707,7 @@ const MembershipForm = () => {
           ],
 
           proposer: {
-            proposerMembershipId: null, // MUST be number or null
+            proposerMembershipId: "", // MUST be number or null
             proposerName: "",
             proposerAddress: "",
             proposerMobileNo: "",
@@ -700,13 +715,23 @@ const MembershipForm = () => {
           },
 
           seconder: {
-            seconderMembershipId: null,
+            seconderMembershipId: "",
             seconderName: "",
             seconderAddress: "",
             seconderMobileNo: "",
             seconderDesignation: "",
           },
           totalAmountToPay: 59000,
+        });
+
+        setEndoresmentOtpSent({
+          PROPOSER: { sent: false, timeleft: 0, verified: false },
+          SECONDER: { sent: false, timeleft: 0, verified: false },
+        });
+
+        setEndoresmentOtp({
+          PROPOSER: "",
+          SECONDER: "",
         });
 
         //  Reset terms checkbox as well
@@ -993,9 +1018,9 @@ const MembershipForm = () => {
                 </label>
                 <input
                   type="date"
-                  name="proprietorDob"
-                  value={formData.proprietor.proprietorDob}
-                  onChange={(e) => handleInputChange(e, "proprietor")}
+                  name="dob"
+                  value={userData.dob}
+                  //  onChange={handleUserData}
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                 />
               </div>
@@ -1454,22 +1479,40 @@ const MembershipForm = () => {
                             {field.labelKn} / {field.labelEn}
                           </label>
 
-                          <input
-                            type={field.type}
-                            name={field.key}
-                            value={
-                              field.type === "file"
-                                ? undefined
-                                : partner[field.key] || ""
-                            }
-                            onChange={(e) =>
-                              handleInputChange(e, "partners", idx)
-                            }
-                            className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-2
-                  file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0
-                  file:bg-blue-600 file:text-white hover:file:bg-blue-700
-                  transition file:text-[12px] cursor-pointer"
-                          />
+                          {field.type === "select" ? (
+                            <select
+                              name={field.key}
+                              value={partner[field.key] || ""}
+                              onChange={(e) =>
+                                handleInputChange(e, "partners", idx)
+                              }
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            >
+                              <option value="">Select</option>
+                              {field.options.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type={field.type}
+                              name={field.key}
+                              value={
+                                field.type === "file"
+                                  ? undefined
+                                  : partner[field.key] || ""
+                              }
+                              onChange={(e) =>
+                                handleInputChange(e, "partners", idx)
+                              }
+                              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-2
+      file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0
+      file:bg-blue-600 file:text-white hover:file:bg-blue-700
+      transition file:text-[12px] cursor-pointer"
+                            />
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1569,92 +1612,92 @@ const MembershipForm = () => {
             </div>
 
             {/* Proposer Form */}
-            <div className="p-4 space-y-3">
-              <h3 className="text-lg font-semibold mb-3 ">
+            <div className="p-4 space-y-4">
+              <h3 className="text-lg font-semibold">
                 ಪ್ರತಿಪಾದಕ ವಿವರಗಳು / Proposer Details
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex gap-4">
-                  <div>
-                    <label className="block font-semibold mb-2 ">
-                      ಪ್ರತಿಪಾದಕ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Proposer Membership ID
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.proposer.proposerMembershipId}
-                      onChange={(e) => handleInputChange(e, "proposer")}
-                      name="proposerMembershipId"
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  {!endoresmentOtpSent .PROPOSER.sent && (
-
-                  <div className="flex items-end">
-                    <button
-                      className="bg-blue-600 flex gap-2 items-center py-2.5 px-2 rounded-md text-white text-sm cursor-pointer hover:bg-blue-800 transition-all"
-                      type="button"
-                      onClick={() => handleEndorsementSendOtp("PROPOSER")}
-                    >
-                      <Send size={14} /> Send Otp
-                    </button>
-                  </div>
-                  )}
+              <div className="grid grid-cols-12 gap-4">
+                {/* Membership ID */}
+                <div className="col-span-12 md:col-span-6">
+                  <label className="block font-semibold mb-2">
+                    ಪ್ರತಿಪಾದಕ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Proposer Membership ID
+                  </label>
+                  <input
+                    type="number"
+                    name="proposerMembershipId"
+                    value={formData.proposer.proposerMembershipId}
+                    onChange={(e) => handleInputChange(e, "proposer")}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
                 </div>
 
-                {endoresmentOtpSent.PROPOSER.sent  && !endoresmentOtpSent.PROPOSER.verified && (
-                  <div className="flex gap-4">
-                    <div>
-                      <label className="block font-semibold mb-2 ">
-                        Enter Otp:
-                        <span className="text-sm text-gray-500 ml-2">
-          ({endoresmentOtpSent.PROPOSER.timeleft}s)
-        </span>
-                      </label>
-                      <input
-                        type="number"
-                        disabled={endoresmentOtpSent.PROPOSER.timeleft===0}
-                        placeholder="XXXXXX"
-                        onChange={(e) =>
-                          setEndoresmentOtp((prev) => ({
-                            ...prev,
-                            PROPOSER: e.target.value,
-                          }))
-                        }
-                        name="proposerMembershipOtp"
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
-                    </div>
+                {/* Send / Resend Button */}
+                <div className="col-span-12 md:col-span-2 flex items-end">
+                  {!endoresmentOtpSent.PROPOSER.sent && (
+                    <button
+                      type="button"
+                      onClick={() => handleEndorsementSendOtp("PROPOSER")}
+                      className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
+                    >
+                      <Send size={16} /> Send OTP
+                    </button>
+                  )}
 
-                    <div className="flex items-end">
+                  {endoresmentOtpSent.PROPOSER.sent &&
+                    endoresmentOtpSent.PROPOSER.timeleft === 0 &&
+                    !endoresmentOtpSent.PROPOSER.verified && (
                       <button
-                      disabled={endoresmentOtpSent.PROPOSER.timeleft===0}
-                        className="bg-blue-600 flex items-center gap-2 py-2 px-4 rounded-md text-white cursor-pointer "
                         type="button"
-                        onClick={() =>
-                          handleEndorsementVerification("PROPOSER")
-                        }
+                        onClick={() => handleEndorsementSendOtp("PROPOSER")}
+                        className="w-full bg-blue-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800 cursor-pointer"
                       >
-                        <Check size={20} /> Verify
+                        <Send size={16} /> Resend OTP
                       </button>
-                    </div>
-                  </div>
-                )}
+                    )}
+                </div>
 
+                {/* OTP Section */}
                 {endoresmentOtpSent.PROPOSER.sent &&
-  endoresmentOtpSent.PROPOSER.timeleft === 0 &&
-  !endoresmentOtpSent.PROPOSER.verified && (
-    <button
-      type="button"
-      className="text-blue-600 underline text-sm mt-1"
-      onClick={() => handleEndorsementSendOtp("PROPOSER")}
-    >
-      Resend OTP
-    </button>
-  )}
+                  !endoresmentOtpSent.PROPOSER.verified && (
+                    <>
+                      <div className="col-span-12 md:col-span-6">
+                        <label className="flex items-center gap-3 font-semibold mb-2">
+                          ಒಟಿಪಿ ನಮೂದಿಸಿ / Enter OTP
+                          <span className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
+                            {endoresmentOtpSent.PROPOSER.timeleft}s
+                          </span>
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="XXXXXX"
+                          disabled={endoresmentOtpSent.PROPOSER.timeleft === 0}
+                          onChange={(e) =>
+                            setEndoresmentOtp((prev) => ({
+                              ...prev,
+                              PROPOSER: e.target.value,
+                            }))
+                          }
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
 
-                <div>
+                      <div className="col-span-12 md:col-span-2 flex items-end">
+                        <button
+                          type="button"
+                          disabled={endoresmentOtpSent.PROPOSER.timeleft === 0}
+                          onClick={() =>
+                            handleEndorsementVerification("PROPOSER")
+                          }
+                          className="w-full cursor-pointer bg-green-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white disabled:bg-gray-400"
+                        >
+                          <Check size={18} /> Verify
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಪ್ರತಿಪಾದಕ ಹೆಸರು / Proposer Name
                   </label>
@@ -1667,7 +1710,7 @@ const MembershipForm = () => {
                   />
                 </div>
 
-                <div>
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಪ್ರತಿಪಾದಕ ವಿಳಾಸ / Proposer Address
                   </label>
@@ -1680,7 +1723,7 @@ const MembershipForm = () => {
                   />
                 </div>
 
-                <div>
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಮೊಬೈಲ್ ಸಂಖ್ಯೆ / Mobile Number
                   </label>
@@ -1693,7 +1736,7 @@ const MembershipForm = () => {
                   />
                 </div>
 
-                <div>
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಹುದ್ದೆ / Designation
                   </label>
@@ -1750,72 +1793,91 @@ const MembershipForm = () => {
           )}
         </div> */}
 
-            <div className="p-4 space-y-3">
-              <h3 className="text-lg font-semibold mb-3 ">
+            <div className="p-4 space-y-4">
+              <h3 className="text-lg font-semibold">
                 ಸೇಕಂಡರ್ ವಿವರಗಳು / Seconder Details
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex gap-4">
-                  <div>
-                    <label className="block font-semibold mb-2 ">
-                      ಸೇಕಂಡರ್ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Seconder Membership ID
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.seconder.seconderMembershipId}
-                      onChange={(e) => handleInputChange(e, "seconder")}
-                      name="seconderMembershipId"
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div className="flex items-end">
-                    <button
-                      className="bg-blue-600 flex gap-2 items-center py-2.5 px-2 rounded-md text-white text-sm cursor-pointer hover:bg-blue-800 transition-all"
-                      type="button"
-                      onClick={() => handleEndorsementSendOtp("SECONDER")}
-                    >
-                      <Send size={14} /> Send Otp
-                    </button>
-                  </div>
+              <div className="grid grid-cols-12 gap-4">
+                {/* Membership ID */}
+                <div className="col-span-12 md:col-span-6">
+                  <label className="block font-semibold mb-2">
+                    ಸೇಕಂಡರ್ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Seconder Membership ID
+                  </label>
+                  <input
+                    type="number"
+                    name="seconderMembershipId"
+                    value={formData.seconder.seconderMembershipId}
+                    onChange={(e) => handleInputChange(e, "seconder")}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
                 </div>
 
-                {endoresmentOtpSent.SECONDER && (
-                  <div className="flex gap-4">
-                    <div>
-                      <label className="block font-semibold mb-2 ">
-                        Enter Otp:
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="XXXXXX"
-                        onChange={(e) =>
-                          setEndoresmentOtp((prev) => ({
-                            ...prev,
-                            SECONDER: e.target.value,
-                          }))
-                        }
-                        name="seconderMembershipOtp"
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
-                    </div>
+                <div className="col-span-12 md:col-span-2 flex items-end">
+                  {!endoresmentOtpSent.SECONDER.sent && (
+                    <button
+                      type="button"
+                      onClick={() => handleEndorsementSendOtp("SECONDER")}
+                      className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
+                    >
+                      <Send size={16} /> Send OTP
+                    </button>
+                  )}
 
-                    <div className="flex items-end">
+                  {endoresmentOtpSent.SECONDER.sent &&
+                    endoresmentOtpSent.SECONDER.timeleft === 0 &&
+                    !endoresmentOtpSent.SECONDER.verified && (
                       <button
-                        className="bg-blue-600 flex items-center gap-2 py-2 px-4 rounded-md text-white cursor-pointer "
                         type="button"
-                        onClick={() =>
-                          handleEndorsementVerification("SECONDER")
-                        }
+                        onClick={() => handleEndorsementSendOtp("SECONDER")}
+                        className="w-full bg-blue-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800 cursor-pointer"
                       >
-                        <Check size={20} /> Verify
+                        <Send size={16} /> Resend OTP
                       </button>
-                    </div>
-                  </div>
-                )}
+                    )}
+                </div>
 
-                <div>
+                {/* OTP Section */}
+                {endoresmentOtpSent.SECONDER.sent &&
+                  !endoresmentOtpSent.SECONDER.verified && (
+                    <>
+                      <div className="col-span-12 md:col-span-6">
+                        <label className="flex items-center gap-3 font-semibold mb-2">
+                          ಒಟಿಪಿ ನಮೂದಿಸಿ / Enter OTP
+                          <span className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
+                            {endoresmentOtpSent.SECONDER.timeleft}s
+                          </span>
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="XXXXXX"
+                          disabled={endoresmentOtpSent.SECONDER.timeleft === 0}
+                          onChange={(e) =>
+                            setEndoresmentOtp((prev) => ({
+                              ...prev,
+                              SECONDER: e.target.value,
+                            }))
+                          }
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+
+                      <div className="col-span-12 md:col-span-2 flex items-end">
+                        <button
+                          type="button"
+                          disabled={endoresmentOtpSent.SECONDER.timeleft === 0}
+                          onClick={() =>
+                            handleEndorsementVerification("SECONDER")
+                          }
+                          className="w-full cursor-pointer bg-green-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white disabled:bg-gray-400"
+                        >
+                          <Check size={18} /> Verify
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಸೇಕಂಡರ್ ಹೆಸರು / seconder Name
                   </label>
@@ -1828,7 +1890,7 @@ const MembershipForm = () => {
                   />
                 </div>
 
-                <div>
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಸೇಕಂಡರ್ ವಿಳಾಸ / seconder Address
                   </label>
@@ -1841,7 +1903,7 @@ const MembershipForm = () => {
                   />
                 </div>
 
-                <div>
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಮೊಬೈಲ್ ಸಂಖ್ಯೆ / Mobile Number
                   </label>
@@ -1854,7 +1916,7 @@ const MembershipForm = () => {
                   />
                 </div>
 
-                <div>
+                <div className="col-span-12 md:col-span-6">
                   <label className="block font-semibold mb-2">
                     ಹುದ್ದೆ / Designation
                   </label>
