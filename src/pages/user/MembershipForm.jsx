@@ -435,7 +435,7 @@ const MembershipForm = () => {
       ...prev,
       [type]: {
         sent: true,
-        timeLeft: OTP_DURATION,
+        timeleft: OTP_DURATION,
         verified: false,
       },
     }));
@@ -484,7 +484,7 @@ const MembershipForm = () => {
   [type]: {
     ...prev[type],
     verified: true,
-    timeLeft: 0,
+    timeleft: 0,
   },
 }));
 
@@ -526,8 +526,8 @@ const MembershipForm = () => {
       const updated = { ...prev };
 
       ["PROPOSER", "SECONDER"].forEach((type) => {
-        if (updated[type].timeLeft > 0) {
-          updated[type].timeLeft -= 1;
+        if (updated[type].timeleft > 0) {
+          updated[type].timeleft -= 1;
         }
       });
 
@@ -1609,7 +1609,7 @@ const MembershipForm = () => {
                       <label className="block font-semibold mb-2 ">
                         Enter Otp:
                         <span className="text-sm text-gray-500 ml-2">
-          ({otpState.PROPOSER.timeLeft}s)
+          ({endoresmentOtpSent.PROPOSER.timeleft}s)
         </span>
                       </label>
                       <input
@@ -1629,6 +1629,7 @@ const MembershipForm = () => {
 
                     <div className="flex items-end">
                       <button
+                      disabled={endoresmentOtpSent.PROPOSER.timeleft===0}
                         className="bg-blue-600 flex items-center gap-2 py-2 px-4 rounded-md text-white cursor-pointer "
                         type="button"
                         onClick={() =>
@@ -1640,6 +1641,18 @@ const MembershipForm = () => {
                     </div>
                   </div>
                 )}
+
+                {endoresmentOtpSent.PROPOSER.sent &&
+  endoresmentOtpSent.PROPOSER.timeleft === 0 &&
+  !endoresmentOtpSent.PROPOSER.verified && (
+    <button
+      type="button"
+      className="text-blue-600 underline text-sm mt-1"
+      onClick={() => handleEndorsementSendOtp("PROPOSER")}
+    >
+      Resend OTP
+    </button>
+  )}
 
                 <div>
                   <label className="block font-semibold mb-2">
