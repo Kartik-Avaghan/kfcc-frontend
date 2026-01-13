@@ -28,8 +28,26 @@ const MembershipForm = () => {
   const KALYAN_NIDHI_FEE = 22500;
 
   const [openModal, setOpenModal] = useState(false);
-  const [proposerOtpSent, setProposerOtpSent] = useState(false);
-  const [proposerOtp, setProposerOtp] = useState("");
+
+  const OTP_DURATION =50;
+  const [endoresmentOtpSent, setEndoresmentOtpSent] = useState({
+    PROPOSER: {
+      sent:false,
+      timeleft:0,
+      verified:false,
+
+    },
+    SECONDER: {
+      sent:false,
+      timeleft:0,
+      verified:false,
+
+    },
+  });
+  const [endoresmentOtp, setEndoresmentOtp] = useState({
+    PROPOSER: "",
+    SECONDER: "",
+  });
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
@@ -274,7 +292,9 @@ const MembershipForm = () => {
       setFormData((prev) => ({
         ...prev,
         [name]:
-          name === "applicantPinCode"
+          name === "applicantMembershipCategory"
+            ? value.toUpperCase()
+            : name === "applicantPinCode"
             ? value === ""
               ? ""
               : Number(value)
@@ -382,18 +402,19 @@ const MembershipForm = () => {
     }));
   };
 
-  const handleProposerSendOtp = async () => {
+  const handleEndorsementSendOtp = async (type) => {
     // Implement OTP sending logic here
-    if (!formData.proposer.proposerMembershipId) {
-      notify("Please enter Proposer Membership ID", "error");
-      return;
-    }
+    const membershipId =
+      type === "PROPOSER"
+        ? formData.proposer.proposerMembershipId
+        : formData.seconder.seconderMembershipId;
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/membership/proposer/send-otp/${
-          formData.proposer.proposerMembershipId
-        }`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/membership/endorsement/send-otp/${membershipId}/${type}
+        `,
         {
           method: "POST",
           headers: {
@@ -410,32 +431,43 @@ const MembershipForm = () => {
       }
 
       notify(data, "success");
-      setProposerOtpSent(true);
+     setEndoresmentOtpSent((prev) => ({
+      ...prev,
+      [type]: {
+        sent: true,
+        timeLeft: OTP_DURATION,
+        verified: false,
+      },
+    }));
     } catch (error) {
       notify(error.message, "error");
     }
   };
 
-  const handleProposerVerification = async () => {
-    if (!proposerOtp) {
-      notify("Please enter OTP", "error");
-    }
+  const handleEndorsementVerification = async (type) => {
+    const endorsementMembershipId =
+      type === "PROPOSER"
+        ? formData.proposer.proposerMembershipId
+        : formData.seconder.seconderMembershipId;
 
     try {
-      const apidata = {
-        proposerMembershipId: formData.proposer.proposerMembershipId,
-        otp: proposerOtp,
+      const payload = {
+        proposerMembershipId: endorsementMembershipId,
+        otp: endoresmentOtp[type],
+        type: type,
       };
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/membership/proposer/verify-otp`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/membership/endorsement/verify-otp`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(apidata),
+          body: JSON.stringify(payload),
         }
       );
 
@@ -446,20 +478,35 @@ const MembershipForm = () => {
         return;
       }
 
+
+      setEndoresmentOtpSent((prev) => ({
+  ...prev,
+  [type]: {
+    ...prev[type],
+    verified: true,
+    timeLeft: 0,
+  },
+}));
+
+
       setFormData((prev) => ({
         ...prev,
-        proposer: {
-          ...prev.proposer,
-          proposerName: [data.firstName, data.middleName, data.lastName]
+        [type.toLowerCase()]: {
+          ...prev[type.toLowerCase()],
+          [`${type.toLowerCase()}Name`]: [
+            data.firstName,
+            data.middleName,
+            data.lastName,
+          ]
             .filter(Boolean)
             .join(" "),
-          proposerAddress: data.address,
-          proposerDesignation: data.designation,
-          proposerMobileNo: data.mobile,
+          [`${type.toLowerCase()}Address`]: data.address,
+          [`${type.toLowerCase()}Designation`]: data.designation,
+          [`${type.toLowerCase()}MobileNo`]: data.mobile,
         },
       }));
 
-      notify("Proposer Verified", "success");
+      notify(`${type} Verified`, "success");
     } catch (error) {
       notify(error.message, "error");
     }
@@ -471,17 +518,35 @@ const MembershipForm = () => {
     return "XXXXXXX" + str.slice(-3);
   };
 
+
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setEndoresmentOtpSent((prev) => {
+      const updated = { ...prev };
+
+      ["PROPOSER", "SECONDER"].forEach((type) => {
+        if (updated[type].timeLeft > 0) {
+          updated[type].timeLeft -= 1;
+        }
+      });
+
+      return updated;
+    });
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+
+
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
-
-  // console.log(decodedToken);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const form = new FormData();
 
-    // form.append("request",JSON.stringify(formData));
     const payload = {
       ...formData,
       userId: decodedToken.userid,
@@ -540,7 +605,6 @@ const MembershipForm = () => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/apply`, {
       method: "POST",
       headers: {
-        // "Content-Type": "application/json",
         Authorization: `${localStorage.getItem("token")}`,
       },
       body: form,
@@ -879,9 +943,6 @@ const MembershipForm = () => {
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                 />
 
-                
-
-                
                 {/* <select
               name="applicantBloodGroup"
               value={formData.applicantBloodGroup}
@@ -925,40 +986,34 @@ const MembershipForm = () => {
             </select>
           </div> */}
 
-
-          <div className="mt-1">
+              <div className="mt-1">
                 <label className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-blue-700" />
-                      ಹುಟ್ಟಿದ ದಿನಾಂಕ / Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      name="proprietorDob"
-                      value={formData.proprietor.proprietorDob}
-                      onChange={(e) => handleInputChange(e, "proprietor")}
-                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
-                    />
-                  </div>
-
-              
-
-             
-
+                  ಹುಟ್ಟಿದ ದಿನಾಂಕ / Date of Birth
+                </label>
+                <input
+                  type="date"
+                  name="proprietorDob"
+                  value={formData.proprietor.proprietorDob}
+                  onChange={(e) => handleInputChange(e, "proprietor")}
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                />
+              </div>
 
               <div>
-                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                       <Fingerprint className="w-4 h-4 text-blue-700" />
-                      ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
-                    </label>
-                    <input
-                      type="number"
-                      name="proprietorAadhaarNo"
-                      value={formData.proprietor.proprietorAadhaarNo}
-                      onChange={(e) => handleInputChange(e, "proprietor")}
-                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
-                      placeholder="Enter Aadhaar number"
-                    />
-                  </div>
+                <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  <Fingerprint className="w-4 h-4 text-blue-700" />
+                  ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
+                </label>
+                <input
+                  type="number"
+                  name="proprietorAadhaarNo"
+                  value={formData.proprietor.proprietorAadhaarNo}
+                  onChange={(e) => handleInputChange(e, "proprietor")}
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                  placeholder="Enter Aadhaar number"
+                />
+              </div>
 
               {/* Image */}
               <div>
@@ -974,21 +1029,20 @@ const MembershipForm = () => {
                 />
               </div>
 
-
-               <div>
-                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                       <CreditCard className="w-4 h-4 text-blue-700" />
-                      ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
-                    </label>
-                    <input
-                      type="text"
-                      name="proprietorPanNo"
-                      value={formData.proprietor.proprietorPanNo}
-                      onChange={(e) => handleInputChange(e, "proprietor")}
-                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
-                      placeholder="Enter PAN number"
-                    />
-                  </div>
+              <div>
+                <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-blue-700" />
+                  ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
+                </label>
+                <input
+                  type="text"
+                  name="proprietorPanNo"
+                  value={formData.proprietor.proprietorPanNo}
+                  onChange={(e) => handleInputChange(e, "proprietor")}
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                  placeholder="Enter PAN number"
+                />
+              </div>
 
               {/* Image */}
               <div>
@@ -1032,8 +1086,6 @@ const MembershipForm = () => {
                 />
               </div>
 
-              
-
               <div>
                 <label className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
                   <Building2 className="w-4 h-4 text-blue-700" />
@@ -1063,9 +1115,6 @@ const MembershipForm = () => {
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                 />
               </div>
-
-
-              
 
               {/* <div>
             <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -1163,7 +1212,6 @@ const MembershipForm = () => {
                 </select>
               </div>
 
-
               {/* Image */}
               <div>
                 <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -1208,8 +1256,8 @@ const MembershipForm = () => {
                 </h2>
 
                 <div className="grid grid-cols-2 gap-4"> */}
-                  {/* Proprietor Name */}
-                  {/* <div>
+            {/* Proprietor Name */}
+            {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ಮಾಲೀಕರ ಹೆಸರು / Proprietor Name
                     </label>
@@ -1223,8 +1271,8 @@ const MembershipForm = () => {
                     />
                   </div> */}
 
-                  {/* Proprietor Address */}
-                  {/* <div>
+            {/* Proprietor Address */}
+            {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ವಿಳಾಸ / Address
                     </label>
@@ -1238,11 +1286,10 @@ const MembershipForm = () => {
                     />
                   </div> */}
 
-                  {/* Date of Birth */}
-                  
+            {/* Date of Birth */}
 
-                  {/* Blood Group */}
-                  {/* <div>
+            {/* Blood Group */}
+            {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ರಕ್ತದ ಗುಂಪು / Blood Group
                     </label>
@@ -1265,8 +1312,8 @@ const MembershipForm = () => {
                     </select>
                   </div> */}
 
-                  {/* PAN Number */}
-                  {/* <div>
+            {/* PAN Number */}
+            {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
                     </label>
@@ -1280,8 +1327,8 @@ const MembershipForm = () => {
                     />
                   </div> */}
 
-                  {/* Aadhaar Number */}
-                  {/* <div>
+            {/* Aadhaar Number */}
+            {/* <div>
                     <label className="block text-sm font-semibold mb-1">
                       ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
                     </label>
@@ -1294,10 +1341,10 @@ const MembershipForm = () => {
                       placeholder="Enter Aadhaar number"
                     />
                   </div> */}
-                {/* </div> */}
+            {/* </div> */}
 
-                {/* File Uploads */}
-                {/* <div className="grid grid-cols-3 gap-4 mt-4">
+            {/* File Uploads */}
+            {/* <div className="grid grid-cols-3 gap-4 mt-4">
               
               <div>
                 <label className="block text-sm font-semibold mb-1">
@@ -1321,8 +1368,8 @@ const MembershipForm = () => {
                 )}
               </div> */}
 
-                {/* Aadhaar Image */}
-                {/* <div>
+            {/* Aadhaar Image */}
+            {/* <div>
                 <label className="block text-sm font-semibold mb-1">
                   ಆಧಾರ್ ಕಾರ್ಡ್ ಚಿತ್ರ / Aadhaar Card Image
                 </label>
@@ -1344,8 +1391,8 @@ const MembershipForm = () => {
                 )}
               </div> */}
 
-                {/* E-Signature */}
-                {/* <div>
+            {/* E-Signature */}
+            {/* <div>
                 <label className="block text-sm font-semibold mb-1">
                   ಇ-ಸಹಿ / E-Signature
                 </label>
@@ -1372,7 +1419,7 @@ const MembershipForm = () => {
                 )}
               </div>
             </div> */}
-              {/* </div> */}
+            {/* </div> */}
             {/* )} */}
 
             {/* Partners Form */}
@@ -1542,28 +1589,39 @@ const MembershipForm = () => {
                     />
                   </div>
 
+                  {!endoresmentOtpSent .PROPOSER.sent && (
+
                   <div className="flex items-end">
                     <button
                       className="bg-blue-600 flex gap-2 items-center py-2.5 px-2 rounded-md text-white text-sm cursor-pointer hover:bg-blue-800 transition-all"
                       type="button"
-                      onClick={() => handleProposerSendOtp()}
+                      onClick={() => handleEndorsementSendOtp("PROPOSER")}
                     >
-                      <Send size={14}/> Send Otp
+                      <Send size={14} /> Send Otp
                     </button>
                   </div>
-
+                  )}
                 </div>
 
-                {proposerOtpSent && (
+                {endoresmentOtpSent.PROPOSER.sent  && !endoresmentOtpSent.PROPOSER.verified && (
                   <div className="flex gap-4">
                     <div>
                       <label className="block font-semibold mb-2 ">
                         Enter Otp:
+                        <span className="text-sm text-gray-500 ml-2">
+          ({otpState.PROPOSER.timeLeft}s)
+        </span>
                       </label>
                       <input
                         type="number"
+                        disabled={endoresmentOtpSent.PROPOSER.timeleft===0}
                         placeholder="XXXXXX"
-                        onChange={(e) => setProposerOtp(e.target.value)}
+                        onChange={(e) =>
+                          setEndoresmentOtp((prev) => ({
+                            ...prev,
+                            PROPOSER: e.target.value,
+                          }))
+                        }
                         name="proposerMembershipOtp"
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
@@ -1573,7 +1631,9 @@ const MembershipForm = () => {
                       <button
                         className="bg-blue-600 flex items-center gap-2 py-2 px-4 rounded-md text-white cursor-pointer "
                         type="button"
-                        onClick={() => handleProposerVerification()}
+                        onClick={() =>
+                          handleEndorsementVerification("PROPOSER")
+                        }
                       >
                         <Check size={20} /> Verify
                       </button>
@@ -1677,15 +1737,134 @@ const MembershipForm = () => {
           )}
         </div> */}
 
-            {/* secondary */}
             <div className="p-4 space-y-3">
-              <h3 className="text-lg font-semibold mb-3">
+              <h3 className="text-lg font-semibold mb-3 ">
                 ಸೇಕಂಡರ್ ವಿವರಗಳು / Seconder Details
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Seconder Membership ID */}
+                <div className="flex gap-4">
+                  <div>
+                    <label className="block font-semibold mb-2 ">
+                      ಸೇಕಂಡರ್ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Seconder Membership ID
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.seconder.seconderMembershipId}
+                      onChange={(e) => handleInputChange(e, "seconder")}
+                      name="seconderMembershipId"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="flex items-end">
+                    <button
+                      className="bg-blue-600 flex gap-2 items-center py-2.5 px-2 rounded-md text-white text-sm cursor-pointer hover:bg-blue-800 transition-all"
+                      type="button"
+                      onClick={() => handleEndorsementSendOtp("SECONDER")}
+                    >
+                      <Send size={14} /> Send Otp
+                    </button>
+                  </div>
+                </div>
+
+                {endoresmentOtpSent.SECONDER && (
+                  <div className="flex gap-4">
+                    <div>
+                      <label className="block font-semibold mb-2 ">
+                        Enter Otp:
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="XXXXXX"
+                        onChange={(e) =>
+                          setEndoresmentOtp((prev) => ({
+                            ...prev,
+                            SECONDER: e.target.value,
+                          }))
+                        }
+                        name="seconderMembershipOtp"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div className="flex items-end">
+                      <button
+                        className="bg-blue-600 flex items-center gap-2 py-2 px-4 rounded-md text-white cursor-pointer "
+                        type="button"
+                        onClick={() =>
+                          handleEndorsementVerification("SECONDER")
+                        }
+                      >
+                        <Check size={20} /> Verify
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div>
+                  <label className="block font-semibold mb-2">
+                    ಸೇಕಂಡರ್ ಹೆಸರು / seconder Name
+                  </label>
+                  <input
+                    type="text"
+                    name="seconderName"
+                    value={formData.seconder.seconderName}
+                    disabled
+                    className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold mb-2">
+                    ಸೇಕಂಡರ್ ವಿಳಾಸ / seconder Address
+                  </label>
+                  <input
+                    type="text"
+                    name="seconderAddress"
+                    value={formData.seconder.seconderAddress}
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold mb-2">
+                    ಮೊಬೈಲ್ ಸಂಖ್ಯೆ / Mobile Number
+                  </label>
+                  <input
+                    type="tel"
+                    name="seconderMobileNo"
+                    value={maskMobile(formData.seconder.seconderMobileNo)}
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold mb-2">
+                    ಹುದ್ದೆ / Designation
+                  </label>
+                  <input
+                    type="text"
+                    name="seconderDesignation"
+                    value={formData.seconder.seconderDesignation}
+                    disabled
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* secondary */}
+            {/* <div className="p-4 space-y-3">
+              <h3 className="text-lg font-semibold mb-3">
+                ಸೇಕಂಡರ್ ವಿವರಗಳು / Seconder Details
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+            {/* Seconder Membership ID */}
+            {/* <div>
                   <label className="block font-semibold mb-2">
                     ಸೇಕಂಡರ್ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Seconder Membership ID
                   </label>
@@ -1696,10 +1875,10 @@ const MembershipForm = () => {
                     onChange={(e) => handleInputChange(e, "seconder")}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                   />
-                </div>
+                </div> */}
 
-                {/* Seconder Name */}
-                <div>
+            {/* Seconder Name */}
+            {/* <div>
                   <label className="block font-semibold mb-2">
                     ಸೇಕಂಡರ್ ಹೆಸರು / Seconder Name
                   </label>
@@ -1710,10 +1889,10 @@ const MembershipForm = () => {
                     onChange={(e) => handleInputChange(e, "seconder")}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                   />
-                </div>
+                </div> */}
 
-                {/* Seconder Address */}
-                <div>
+            {/* Seconder Address */}
+            {/* <div>
                   <label className="block font-semibold mb-2">
                     ಸೇಕಂಡರ್ ವಿಳಾಸ / Seconder Address
                   </label>
@@ -1724,10 +1903,10 @@ const MembershipForm = () => {
                     onChange={(e) => handleInputChange(e, "seconder")}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                   />
-                </div>
+                </div> */}
 
-                {/* Mobile Number */}
-                <div>
+            {/* Mobile Number */}
+            {/* <div>
                   <label className="block font-semibold mb-2">
                     ಮೊಬೈಲ್ ಸಂಖ್ಯೆ / Mobile Number
                   </label>
@@ -1738,10 +1917,10 @@ const MembershipForm = () => {
                     onChange={(e) => handleInputChange(e, "seconder")}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                   />
-                </div>
+                </div> */}
 
-                {/* Designation */}
-                <div>
+            {/* Designation */}
+            {/* <div>
                   <label className="block font-semibold mb-2">
                     ಹುದ್ದೆ / Designation
                   </label>
@@ -1754,7 +1933,7 @@ const MembershipForm = () => {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Fees */}
             <div className="border border-gray-200 p-6 rounded-xl space-y-4 bg-gradient-to-bl from-blue-50 via-white to-blue-100 shadow-md transition-all hover:shadow-lg  duration-200">
