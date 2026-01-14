@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 
-const MembershipForm = ({ setOpenModal, onClose }) => {
+const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
   const BASE_MEMBERSHIP_FEE = 59000;
   const KALYAN_NIDHI_FEE = 22500;
 
@@ -732,7 +732,7 @@ const MembershipForm = ({ setOpenModal, onClose }) => {
         //  Reset terms checkbox as well
         setTermsChecked(false);
 
-        //  navigate("/user/membershipdashboard");
+        onActionSuccess();
         setOpenModal(false);
       })
       .catch((error) => {

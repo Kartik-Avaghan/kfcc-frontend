@@ -102,7 +102,7 @@ export default function UserMembershipDasboard() {
   const[openModal, setOpenModal]=useState(false);
 
   /* ===== FETCH API ===== */
-  useEffect(() => {
+  
     const fetchApplications = async () => {
       try {
         const res = await fetch(
@@ -128,6 +128,9 @@ export default function UserMembershipDasboard() {
         setLoading(false);
       }
     };
+
+
+    useEffect(() => {
 
     fetchApplications();
   }, []);
@@ -164,6 +167,7 @@ export default function UserMembershipDasboard() {
 
    if (openModal) {
     return <MembershipForm setOpenModal={setOpenModal}
+    onActionSuccess ={fetchApplications}
      />;
   }
 
