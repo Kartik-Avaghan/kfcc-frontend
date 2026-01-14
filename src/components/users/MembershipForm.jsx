@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   User,
@@ -21,15 +22,18 @@ import {
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { notify } from "../../Utils/notify";
-import MembershipCard from "../../components/users/MembershipCard";
+import { useNavigate } from "react-router-dom";
 
-const MembershipForm = () => {
+
+
+const MembershipForm = ({setOpenModal}) => {
   const BASE_MEMBERSHIP_FEE = 59000;
   const KALYAN_NIDHI_FEE = 22500;
 
-  const [openModal, setOpenModal] = useState(false);
+//   const [openModal, setOpenModal] = useState(false);
 
-  const OTP_DURATION = 60;
+  const navigate= useNavigate();
+    const OTP_DURATION = 60;
   const [endoresmentOtpSent, setEndoresmentOtpSent] = useState({
     PROPOSER: {
       sent: false,
@@ -71,6 +75,11 @@ const MembershipForm = () => {
     applicantSignature: null,
     firmSeal: null,
 
+    // parnership
+    partnershipDeed: null,
+    moa: null,
+    aoa: null,
+
     proprietor: {
       proprietorName: "",
       proprietorAddress: "",
@@ -83,26 +92,25 @@ const MembershipForm = () => {
       proprietorPan: null, // FILE
       proprietorAadhaar: null, // FILE
       proprietorESignature: null, // FILE
+
+
+     
     },
 
     partners: [
-      {
-        partnerName: "",
-        partnerAddress: "",
-        partnerDob: "", // yyyy-MM-dd
-        partnerBloodGroup: "",
+      // {
+      //   partnerName: "",
+      //   partnerAddress: "",
+      //   partnerDob: "", // yyyy-MM-dd
+      //   partnerBloodGroup: "",
 
-        partnerPanNo: "",
-        partnerAadhaarNo: "",
+      //   partnerPanNo: "",
+      //   partnerAadhaarNo: "",
 
-        partnerPan: null, // FILE
-        partnerAadhaar: null, // FILE
-        partnerSignature: null, // FILE
-
-        partnershipDeed: null,
-        moa: null,
-        aoa: null,
-      },
+      //   partnerPan: null, // FILE
+      //   partnerAadhaar: null, // FILE
+      //   partnerSignature: null, // FILE
+      // },
     ],
 
     nominees: [
@@ -135,17 +143,31 @@ const MembershipForm = () => {
     membershipFee: BASE_MEMBERSHIP_FEE,
     kalyanNidhi: false,
     totalAmountToPay: BASE_MEMBERSHIP_FEE,
-    // totalAmountToPay: 59000,
+    
   });
 
+  // useEffect(() => {
+  //   if (formData.applicantOwnershipType === "PROPRIETOR") {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       partners: [],
+  //     }));
+  //   }
+  // }, [formData.applicantOwnershipType]);
+
+
   useEffect(() => {
-    if (formData.applicantOwnershipType === "PROPRIETOR") {
-      setFormData((prev) => ({
-        ...prev,
-        partners: [],
-      }));
-    }
-  }, [formData.applicantOwnershipType]);
+  if (formData.applicantOwnershipType === "PROPRIETOR") {
+    setFormData((prev) => ({
+      ...prev,
+      partners: [],
+      partnershipDeed: null,
+      moa: null,
+      aoa: null,
+    }));
+  }
+}, [formData.applicantOwnershipType]);
+
 
   const partnerField = [
     {
@@ -166,18 +188,13 @@ const MembershipForm = () => {
       labelEn: "Date of Birth",
       labelKn: "ಜನ್ಮ ದಿನಾಂಕ",
     },
-    // {
-    //   key: "partnerBloodGroup",
-    //   type: "text",
-    //   labelEn: "Blood Group",
-    //   labelKn: "ರಕ್ತದ ಗುಂಪು",
-    // },
+
     {
       key: "partnerBloodGroup",
       type: "select",
       labelEn: "Blood Group",
       labelKn: "ರಕ್ತದ ಗುಂಪು",
-      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-","Other"],
+      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Other"],
     },
 
     {
@@ -210,24 +227,24 @@ const MembershipForm = () => {
       labelEn: "E-Signature",
       labelKn: "ಇ-ಸಹಿ",
     },
-    {
-      key: "partnershipDeed",
-      type: "file",
-      labelEn: "Partnership Deed",
-      labelKn: "ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ",
-    },
-    {
-      key: "moa",
-      type: "file",
-      labelEn: "Memorandum of Association(moa)",
-      labelKn: "ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ",
-    },
-    {
-      key: "aoa",
-      type: "file",
-      labelEn: "Articles of Association(aoa)",
-      labelKn: "ಸಂಘದ ಲೇಖನಗಳು",
-    },
+    // {
+    //   key: "partnershipDeed",
+    //   type: "file",
+    //   labelEn: "Partnership Deed",
+    //   labelKn: "ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ",
+    // },
+    // {
+    //   key: "moa",
+    //   type: "file",
+    //   labelEn: "Memorandum of Association(moa)",
+    //   labelKn: "ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ",
+    // },
+    // {
+    //   key: "aoa",
+    //   type: "file",
+    //   labelEn: "Articles of Association(aoa)",
+    //   labelKn: "ಸಂಘದ ಲೇಖನಗಳು",
+    // },
   ];
 
   const nomineeFields = [
@@ -553,7 +570,11 @@ const MembershipForm = () => {
       membershipFee: formData.membershipFee,
       kalyanNidhi: formData.kalyanNidhi ? 1 : 0,
       totalAmountToPay: formData.totalAmountToPay,
-      // applicantPinCode:formData.applicantPinCode ? Number(formData.applicantPinCode) : null,
+
+      partners:
+    formData.applicantOwnershipType === "PROPRIETOR"
+      ? []
+      : formData.partners,
     };
 
     // 1 JSON payload (CORRECT)
@@ -575,6 +596,14 @@ const MembershipForm = () => {
       form.append("applicantSignature", formData.applicantSignature);
     if (formData.firmSeal) form.append("firmSeal", formData.firmSeal);
 
+
+     if (formData.partnershipDeed)
+      form.append("partnershipDeed", formData.partnershipDeed);
+
+    if (formData.moa) form.append("moa", formData.moa);
+
+    if (formData.aoa) form.append("aoa", formData.aoa);
+
     // proprietor
     if (formData.proprietor.proprietorPan)
       form.append("proprietorPan", formData.proprietor.proprietorPan);
@@ -588,34 +617,30 @@ const MembershipForm = () => {
         formData.proprietor.proprietorESignature
       );
 
-    formData.partners.forEach((p) => {
-      if (p.partnerPan) {
-        form.append("partnerPan", p.partnerPan);
-      }
+    // formData.partners.forEach((p) => {
+    //   if (p.partnerPan) {
+    //     form.append("partnerPan", p.partnerPan);
+    //   }
 
-      if (p.partnerAadhaar) {
-        form.append("partnerAadhaar", p.partnerAadhaar);
-      }
+    //   if (p.partnerAadhaar) {
+    //     form.append("partnerAadhaar", p.partnerAadhaar);
+    //   }
 
-      if (p.partnerSignature) {
-        form.append("partnerSignature", p.partnerSignature);
-      }
-    });
+    //   if (p.partnerSignature) {
+    //     form.append("partnerSignature", p.partnerSignature);
+    //   }
+    // });
 
-    // Ownership documents (MANDATORY for non-PROPRIETOR)
     if (formData.applicantOwnershipType !== "PROPRIETOR") {
-      if (formData.partners[0]?.partnershipDeed) {
-        form.append("partnershipDeed", formData.partners[0].partnershipDeed);
-      }
+  formData.partners.forEach((p) => {
+    if (p.partnerPan) form.append("partnerPan", p.partnerPan);
+    if (p.partnerAadhaar) form.append("partnerAadhaar", p.partnerAadhaar);
+    if (p.partnerSignature) form.append("partnerSignature", p.partnerSignature);
+  });
+}
 
-      if (formData.partners[0]?.moa) {
-        form.append("moa", formData.partners[0].moa);
-      }
 
-      if (formData.partners[0]?.aoa) {
-        form.append("aoa", formData.partners[0].aoa);
-      }
-    }
+   
 
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/apply`, {
       method: "POST",
@@ -634,7 +659,7 @@ const MembershipForm = () => {
         console.log("Success:", setFormData(data));
         notify("membership form is successfully submited", "success");
 
-        // alert("membership form is successfully submited");
+        
 
         // Reset formData to empty/default
         setFormData({
@@ -673,27 +698,25 @@ const MembershipForm = () => {
             proprietorPan: null, // FILE
             proprietorAadhaar: null, // FILE
             proprietorESignature: null, // FILE
+
+           
           },
 
           partners: [
-            {
-              partnerName: "",
-              partnerAddress: "",
-              partnerDob: "", // yyyy-MM-dd
-              partnerBloodGroup: "",
+            // {
+            //   partnerName: "",
+            //   partnerAddress: "",
+            //   partnerDob: "", // yyyy-MM-dd
+            //   partnerBloodGroup: "",
 
-              partnerPanNo: "",
-              partnerAadhaarNo: "",
+            //   partnerPanNo: "",
+            //   partnerAadhaarNo: "",
 
-              partnerPan: null, // FILE
-              partnerAadhaar: null, // FILE
-              partnerSignature: null, // FILE
-            },
+            //   partnerPan: null, // FILE
+            //   partnerAadhaar: null, // FILE
+            //   partnerSignature: null, // FILE
+            // },
           ],
-
-          // partnershipDeed: null,
-          //     moa: null,
-          //     aoa: null,
 
           nominees: [
             {
@@ -707,7 +730,7 @@ const MembershipForm = () => {
           ],
 
           proposer: {
-            proposerMembershipId: "", // MUST be number or null
+            proposerMembershipId: null, // MUST be number or null
             proposerName: "",
             proposerAddress: "",
             proposerMobileNo: "",
@@ -715,7 +738,7 @@ const MembershipForm = () => {
           },
 
           seconder: {
-            seconderMembershipId: "",
+            seconderMembershipId: null,
             seconderName: "",
             seconderAddress: "",
             seconderMobileNo: "",
@@ -733,6 +756,9 @@ const MembershipForm = () => {
           PROPOSER: "",
           SECONDER: "",
         });
+
+        navigate("/user/membershipdashboard")
+
 
         //  Reset terms checkbox as well
         setTermsChecked(false);
@@ -791,7 +817,7 @@ const MembershipForm = () => {
 
   return (
     <>
-      {openModal && (
+      {/* {openModal && ( */}
         <div className=" max-w-6xl mx-auto p-8 bg-white  space-y-6 mt-6">
           <div className="text-center space-y-2">
             <button
@@ -1245,7 +1271,7 @@ const MembershipForm = () => {
                 </label>
                 <input
                   type="file"
-                  name="applicantImage"
+                  name="applicantPhoto"
                   onChange={(e) => handleInputChange(e, "applicant")}
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                 />
@@ -1465,6 +1491,51 @@ const MembershipForm = () => {
                   </p>
                 </div>
 
+                <h3 className="text-lg font-semibold text-blue-800">
+                  Organization Documents
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                      {/* <ImageIcon className="w-4 h-4 text-blue-700" /> */}
+                      ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ / Partnership Deed
+                    </label>
+                    <input
+                      type="file"
+                      name="partnershipDeed"
+                      onChange={(e) => handleInputChange(e, "applicant")}
+                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                      {/* <ImageIcon className="w-4 h-4 text-blue-700" /> */}
+                      ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ / Memorandum of Association(moa)
+                    </label>
+                    <input
+                      type="file"
+                      name="moa"
+                      onChange={(e) => handleInputChange(e, "applicant")}
+                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                      {/* <ImageIcon className="w-4 h-4 text-blue-700" /> */}
+                      ಸಂಘದ ಲೇಖನಗಳು / Articles of Association(aoa)
+                    </label>
+                    <input
+                      type="file"
+                      name="aoa"
+                      onChange={(e) => handleInputChange(e, "applicant")}
+                      className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
+                    />
+                  </div>
+                </div>
+
                 {/* Partner Cards */}
                 {formData.partners.map((partner, idx) => (
                   <div key={idx} className="p-4 rounded-lg space-y-3 ">
@@ -1535,7 +1606,7 @@ const MembershipForm = () => {
                   <button
                     type="button"
                     onClick={addPartner}
-                    className="flex gap-1 bg-blue-600  text-white px-4 py-2 rounded-lg cursor-pointer"
+                    className="flex gap-1 bg-blue-600  text-white px-4 py-2 rounded-lg cursor-pointer "
                   >
                     <Plus size={24} />
                     Add Partner
@@ -2086,9 +2157,11 @@ const MembershipForm = () => {
             </button>
           </form>
         </div>
-      )}
+       {/* )} */}
 
-      {!openModal && <MembershipCard setOpenModal={setOpenModal} />}
+      {/* {!openModal && <MembershipCard setOpenModal={setOpenModal} />} */}
+
+      {/* {!openModal && <UserMembershipDasboard setOpenModal={setOpenModal}/>} */}
     </>
   );
 };

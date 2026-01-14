@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { notify } from "../../Utils/notify";
 import {
@@ -12,8 +13,9 @@ import {
   ChevronLeft,
   ChevronDown,
 } from "lucide-react";
-import ViewMembershipForm from "../membershipformView/ViewMembershipForm";
-import EditMembershipDetails from "./EditMembershipDetails";
+import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
+import MembershipForm from "../../components/users/MembershipForm";
+
 
 const STATUS_FLOW = {
   SUBMITTED: 0,
@@ -89,13 +91,15 @@ const STEPS = [
   "Final Approval",
 ];
 
-export default function MembershipCard({ setOpenModal }) {
+export default function UserMembershipDasboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [formMode, setFormMode] = useState(null); // "view" | "edit"
   const[statusFilter, setStatusFilter]=useState("");
+
+  const[openModal, setOpenModal]=useState(false);
 
   /* ===== FETCH API ===== */
   useEffect(() => {
@@ -115,7 +119,7 @@ export default function MembershipCard({ setOpenModal }) {
         if (!res.ok) throw new Error("Failed to fetch applications");
 
         const data = await res.json();
-        console.log("Membership data", data);
+        // console.log("Membership data", data);
 
         setApplications(data);
       } catch (err) {
@@ -158,7 +162,14 @@ export default function MembershipCard({ setOpenModal }) {
     
   });
 
+   if (openModal) {
+    return <MembershipForm setOpenModal={setOpenModal} />;
+  }
+
   return (
+    <>
+
+    {/* {openModal && ( */}
     <div className="px-16 py-8 max-w-7xl mx-auto">
       {/* HEADER */}
       <div className="mb-10 flex justify-between items-center w-full mt-2">
@@ -426,6 +437,9 @@ export default function MembershipCard({ setOpenModal }) {
           );
         })}
 
+
+       
+
         {formMode === "view" && selectedAppId && (
           <ViewMembershipForm
             applicationId={selectedAppId}
@@ -441,5 +455,8 @@ export default function MembershipCard({ setOpenModal }) {
         )}
       </div>
     </div>
+
+    
+    </>
   );
 }

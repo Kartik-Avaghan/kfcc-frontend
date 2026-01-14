@@ -5,7 +5,7 @@ import Login from "../pages/Login";
 import UserInitializer from "../Redux/UserInitializer";
 import Auth from "../Auth/Auth";
 import Dashboard from "../pages/Dashboard";
-import MembershipForm from "../pages/user/MembershipForm";
+
 
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import ONMMembershipDashboard from "../pages/onmcommitte-leader/ONMMembershipDashboard";
@@ -31,6 +31,7 @@ import TitleRegistrationRequests from "../pages/TitleRegistrationRequests";
 import PublicityClearenceRequests from "../pages/PublicityClearenceRequests";
 import ApplyForIdCard from "../pages/user/ApplyForIdCard";
 import IdCardRequests from "../pages/staff/IdCardRequests";
+import UserMembershipDasboard from "../pages/user/UserMembershipDasboard";
 
 function CustomRouter() {
   return (
@@ -51,7 +52,7 @@ function CustomRouter() {
           <Route path="dashboard" element={<Dashboard />} />
 
           {/*user  */}
-          <Route path="user/membershipform" element={<MembershipForm />} />
+          <Route path="user/membershipdashboard" element={<UserMembershipDasboard/>}/>
           <Route path="producer/titleRegistrationform" element={<TitleRegistrationForm/>}/>
           <Route path="producer/publicityClearenceform" element={<PublicityClearenceDashboard/>}/>
          

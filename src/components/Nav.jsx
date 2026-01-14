@@ -33,7 +33,7 @@ function Nav() {
   const roleMenus = {
     USER: [
       // { name: "Dashboard", icon: BarChart3, path: "/user/dashboard" },
-      { name: "Membership", icon: FileText, path: "/user/membershipform" },
+      { name: "Membership", icon: FileText, path: "/user/membershipdashboard"},
     ],
     STAFF: [
       {
