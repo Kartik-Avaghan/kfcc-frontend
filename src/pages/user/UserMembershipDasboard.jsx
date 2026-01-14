@@ -163,7 +163,8 @@ export default function UserMembershipDasboard() {
   });
 
    if (openModal) {
-    return <MembershipForm setOpenModal={setOpenModal} />;
+    return <MembershipForm setOpenModal={setOpenModal}
+     />;
   }
 
   return (
