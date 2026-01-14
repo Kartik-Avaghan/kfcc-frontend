@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   X,
   CheckCircle,
@@ -9,6 +9,7 @@ import {
   Users,
   CreditCard,
   AlertCircle,
+  XIcon,
 } from "lucide-react";
 import MembershipRemark from "./MembershipRemark";
 import MembershipReject from "./MembershipReject";
@@ -340,7 +341,10 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
           <div
             className="fixed inset-0 bg-black/90 flex items-center justify-center z-60"
             onClick={() => setPreview(null)}
-          >
+          > 
+            <button className="absolute top-30 left-50 text-white cursor-pointer">
+              <XIcon />
+            </button>
             <img
               src={`${import.meta.env.VITE_API_BASE_URL}/${preview}`}
               alt="preview"
@@ -417,13 +421,13 @@ function Doc({ label, file, onView }) {
     file !== null && file !== undefined && file !== "" && file !== false;
 
   return (
-    <div className="flex  items-center justify-around border border-gray-400 rounded-lg px-3 py-2">
-      <span className="text-sm text-gray-600">{label}</span>
+    <div className="flex items-center justify-between border border-gray-400 rounded-lg px-3 py-2">
+      <span className="text-sm text-gray-600 pl-2">{label}</span>
 
       {hasFile ? (
         <button
           onClick={() => onView(file)}
-          className="text-white text-sm cursor-pointer bg-blue-600 px-3 py-1 rounded-md "
+          className="text-white text-sm cursor-pointer bg-blue-600 px-4 py-2 rounded-md "
         >
           View
         </button>

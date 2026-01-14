@@ -19,7 +19,6 @@ import {
   CreditCard,
   Fingerprint,
 } from "lucide-react";
-import { jwtDecode } from "jwt-decode";
 import { notify } from "../../Utils/notify";
 import MembershipCard from "../../components/users/MembershipCard";
 
@@ -177,7 +176,7 @@ const MembershipForm = () => {
       type: "select",
       labelEn: "Blood Group",
       labelKn: "ರಕ್ತದ ಗುಂಪು",
-      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-","Other"],
+      options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Other"],
     },
 
     {
@@ -540,9 +539,6 @@ const MembershipForm = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const token = localStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -824,27 +820,25 @@ const MembershipForm = () => {
                     type="text"
                     name="firstName"
                     value={userData.firstName}
-                    // onChange={handleUserData}
+                    disabled
                     placeholder="first name"
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition bg-gray-200"
                   />
 
                   <input
                     type="text"
                     name="middleName"
                     value={userData.middleName}
-                    // onChange={handleUserData}
                     placeholder="middle name"
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition bg-gray-200"
                   />
 
                   <input
                     type="text"
                     name="lastName"
                     value={userData.lastName}
-                    // onChange={handleUserData}
                     placeholder="last name"
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition bg-gray-200"
                   />
                 </div>
               </div>
@@ -963,9 +957,9 @@ const MembershipForm = () => {
                   type="text"
                   name="bloodGroup"
                   value={userData.bloodGroup}
-                  // onChange={handleUserData}
+                  disabled
                   placeholder="blood group"
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition bg-gray-200"
                 />
 
                 {/* <select
@@ -987,30 +981,6 @@ const MembershipForm = () => {
             </select> */}
               </div>
 
-              {/* <div className="mt-1">
-            <label className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
-              <Droplet className="w-4 h-4 text-blue-700" />
-              ಅರ್ಜಿದಾರರ ರಕ್ತದ ಗುಂಪು / Applicant Blood Group
-            </label>
-            <select
-              name="applicantBloodGroup"
-              value={formData.applicantBloodGroup}
-              onChange={(e) => handleInputChange(e, "applicant")}
-              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
-            >
-              <option value="">Select</option>
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-              <option value="special">Special</option>
-            </select>
-          </div> */}
-
               <div className="mt-1">
                 <label className="font-semibold text-gray-800 mb-1 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-blue-700" />
@@ -1020,8 +990,8 @@ const MembershipForm = () => {
                   type="date"
                   name="dob"
                   value={userData.dob}
-                  //  onChange={handleUserData}
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
+                  disabled
+                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
                 />
               </div>
 
