@@ -62,7 +62,7 @@ function Nav() {
       {
         name: "Title Registration",
         icon: Film,
-        path: "producer/titleRegistrationform",
+        path: "/producer/titleregistrationDashboard",
       },
       {
         name: "Public Clearance",

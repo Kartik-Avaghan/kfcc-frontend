@@ -170,7 +170,7 @@ export default function UserMembershipDasboard() {
   return (
     <>
 
-    {/* {openModal && ( */}
+    
     <div className="px-16 py-8 max-w-7xl mx-auto">
       {/* HEADER */}
       <div className="mb-10 flex justify-between items-center w-full mt-2">

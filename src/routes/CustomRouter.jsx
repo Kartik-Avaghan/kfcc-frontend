@@ -15,7 +15,7 @@ import ONMMemberList from "../pages/onmcommitte-leader/ONMMemberList";
 import MembershipVotingDashboard from "../pages/onm-committe/MembershipVotingDashboard";
 
 import ONMMeeting from "../pages/manager/ONMMeeting";
-import TitleRegistrationForm from "../pages/user/TitleRegistrationForm";
+
 import TitleCommitteMeeting from "../pages/manager/TitleCommitteMeeting";
 import KFCCMemberList from "../pages/titlecommitte-leader/KFCCMemberList";
 import TitleRegistrationCommitteDashboard from "../pages/titlecommitte-leader/TitleRegistrationCommitteDashboard";
@@ -32,6 +32,7 @@ import PublicityClearenceRequests from "../pages/PublicityClearenceRequests";
 import ApplyForIdCard from "../pages/user/ApplyForIdCard";
 import IdCardRequests from "../pages/staff/IdCardRequests";
 import UserMembershipDasboard from "../pages/user/UserMembershipDasboard";
+import UserTitleRegistrationDashboard from "../pages/user/UserTitleRegistrationDashboard";
 
 function CustomRouter() {
   return (
@@ -53,7 +54,7 @@ function CustomRouter() {
 
           {/*user  */}
           <Route path="user/membershipdashboard" element={<UserMembershipDasboard/>}/>
-          <Route path="producer/titleRegistrationform" element={<TitleRegistrationForm/>}/>
+          <Route path="producer/titleregistrationDashboard" element={<UserTitleRegistrationDashboard/>}/>
           <Route path="producer/publicityClearenceform" element={<PublicityClearenceDashboard/>}/>
          
 
