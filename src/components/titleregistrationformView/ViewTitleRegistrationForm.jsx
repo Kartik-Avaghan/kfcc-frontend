@@ -17,22 +17,29 @@ import TitleRegistrationReject from "./TitleRegistrationReject";
 import { useSelector } from "react-redux";
 import { notify } from "../../Utils/notify";
 
-export default function ViewTitleRegistrationForm({ applicationId, onClose,onActionSuccess }) {
+export default function ViewTitleRegistrationForm({
+  applicationId,
+  onClose,
+  onActionSuccess,
+}) {
   const [data, setData] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState([]);
 
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [showRemarkModal, setShowRemarkModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
-
-   const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user.user);
   const roles = user?.roles || [];
 
   const ONM_BLOCKED_ROLES = [
-    "TITLE_COMMITTEE_VOTER","TITLE_COMMITTEE_LEADER","TITLE_COMMITTEE",
-    "EC_MEMBER","PRODUCER","USER",
+    "TITLE_COMMITTEE_VOTER",
+    "TITLE_COMMITTEE_LEADER",
+    "TITLE_COMMITTEE",
+    "EC_MEMBER",
+    "PRODUCER",
+    "USER",
   ];
 
   const isRestrictedUser = roles.some((role) =>
@@ -62,7 +69,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
         <div className="bg-linear-to-r from-blue-900 to-blue-700 text-white p-6 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 hover:text-gray-300 cursor-pointer" 
+            className="absolute top-4 right-4 hover:text-gray-300 cursor-pointer"
           >
             <X />
           </button>
@@ -79,7 +86,7 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
         <div className="p-6 overflow-y-auto flex-1 space-y-6 bg-gray-50">
           {/* TITLE DETAILS */}
           <InfoSection title="Title Details" icon={Film}>
-            <Field label="Title (English)"   value={data.title}  />
+            <Field label="Title (English)" value={data.title} />
             <Field label="Title (Kannada)" value={data.titleInKannada} />
             <Field label="Language" value={data.language} />
             <Field label="Category" value={data.category} />
@@ -124,9 +131,10 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
               data.documents.map((doc) => (
                 <Doc
                   key={doc.id}
-                  label={`Document ${doc.id}`}
+                  label={`Document`}
                   file={doc.path}
-                  onView={setPreview}
+                  // onView={setPreview}
+                  onView={(filePath) => setPreview([filePath])}
                 />
               ))
             ) : (
@@ -135,44 +143,46 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
           </InfoSection>
         </div>
 
-
         {!isRestrictedUser && (
+          <div className="border-t border-gray-300 p-4 flex justify-between items-center gap-4">
+            <ActionBtn
+              color="green"
+              icon={CheckCircle}
+              text="Accept"
+              onClick={() => setShowConfirm(true)}
+            />
 
-        <div className="border-t border-gray-300 p-4 flex justify-between items-center gap-4">
-          <ActionBtn
-            color="green"
-            icon={CheckCircle}
-            text="Accept"
-            onClick={() => setShowConfirm(true)}
-          />
+            <ActionBtn
+              color="yellow"
+              icon={MessageSquare}
+              text="Remark"
+              onClick={() => setShowRemarkModal(true)}
+            />
 
-          <ActionBtn
-            color="yellow"
-            icon={MessageSquare}
-            text="Remark"
-            onClick={() => setShowRemarkModal(true)}
-          />
-
-          <ActionBtn
-            color="red"
-            icon={XCircle}
-            text="Reject"
-            onClick={() => setShowRejectModal(true)}
-          />
-        </div>
+            <ActionBtn
+              color="red"
+              icon={XCircle}
+              text="Reject"
+              onClick={() => setShowRejectModal(true)}
+            />
+          </div>
         )}
 
         {/* IMAGE PREVIEW */}
-        {preview && (
+        {preview.length > 0 && (
           <div
             className="fixed inset-0 bg-black/90 flex items-center justify-center z-60"
-            onClick={() => setPreview(null)}
+            onClick={() => setPreview([])}
           >
-            <img
-              src={`${import.meta.env.VITE_API_BASE_URL}/${preview}`}
-              alt="preview"
-              className="max-h-[90%] rounded-xl"
-            />
+            <div className="flex flex-wrap gap-4">
+              {preview.map((file, idx) => (
+                <img
+                  key={idx}
+                  src={`${import.meta.env.VITE_API_BASE_URL}/${file}`}
+                  className="max-h-[80vh] rounded-xl"
+                />
+              ))}
+            </div>
           </div>
         )}
 
@@ -180,10 +190,10 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
           <TitleRegistrationAccept
             applicationId={applicationId}
             onClose={() => setShowConfirm(false)}
-             onSuccess={() => {
-    onActionSuccess(applicationId); //  REMOVE FROM PARENT
-    onClose();
-  }}
+            onSuccess={() => {
+              onActionSuccess(applicationId); //  REMOVE FROM PARENT
+              onClose();
+            }}
           />
         )}
 
@@ -191,10 +201,10 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
           <TitleRegistrationRemark
             applicationId={applicationId}
             onClose={() => setShowRemarkModal(false)}
-           onSuccess={() => {
-    onActionSuccess(applicationId); //  REMOVE FROM PARENT
-    onClose();
-  }}
+            onSuccess={() => {
+              onActionSuccess(applicationId); //  REMOVE FROM PARENT
+              onClose();
+            }}
           />
         )}
 
@@ -203,9 +213,9 @@ export default function ViewTitleRegistrationForm({ applicationId, onClose,onAct
             applicationId={applicationId}
             onClose={() => setShowRejectModal(false)}
             onSuccess={() => {
-    onActionSuccess(applicationId); //  REMOVE FROM PARENT
-    onClose();
-  }}
+              onActionSuccess(applicationId); //  REMOVE FROM PARENT
+              onClose();
+            }}
           />
         )}
       </div>
@@ -275,5 +285,4 @@ function ActionBtn({ color, icon: Icon, text, onClick }) {
       {text}
     </button>
   );
-
 }

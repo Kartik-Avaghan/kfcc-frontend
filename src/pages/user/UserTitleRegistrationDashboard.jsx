@@ -125,7 +125,7 @@ export default function UserTitleRegistrationDashboard() {
   const [openModal, setOpenModal] = useState(false);
 
   /*  FETCH  */
-  useEffect(() => {
+  
     const fetchApplications = async () => {
       try {
         setLoading(true);
@@ -154,6 +154,9 @@ export default function UserTitleRegistrationDashboard() {
         setLoading(false);
       }
     };
+
+
+    useEffect(() => {
 
     fetchApplications();
   }, []);
@@ -195,7 +198,7 @@ export default function UserTitleRegistrationDashboard() {
   };
 
   if (openModal) {
-    return <TitleRegistrationForm setOpenModal={setOpenModal} />;
+    return <TitleRegistrationForm setOpenModal={setOpenModal} onActionSuccess={fetchApplications} />;
   }
 
   //  const STATUS_BG = {

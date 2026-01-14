@@ -1,9 +1,9 @@
-import { ChevronLeft, File, Plus, X } from "lucide-react";
+import { ChevronLeft, File, Plus, X, Languages } from "lucide-react";
 import React, { useState } from "react";
 
 import { notify } from "../../Utils/notify";
 
-function TitleRegistrationForm({ setOpenModal }) {
+function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
   //   const [openModal, setOpenModal] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -100,6 +100,7 @@ function TitleRegistrationForm({ setOpenModal }) {
           gstNo: "",
           documents: [],
         });
+        onActionSuccess();
         setOpenModal(false);
       })
       .catch((error) => notify(error.message, "error"));
@@ -196,7 +197,8 @@ function TitleRegistrationForm({ setOpenModal }) {
                   required
                 />
               </div>
-              <div>
+
+              <div className="relative">
                 <label className="block  font-semibold text-gray-700 mb-1">
                   ಕನ್ನಡದಲ್ಲಿ ಚಿತ್ರದ ಶೀರ್ಷಿಕೆ / Film Title In Kannada
                   <span className="text-red-500">*</span>
@@ -207,9 +209,24 @@ function TitleRegistrationForm({ setOpenModal }) {
                   value={formData.titleInKannada}
                   onChange={handleChange}
                   placeholder="Enter film title in Kannada"
-                  className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full border rounded-lg p-2.5 pr-10 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   required
                 />
+
+                {/* Language Icon */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.open(
+                      "https://translate.google.co.in/?sl=en&tl=kn&text=Kishor&op=translate",
+                      "_blank"
+                    )
+                  }
+                  className="absolute right-2 top-3/4 -translate-y-4 text-blue-700  hover:text-blue-900 cursor-pointer"
+                  title="Open Kannada Typing Tool"
+                >
+                  <Languages size={20} />
+                </button>
               </div>
 
               <div>
