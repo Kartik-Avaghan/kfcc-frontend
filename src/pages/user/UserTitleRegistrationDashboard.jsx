@@ -11,8 +11,9 @@ import {
   Eye,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
-import ViewTitleRegistrationForm from "../titleregistrationformView/ViewTitleRegistrationForm";
-import EditTitleRegistrationDetails from "./EditTitleRegistrationDetails";
+import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
+import EditTitleRegistrationDetails from "../../components/users/EditTitleRegistrationDetails";
+import TitleRegistrationForm from "../../components/users/TitleRegistrationForm";
 
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
@@ -48,13 +49,11 @@ const getStatusType = (status) => {
   if (!status) return "IN_PROGRESS";
   if (status.includes("REJECTED")) return "REJECTED";
   if (status.includes("REMARKED")) return "REMARKED";
-  if(status.includes("HOLD")) return "HOLD";
+  if (status.includes("HOLD")) return "HOLD";
   if (status === "FINAL_APPROVED") return "APPROVED";
-  
+
   return "IN_PROGRESS";
 };
-
-
 
 /*  STATUS STYLES  */
 const STATUS_STYLE = {
@@ -103,30 +102,30 @@ const STATUS_STYLE = {
     icon: CheckCircle,
     message: "Application has been approved successfully",
   },
-    HOLD: {
+  HOLD: {
     bg: "bg-orange-50",
     border: "border-orange-400",
     text: "text-orange-600",
     bar: "bg-orange-400",
     badge: "border-orange-100",
     icon: AlertTriangle,
-    message:"Application has been holded"
+    message: "Application has been holded",
   },
 };
 
 /*  MAIN COMPONENT  */
-export default function TitleRegistrationStatusCard({ setOpenModal }) {
+export default function UserTitleRegistrationDashboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [formMode, setFormMode] = useState(null); // "view" | "edit"
 
-  const[statusFilter, setStatusFilter] = useState("");
-
+  const [statusFilter, setStatusFilter] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   /*  FETCH  */
-  useEffect(() => {
+  
     const fetchApplications = async () => {
       try {
         setLoading(true);
@@ -156,6 +155,9 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
       }
     };
 
+
+    useEffect(() => {
+
     fetchApplications();
   }, []);
 
@@ -170,19 +172,20 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
     //   d.id?.toString().toLowerCase().includes(term)
     // );
 
-    const matchSearch = d.title?.toLowerCase().includes(term) ||
-     d.director?.toLowerCase().includes(term) ||
-       d.language?.toLowerCase().includes(term) ||
+    const matchSearch =
+      d.title?.toLowerCase().includes(term) ||
+      d.director?.toLowerCase().includes(term) ||
+      d.language?.toLowerCase().includes(term) ||
       d.producerName?.toLowerCase().includes(term) ||
-       d.id?.toString().toLowerCase().includes(term)
+      d.id?.toString().toLowerCase().includes(term);
 
-     const matchStatus =
-  !statusFilter ||
-  (statusFilter === "REJECTED" && d.status.includes("REJECTED")) ||
-  (statusFilter === "HOLD" && d.status.includes("HOLD")) ||
-  d.status === statusFilter;
+    const matchStatus =
+      !statusFilter ||
+      (statusFilter === "REJECTED" && d.status.includes("REJECTED")) ||
+      (statusFilter === "HOLD" && d.status.includes("HOLD")) ||
+      d.status === statusFilter;
 
-       return matchSearch && matchStatus;
+    return matchSearch && matchStatus;
   });
 
   const handleOpenForm = (detail) => {
@@ -194,21 +197,20 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
     setSelectedAppId(detail.id);
   };
 
+  if (openModal) {
+    return <TitleRegistrationForm setOpenModal={setOpenModal} onActionSuccess={fetchApplications} />;
+  }
 
-//  const STATUS_BG = {
-//   "": "bg-white text-gray-800 border-gray-300",
-//   SUBMITTED: "bg-blue-700 text-white border-blue-700",
-//   FINAL_APPROVED: "bg-green-700 text-white border-green-700",
-//   REJECTED: "bg-red-600 text-white border-red-600",
-// };
-
-
+  //  const STATUS_BG = {
+  //   "": "bg-white text-gray-800 border-gray-300",
+  //   SUBMITTED: "bg-blue-700 text-white border-blue-700",
+  //   FINAL_APPROVED: "bg-green-700 text-white border-green-700",
+  //   REJECTED: "bg-red-600 text-white border-red-600",
+  // };
 
   return (
     <div className="px-16 py-8 max-w-7xl mx-auto">
-
       <div className="flex justify-between items-center mb-10 mt-2">
-    
         <div>
           <h1 className="text-2xl font-bold text-blue-900">
             Title Registration Applications
@@ -227,12 +229,10 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
             Apply For TitleRegistration
           </button>
         </div>
-
       </div>
 
       {/* SEARCH */}
       <div className="flex justify-between items-center mb-10 mt-4">
-
         <div className="flex items-center gap-2 min-w-lg border-2 border-gray-300 rounded-xl p-3">
           <Search className="w-5 h-5 text-gray-600" />
           <input
@@ -247,25 +247,22 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
         {/* <div  className={`flex items-center max-w-md rounded-xl p-3 px-6 border transition-colors duration-300 ${
     STATUS_BG[statusFilter] || STATUS_BG[""]
   }`}> */}
-  <div  className="flex items-center max-w-md rounded-xl p-3 px-6 border-2 border-gray-300">
+        <div className="flex items-center max-w-md rounded-xl p-3 px-6 border-2 border-gray-300">
           <select
             type="text"
             placeholder="status"
             value={statusFilter}
-            onChange={(e)=> setStatusFilter(e.target.value)}
+            onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full  focus:outline-none "
-          > 
+          >
             <option value="">All Statuses</option>
             <option value="SUBMITTED">Submitted</option>
             <option value="FINAL_APPROVED">Approved</option>
-             <option value="REJECTED">Rejected</option>
+            <option value="REJECTED">Rejected</option>
             <option value="EC_COMMITTEE_HOLD">Hold</option>
-           
           </select>
         </div>
-          
       </div>
-
 
       {/* LOADING */}
       {loading && (
@@ -290,10 +287,6 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
           const stepIndex = Math.min(rawStepIndex, STEPS.length - 1);
 
           // const stepIndex = STATUS_STEP_INDEX[detail.status] ?? 0;
-
-
-          
-
 
           const statusType = getStatusType(detail.status);
           const style = STATUS_STYLE[statusType];
@@ -321,8 +314,10 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
                       </p>
                       <p>
                         Submitted Date:{" "}
-                        <span className="font-mono font-medium">
-                          {new Date(detail.date).toLocaleDateString()}
+                        <span className=" font-medium">
+                          {new Date(detail.updatedAt).toLocaleDateString(
+                            "en-IN"
+                          )}
                         </span>
                       </p>
                       <p>
@@ -334,7 +329,9 @@ export default function TitleRegistrationStatusCard({ setOpenModal }) {
                         <p>
                           Accepted Date:{" "}
                           <span className="font-medium">
-                            {new Date(detail.acceptedDate).toLocaleDateString()}
+                            {new Date(detail.acceptedDate).toLocaleDateString(
+                              "en-IN"
+                            )}
                           </span>
                         </p>
                       )}
