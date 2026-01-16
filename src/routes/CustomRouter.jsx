@@ -31,6 +31,7 @@ import TitleRegistrationRequests from "../pages/TitleRegistrationRequests";
 import PublicityClearenceRequests from "../pages/PublicityClearenceRequests";
 import ApplyForIdCard from "../pages/user/ApplyForIdCard";
 import IdCardRequests from "../pages/staff/IdCardRequests";
+import ManageUsers from "../pages/Super-admin/ManageUsers";
 
 function CustomRouter() {
   return (
@@ -69,12 +70,9 @@ function CustomRouter() {
           <Route path="applyforIdCard" element={<ApplyForIdCard/>}/>
           
           
-
-          
           {/* staff */}
           <Route path="idcard/requests" element={<IdCardRequests/>}/>
           
-
 
           {/* manager */}
           <Route path="manager/managerdashboard" element={<ManagerDashboard/>}/>
@@ -91,8 +89,6 @@ function CustomRouter() {
           {/* onmcommitte-voter */}
           <Route path="onm/voting/membershipDashboard" element={<MembershipVotingDashboard/>}/>
 
-       
-
   
           {/* titlecommitte-leader */}
           <Route path="titleCommitteLeader/memberslist" element={<KFCCMemberList/>} />
@@ -106,6 +102,11 @@ function CustomRouter() {
  
 
           {/* secretry */}
+
+          {/* Admin */}
+          <Route path="/manage/users/:role" element={<ManageUsers/>} />
+          
+
 
         </Route>
       </Routes>

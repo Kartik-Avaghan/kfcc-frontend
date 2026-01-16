@@ -10,7 +10,9 @@ import {
   Globe,
   CreditCard,
   IdCard,
+  Dot,
   Film,
+  Users2,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -193,7 +195,6 @@ function Nav() {
         icon: Globe,
         path: "/publicityClearence/requests",
       },
-      
     ],
 
     MANAGER: [
@@ -213,7 +214,19 @@ function Nav() {
         icon: Globe,
         path: "/publicityClearence/requests",
       },
-      
+    ],
+
+    SUPER_ADMIN: [
+      {
+        name: "Dashboard",
+        icon: BarChart3,
+        path: "/admin/dashboard",
+      },
+      {
+        name: "Manage All Users",
+        icon: Users2,
+        path: "/admin/manageusers",
+      },
     ],
 
     PRESIDENT: [
@@ -226,7 +239,59 @@ function Nav() {
     ],
   };
 
+  const ALL_ROLES = [
+    "PRESIDENT",
+    "MANAGER",
+    "SECRETARY",
+    "EC_MEMBER",
+    "STAFF",
+    "TITLE_COMMITTEE_LEADER",
+    "TITLE_COMMITTEE_VOTER",
+    "ONM_COMMITTEE_LEADER",
+    "ONM_COMMITTEE_VOTER",
+    "VP_PRODUCER",
+    "PRODUCER",
+    "DISTRIBUTOR",
+    "TEMPORARY_MEMBER",
+    "HONORARY_MEMBER",
+    "STUDIO",
+    "EXHIBITOR",
+    "USER",
+  ];
+
+  const ROLE_CATEGORIES = {
+    Management: [
+      "PRESIDENT",
+      "MANAGER",
+      "SECRETARY",
+      "EC_MEMBER",
+      "VP_PRODUCER",
+      "VP_EXHIBITOR",
+      "VP_DISTRIBUTOR",
+      "STAFF",
+    ],
+
+    Committees: [
+      "ONM_COMMITTEE_LEADER",
+      "ONM_COMMITTEE_VOTER",
+      "TITLE_COMMITTEE_LEADER",
+      "TITLE_COMMITTEE_VOTER",
+    ],
+
+    Members: [
+      "PRODUCER",
+      "DISTRIBUTOR",
+      "EXHIBITOR",
+      "STUDIO",
+      "HONORARY_MEMBER",
+      "TEMPORARY_MEMBER",
+      "USER",
+    ],
+  };
+
   const roles = Array.isArray(user?.roles) ? user.roles : [];
+
+  const isSuperAdmin = roles.includes("SUPER_ADMIN");
 
   const menuItems = roles
     .flatMap((role) => roleMenus[role] || [])
@@ -301,6 +366,46 @@ function Nav() {
               );
             })}
           </nav>
+
+          {isSuperAdmin && (
+            <div className="mt-8">
+              <p className="text-xs font-semibold text-blue-300 uppercase mb-4">
+                Role Management
+              </p>
+
+              {Object.entries(ROLE_CATEGORIES).map(([category, roles]) => (
+                <div key={category} className="mb-5">
+                  {/* Category title */}
+                  <p className="text-[11px] font-semibold text-blue-400 uppercase mb-2 tracking-wider">
+                    {category}
+                  </p>
+
+                  {/* Roles */}
+                  <nav className="space-y-1">
+                    { roles.map((role) => (
+                      <nav className="flex items-center justify-start" key={role}>
+                        <NavLink
+                        key={role}
+                        to={`/manage/users/${role}`}
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-2 rounded-lg text-sm transition w-full
+                          ${ isActive ? "bg-blue-800 text-white" : "text-blue-200 hover:bg-blue-900 hover:text-white" }`}
+                      >
+                        <Dot/>
+                        <span className="capitalize">
+                          {role.replaceAll("_", " ")}
+                        </span>
+                      </NavLink>
+
+                      </nav>
+          
+                      
+                    ))}
+                  </nav>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Logout */}
