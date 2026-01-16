@@ -216,6 +216,16 @@ function CustomRouter() {
           {/* ec-member */}
 
           {/* secretry */}
+
+          {/* super admin */}
+          <Route
+            path="manage/users/:role"
+            element={
+              <ProtectedRoutes allowedRoles={["SUPER_ADMIN"]}>
+                <ManageUsers />
+              </ProtectedRoutes>
+            }
+          />
         </Route>
       </Routes>
     </div>
