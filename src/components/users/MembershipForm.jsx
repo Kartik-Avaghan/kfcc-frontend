@@ -186,12 +186,14 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       type: "text",
       labelEn: "PAN Number",
       labelKn: "ಪ್ಯಾನ್ ಸಂಖ್ಯೆ",
+      maxLength:"10",
     },
     {
       key: "partnerAadhaarNo",
       type: "text",
       labelEn: "Aadhaar Number",
       labelKn: "ಆಧಾರ್ ಸಂಖ್ಯೆ",
+      maxLength:"12",
     },
     {
       key: "partnerPan",
@@ -255,6 +257,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       type: "number",
       labelEn: "Nominee Mobile Number",
       labelKn: "ನಾಮಿನಿ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
+      maxLength:"10"
     },
 
     {
@@ -873,6 +876,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                   value={formData.applicantAddressLine1 || ""}
                   onChange={(e) => handleInputChange(e, "applicant")}
                   placeholder="Address line 1"
+                  required
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                 />
 
@@ -882,6 +886,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                   value={formData.applicantAddressLine2 || ""}
                   onChange={(e) => handleInputChange(e, "applicant")}
                   placeholder="Address line 2"
+                  required
                   className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                 />
 
@@ -910,6 +915,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     value={formData.applicantState || ""}
                     onChange={(e) => handleInputChange(e, "applicant")}
                     placeholder="Enter state"
+                    required
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                   />
                 </div>
@@ -926,6 +932,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     value={formData.applicantDistrict || ""}
                     onChange={(e) => handleInputChange(e, "applicant")}
                     placeholder="Enter district"
+                    required
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                   />
                 </div>
@@ -942,6 +949,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     value={formData.applicantPinCode || ""}
                     onChange={(e) => handleInputChange(e, "applicant")}
                     placeholder="Enter pincode"
+                    required
+                    maxLength={6}
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
                   />
                 </div>
@@ -1002,12 +1011,14 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
               </label>
               <input
-                type="number"
+                type="text"
                 name="proprietorAadhaarNo"
                 value={formData.proprietor.proprietorAadhaarNo}
                 onChange={(e) => handleInputChange(e, "proprietor")}
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                 placeholder="Enter Aadhaar number"
+                maxLength={12}
+                required
               />
             </div>
 
@@ -1021,6 +1032,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 type="file"
                 name="applicantAadhaar"
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
@@ -1037,6 +1049,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 onChange={(e) => handleInputChange(e, "proprietor")}
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                 placeholder="Enter PAN number"
+                maxLength={10}
+                required
               />
             </div>
 
@@ -1050,6 +1064,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 type="file"
                 name="applicantPan"
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
@@ -1064,6 +1079,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 type="file"
                 name="applicantAddressProof"
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
@@ -1078,6 +1094,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 type="file"
                 name="applicantSignature"
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
@@ -1094,6 +1111,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 value={formData.applicantFirmName}
                 onChange={(e) => handleInputChange(e, "applicant")}
                 placeholder="Enter firm name"
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
               />
             </div>
@@ -1108,6 +1126,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 type="file"
                 name="firmSeal"
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
@@ -1193,6 +1212,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 name="applicantMembershipCategory"
                 value={formData.applicantMembershipCategory}
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
               >
                 <option value="">Select</option>
@@ -1218,6 +1238,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 type="file"
                 name="applicantPhoto"
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
@@ -1232,6 +1253,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 name="applicantOwnershipType"
                 value={formData.applicantOwnershipType}
                 onChange={(e) => handleInputChange(e, "applicant")}
+                required
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 transition"
               >
                 <option value="">Select</option>
@@ -1450,6 +1472,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     type="file"
                     name="partnershipDeed"
                     onChange={(e) => handleInputChange(e, "applicant")}
+                    required
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                   />
                 </div>
@@ -1463,6 +1486,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     type="file"
                     name="moa"
                     onChange={(e) => handleInputChange(e, "applicant")}
+                    required
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                   />
                 </div>
@@ -1476,6 +1500,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     type="file"
                     name="aoa"
                     onChange={(e) => handleInputChange(e, "applicant")}
+                    required
                     className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
                   />
                 </div>
@@ -1502,6 +1527,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                             onChange={(e) =>
                               handleInputChange(e, "partners", idx)
                             }
+                            maxLength={field.maxLength}
+                            required
                             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           >
                             <option value="">Select</option>
@@ -1523,6 +1550,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                             onChange={(e) =>
                               handleInputChange(e, "partners", idx)
                             }
+                            required
                             className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-2
       file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0
       file:bg-blue-600 file:text-white hover:file:bg-blue-700
@@ -1592,6 +1620,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                           onChange={(e) =>
                             handleNomineeChange(idx, field.key, e.target.value)
                           }
+                          maxLength={field.maxLength}
+                          required
                           className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                       </div>
@@ -1640,6 +1670,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                   name="proposerMembershipId"
                   value={formData.proposer.proposerMembershipId}
                   onChange={(e) => handleInputChange(e, "proposer")}
+                  required
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
@@ -1681,7 +1712,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                         </span>
                       </label>
                       <input
-                        type="number"
+                        type="text"
+                        maxLength={6}
                         placeholder="XXXXXX"
                         disabled={endoresmentOtpSent.PROPOSER.timeleft === 0}
                         onChange={(e) =>
@@ -1690,6 +1722,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                             PROPOSER: e.target.value,
                           }))
                         }
+                        required
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>
@@ -1821,6 +1854,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                   name="seconderMembershipId"
                   value={formData.seconder.seconderMembershipId}
                   onChange={(e) => handleInputChange(e, "seconder")}
+                  required
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
@@ -1861,7 +1895,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                         </span>
                       </label>
                       <input
-                        type="number"
+                        type="text"
+                        maxLength={6}
                         placeholder="XXXXXX"
                         disabled={endoresmentOtpSent.SECONDER.timeleft === 0}
                         onChange={(e) =>
@@ -1870,6 +1905,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                             SECONDER: e.target.value,
                           }))
                         }
+                        required
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>

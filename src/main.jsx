@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+ 
     <Provider store={store}>
       <App />
     </Provider>
@@ -22,5 +23,6 @@ createRoot(document.getElementById('root')).render(
         pauseOnHover
         theme="colored"
       />
-  </StrictMode>,
+     
+   </StrictMode>,
 )
