@@ -29,7 +29,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
         return response.json();
       })
       .then((data) => {
-        // console.log("Remark submitted:", data);
+        console.log("Remark submitted:", data);
       })
       .catch((error) => notify(error.message, "error"));
   }

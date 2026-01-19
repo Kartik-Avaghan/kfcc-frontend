@@ -225,7 +225,7 @@ function Nav() {
       {
         name: "Manage All Users",
         icon: Users2,
-        path: "/admin/manageusers",
+        path: "/manage/users/all",
       },
     ],
 
