@@ -186,14 +186,14 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       type: "text",
       labelEn: "PAN Number",
       labelKn: "ಪ್ಯಾನ್ ಸಂಖ್ಯೆ",
-      maxLength:"10",
+      maxlength: 10,
     },
     {
       key: "partnerAadhaarNo",
       type: "text",
       labelEn: "Aadhaar Number",
       labelKn: "ಆಧಾರ್ ಸಂಖ್ಯೆ",
-      maxLength:"12",
+      maxlength: 12,
     },
     {
       key: "partnerPan",
@@ -257,7 +257,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       type: "number",
       labelEn: "Nominee Mobile Number",
       labelKn: "ನಾಮಿನಿ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
-      maxLength:"10"
+      maxlength: 10,
     },
 
     {
@@ -790,6 +790,26 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
   //   }));
   // };
 
+  // const isProposerMembershipEntered =
+  // formData.proposer.proposerMembershipId &&
+  // formData.proposer.proposerMembershipId.toString().trim().length > 0;
+
+  // const isProposerOtpValid =
+  // endoresmentOtp.PROPOSER &&
+  // endoresmentOtp.PROPOSER.length === 6;
+
+  const isMembershipEntered = (type) => {
+    const id =
+      type === "PROPOSER"
+        ? formData.proposer.proposerMembershipId
+        : formData.seconder.seconderMembershipId;
+
+    return id && id.toString().trim().length > 0;
+  };
+
+  const isOtpValid = (type) =>
+    endoresmentOtp[type] && endoresmentOtp[type].length === 6;
+
   return (
     <>
       <div className=" max-w-6xl mx-auto p-8 bg-white  space-y-6 mt-6">
@@ -799,7 +819,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             onClick={() => setOpenModal(false)}
             className="flex items-center text-lg justify-center  text-gray-900  hover:text-gray-600 transition cursor-pointer"
           >
-            <ChevronLeft size={18}  /> Back
+            <ChevronLeft size={18} /> Back
           </button>
           <h2 className="text-3xl font-bold text-blue-900 mb-2">
             ಸದಸ್ಯತ್ವದ ಅರ್ಜಿಯೊಂದಿಗೆ ಲಗತ್ತಿಸಬೇಕದ ವಿವರಗಳು
@@ -1527,7 +1547,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                             onChange={(e) =>
                               handleInputChange(e, "partners", idx)
                             }
-                            maxLength={field.maxLength}
+                            maxLength={field.maxlength}
                             required
                             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           >
@@ -1620,7 +1640,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                           onChange={(e) =>
                             handleNomineeChange(idx, field.key, e.target.value)
                           }
-                          maxLength={field.maxLength}
+                          maxLength={field.maxlength}
                           required
                           className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
@@ -1677,17 +1697,20 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
 
               {/* Send / Resend Button */}
               <div className="col-span-12 md:col-span-2 flex items-end">
-                {!endoresmentOtpSent.PROPOSER.sent && (
-                  <button
-                    type="button"
-                    onClick={() => handleEndorsementSendOtp("PROPOSER")}
-                    className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
-                  >
-                    <Send size={16} /> Send OTP
-                  </button>
-                )}
+                {isMembershipEntered("PROPOSER") &&
+                  !endoresmentOtpSent.PROPOSER.sent && (
+                    <button
+                      type="button"
+                      // disabled={!isProposerMembershipEntered}
+                      onClick={() => handleEndorsementSendOtp("PROPOSER")}
+                      className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
+                    >
+                      <Send size={16} /> Send OTP
+                    </button>
+                  )}
 
-                {endoresmentOtpSent.PROPOSER.sent &&
+                {isMembershipEntered("PROPOSER") &&
+                  endoresmentOtpSent.PROPOSER.sent &&
                   endoresmentOtpSent.PROPOSER.timeleft === 0 &&
                   !endoresmentOtpSent.PROPOSER.verified && (
                     <button
@@ -1730,7 +1753,10 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     <div className="col-span-12 md:col-span-2 flex items-end">
                       <button
                         type="button"
-                        disabled={endoresmentOtpSent.PROPOSER.timeleft === 0}
+                        disabled={
+                          endoresmentOtpSent.PROPOSER.timeleft === 0 ||
+                          !isOtpValid("PROPOSER")
+                        }
                         onClick={() =>
                           handleEndorsementVerification("PROPOSER")
                         }
@@ -1860,17 +1886,19 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
               </div>
 
               <div className="col-span-12 md:col-span-2 flex items-end">
-                {!endoresmentOtpSent.SECONDER.sent && (
-                  <button
-                    type="button"
-                    onClick={() => handleEndorsementSendOtp("SECONDER")}
-                    className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
-                  >
-                    <Send size={16} /> Send OTP
-                  </button>
-                )}
+                {isMembershipEntered("SECONDER") &&
+                  !endoresmentOtpSent.SECONDER.sent && (
+                    <button
+                      type="button"
+                      onClick={() => handleEndorsementSendOtp("SECONDER")}
+                      className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
+                    >
+                      <Send size={16} /> Send OTP
+                    </button>
+                  )}
 
-                {endoresmentOtpSent.SECONDER.sent &&
+                {isMembershipEntered("SECONDER") &&
+                  endoresmentOtpSent.SECONDER.sent &&
                   endoresmentOtpSent.SECONDER.timeleft === 0 &&
                   !endoresmentOtpSent.SECONDER.verified && (
                     <button
@@ -1913,7 +1941,10 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     <div className="col-span-12 md:col-span-2 flex items-end">
                       <button
                         type="button"
-                        disabled={endoresmentOtpSent.SECONDER.timeleft === 0}
+                        disabled={
+                          endoresmentOtpSent.SECONDER.timeleft === 0 ||
+                          !isOtpValid("SECONDER")
+                        }
                         onClick={() =>
                           handleEndorsementVerification("SECONDER")
                         }
