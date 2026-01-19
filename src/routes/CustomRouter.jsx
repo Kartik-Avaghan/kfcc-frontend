@@ -23,6 +23,7 @@ import UserMembershipDasboard from "../pages/user/UserMembershipDasboard";
 import UserTitleRegistrationDashboard from "../pages/user/UserTitleRegistrationDashboard";
 import Unauthorized from "../pages/Unauthorized";
 import ProtectedRoutes from "../Auth/ProtectedRoutes";
+import ManageUsers from "../pages/Super-admin/ManageUsers";
 
 function CustomRouter() {
   return (
@@ -215,6 +216,16 @@ function CustomRouter() {
           {/* ec-member */}
 
           {/* secretry */}
+
+          {/* super admin */}
+          <Route
+            path="manage/users/:role"
+            element={
+              <ProtectedRoutes allowedRoles={["SUPER_ADMIN"]}>
+                <ManageUsers />
+              </ProtectedRoutes>
+            }
+          />
         </Route>
       </Routes>
     </div>
