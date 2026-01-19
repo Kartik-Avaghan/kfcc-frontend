@@ -35,6 +35,12 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (formData.documents.length === 0) {
+    notify("Please upload at least one document", "error");
+    return;
+  }
+
+
     const formPayload = new FormData();
 
     formPayload.append(
@@ -106,27 +112,53 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
       .catch((error) => notify(error.message, "error"));
   };
 
+  // const handleFileChange = (e) => {
+  //   const newFiles = Array.from(e.target.files);
+
+  //   setFormData((prev) => {
+  //     const existingFiles = prev.documents || [];
+
+  //     //  Already reached limit
+  //   // if (existingFiles.length >= 5) {
+  //   //   notify("You can upload a maximum of 5 files only", "error");
+  //   //   return prev;
+  //   // }
+
+  //     // total files count check
+  //     if (existingFiles.length + newFiles.length > 5) {
+  //       notify("You can upload a maximum of 5 files only", "error");
+  //       return prev;
+  //     }
+
+  //     return {
+  //       ...prev,
+  //       documents: [...existingFiles, ...newFiles],
+  //     };
+  //   });
+
+  //   // reset input so same file can be selected again if needed
+  //   e.target.value = "";
+  // };
+
+
   const handleFileChange = (e) => {
-    const newFiles = Array.from(e.target.files);
+  const newFiles = Array.from(e.target.files);
+  const existingFiles = formData.documents || [];
 
-    setFormData((prev) => {
-      const existingFiles = prev.documents || [];
-
-      // total files count check
-      if (existingFiles.length + newFiles.length > 5) {
-        notify("You can upload a maximum of 5 files only", "error");
-        return prev;
-      }
-
-      return {
-        ...prev,
-        documents: [...existingFiles, ...newFiles],
-      };
-    });
-
-    // reset input so same file can be selected again if needed
+  if (existingFiles.length + newFiles.length > 5) {
+    notify("You can upload a maximum of 5 files only", "error");
     e.target.value = "";
-  };
+    return;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    documents: [...prev.documents, ...newFiles],
+  }));
+
+  e.target.value = "";
+};
+
 
   const removeFile = (index) => {
     setFormData((prev) => ({
@@ -254,6 +286,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   name="language"
                   value={formData.language}
                   onChange={handleChange}
+                  required
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                   <option value="">--Select Language--</option>
@@ -346,6 +379,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   name="previouslyRegistered"
                   value={formData.previouslyRegistered}
                   onChange={handleChange}
+                  required
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                   <option value="">--Select--</option>
@@ -365,6 +399,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   onChange={handleChange}
                   placeholder="Enter details"
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
                 />
               </div>
             </div>
@@ -387,6 +422,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   onChange={handleChange}
                   placeholder="Director"
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
                 />
               </div>
               <div>
@@ -400,6 +436,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   onChange={handleChange}
                   placeholder="Music Director"
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
                 />
               </div>
               <div>
@@ -413,6 +450,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   onChange={handleChange}
                   placeholder="Lead Artist"
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
                 />
               </div>
             </div>
@@ -434,6 +472,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   value={formData.category}
                   onChange={handleChange}
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
                 >
                   <option value="">--Select--</option>
                   <option value="Social">Social</option>
@@ -487,6 +526,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   onChange={handleChange}
                   placeholder="List films by institutes"
                   className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
                 />
               </div>
 
@@ -499,8 +539,9 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                     type="file"
                     name="documents"
                     multiple
-                    disabled={formData.documents.length >= 5}
+                    
                     onChange={handleFileChange}
+                  
                     className="w-full border rounded-lg p-1 focus:ring-2 focus:ring-blue-500 focus:outline-none file:bg-blue-700
     file:text-white
     file:px-2
@@ -512,6 +553,13 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
     hover:file:bg-blue-800"
                     accept=".pdf,.doc,.docx,.jpg,.png"
                   />
+
+
+                  {formData.documents.length >= 5 && (
+  <p className="text-red-600 text-sm mt-1">
+    Maximum 5 files uploaded. Remove a file to add more.
+  </p>
+)}
                 </div>
 
                 {/* Preview Window */}

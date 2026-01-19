@@ -255,6 +255,7 @@ function PublicityClearanceForm({ titleId, onClose }) {
               <input
                 type="file"
                 multiple
+                required
                 onChange={(e) =>
                   handleFileChange(type, e.target.files)
                 }
@@ -294,6 +295,7 @@ function PublicityClearanceForm({ titleId, onClose }) {
           value={formData.remark}
           onChange={handleChange}
           rows="3"
+         
           className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           placeholder="Enter any additional remarks... / ಯಾವುದೇ ಹೆಚ್ಚುವರಿ ಟಿಪ್ಪಣಿಗಳನ್ನು ನಮೂದಿಸಿ..."
         />
