@@ -37,6 +37,8 @@ function PublicityClearenceRequests() {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
     
             const data = await response.json();
+            
+            
     
             setPublicityClearances(data);
              
@@ -61,6 +63,12 @@ function PublicityClearenceRequests() {
     item.publicityClearanceId?.toString().includes(term)
   );
 });
+
+const handleApplicationActionSuccess = (applicationId) => {
+    setPublicityClearances((prev) =>
+      prev.filter((item) => item.id !== applicationId)
+    );
+  };
 
 
   return (
@@ -208,7 +216,8 @@ function PublicityClearenceRequests() {
       {selectedApplicationId && (
         <ViewPublicityClearenceForm
         applicationId = {selectedApplicationId}
-        onClose={() => setSelectedApplicationId(null)} />
+        onClose={() => setSelectedApplicationId(null)}
+        onActionSuccess={handleApplicationActionSuccess } />
         )}
     </div>
   )

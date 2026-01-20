@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
 import { notify } from "../../Utils/notify";
 
-function PublicityClearenceRemark({ applicationId, onClose, onSuccess  }) {
+function PublicityClearenceRemark({ applicationId, onCloseRemark, onSuccess  }) {
   const [remark, setRemark] = useState("");
 
   function handleSubmit(e) {
@@ -25,7 +25,7 @@ function PublicityClearenceRemark({ applicationId, onClose, onSuccess  }) {
           throw new Error("Response not ok");
         }
         notify("Application is Remarked", "warn");
-        onClose(false);
+        onCloseRemark(false);
         onSuccess();
         return response.json();
       })
@@ -38,7 +38,7 @@ function PublicityClearenceRemark({ applicationId, onClose, onSuccess  }) {
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-      onClick={onClose}
+      onClick={onCloseRemark}
     >
       <div
         className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden transform transition-all duration-300 scale-100"
@@ -47,7 +47,7 @@ function PublicityClearenceRemark({ applicationId, onClose, onSuccess  }) {
         {/* Header */}
         <div className="bg-yellow-600 text-white p-6 relative">
           <button
-            onClick={onClose}
+            onClick={onCloseRemark}
             className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-20"
           >
             <X className="w-5 h-5" />
@@ -105,7 +105,7 @@ function PublicityClearenceRemark({ applicationId, onClose, onSuccess  }) {
             <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-gray-100">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={onCloseRemark}
                 className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-200 cursor-pointer"
               >
                 Cancel

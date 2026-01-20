@@ -218,6 +218,7 @@ export default function ViewPublicityClearenceForm({
             onSuccess={() => {
               onActionSuccess(applicationId);
               onClose();
+             
             }}
           />
         )}
@@ -229,6 +230,7 @@ export default function ViewPublicityClearenceForm({
             onSuccess={() => {
               onActionSuccess(applicationId);
               onClose();
+              
             }}
           />
         )}

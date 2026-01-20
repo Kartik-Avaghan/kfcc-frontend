@@ -261,7 +261,7 @@ function Nav() {
 
   const ROLE_CATEGORIES = {
     Management: [
-      "PRESIDENT",
+      "SUPER_ADMIN",
       "MANAGER",
       "SECRETARY",
       "EC_MEMBER",
