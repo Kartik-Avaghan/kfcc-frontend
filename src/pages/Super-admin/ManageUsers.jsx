@@ -1,8 +1,18 @@
-import { Search, SquarePen, Trash, UserPlus, UserX } from "lucide-react";
+import {
+  Search,
+  SquarePen,
+  Trash,
+  UserPlus,
+  UserX,
+  Trash2,
+  X,
+  AlertTriangle,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AddUser from "../../components/super-admin/AddUser";
 import { notify } from "../../Utils/notify";
+import EditUser from "../../components/super-admin/EditUser";
 
 function ManageUsers() {
   const { role } = useParams();
@@ -13,6 +23,8 @@ function ManageUsers() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
+  const [editUserDetails, setEditUserDetails] = useState(null);
+  const [deleteUser, setDeleteUser] = useState(null);
 
   const fetchusers = async () => {
     try {
@@ -22,7 +34,7 @@ function ManageUsers() {
           headers: {
             Authorization: localStorage.getItem("token"),
           },
-        },
+        }
       );
       const data = await response.json();
       if (!response.ok) {
@@ -37,42 +49,41 @@ function ManageUsers() {
 
   useEffect(() => {
     fetchusers();
-  }, [role , page]);
+  }, [role, page]);
 
-  const handleDelete = async (userId , role) => {
+  const handleDelete = async (userId, role) => {
     const request = {
-      "userID" : userId,
-      "role" : role
-    }
+      userID: userId,
+      role: role,
+    };
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/user/remove/role`, {
+        `${import.meta.env.VITE_API_BASE_URL}/user/remove/role`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "Application/json",
             Authorization: localStorage.getItem("token"),
           },
-          body: JSON.stringify(request)
-        },
+          body: JSON.stringify(request),
+        }
       );
-      
+
+      const data = response.ok ? await response.text() : await response.json();
+
       if (!response.ok) {
-        notify(data.message, "error");
+        notify(data.message || "Failed to delete user", "error");
         return;
       }
-      
-      const data = response.ok ? await response.text() : await response.json();
-      
-      notify("User Deleted Sucessfully" , "success");
-    
-      fetchusers();
 
+      notify("User Deleted Sucessfully", "success");
+
+      fetchusers();
     } catch (error) {
       console.log("Error fetching users: ", error);
     }
-  }
-  
+  };
 
   const roleStyles = {
     SUPER_ADMIN: "bg-orange-100 text-orange-700 border border-red-300",
@@ -109,7 +120,7 @@ function ManageUsers() {
     <div className="px-14 py-8 max-w-8xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold capitalize mb-0">
+          <h1 className="text-2xl font-bold text-blue-900 capitalize mb-0">
             {role.replaceAll("_", " ")}
           </h1>
           <h4 className="text-gray-600">
@@ -142,7 +153,7 @@ function ManageUsers() {
           <table className="w-full background-white border-collapse ">
             <thead>
               <tr className="bg-gray-50 text-gray-600 border-b border-slate-200">
-                <th className="px-6 py-4 text-left ">Name</th>
+                <th className="px-4 py-4 text-left ">Name</th>
                 <th className="px-6 py-4 text-left ">Role</th>
                 <th className="px-6 py-4 text-left ">Email</th>
                 <th className="px-6 py-4 text-left ">Mobile No</th>
@@ -152,14 +163,14 @@ function ManageUsers() {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id} className="divide-slate-200 divide-y">
-                  <td className=" px-6 py-4">
+                  <td className=" px-2 py-4">
                     {user.firstName +
                       " " +
                       user.middleName +
                       " " +
                       user.lastName}
                   </td>
-                  <td className=" px-6 py-4">
+                  <td className=" px-2 py-4">
                     {user.roles.map((role) => (
                       <span
                         key={role}
@@ -171,14 +182,19 @@ function ManageUsers() {
                       </span>
                     ))}
                   </td>
-                  <td className=" px-6 py-4">{user.email}</td>
-                  <td className=" px-6 py-4">+91 {user.mobileNo} </td>
+                  <td className=" px-2 py-4">{user.email}</td>
+                  <td className=" px-2 py-4">+91 {user.mobileNo} </td>
                   <td className="flex items-center p-2 ">
-                    <button className="text-blue-500 hover:underline cursor-pointer  hover:bg-blue-600 hover:text-white rounded-full p-3 w-11 h-11 flex items-center">
+                    <button
+                      onClick={() => setEditUserDetails(user)}
+                      className="text-blue-500 hover:underline cursor-pointer  hover:bg-blue-600 hover:text-white rounded-full p-3 w-11 h-11 flex items-center"
+                    >
                       <SquarePen className="" size={20} />
                     </button>
-                    <button className="text-red-500 hover:underline ml-4 cursor-pointer hover:bg-red-600 hover:text-white rounded-full p-3 w-11 h-11 flex items-center"
-                      onClick={ () => handleDelete(user.id , role)}
+                    <button
+                      onClick={() => setDeleteUser(user)}
+                      className="text-red-500 hover:underline ml-4 cursor-pointer hover:bg-red-600 hover:text-white rounded-full p-3 w-11 h-11 flex items-center"
+                      // onClick={ () => handleDelete(user.id , role)}
                     >
                       <Trash className="" size={20} />
                     </button>
@@ -253,6 +269,72 @@ function ManageUsers() {
       )}
 
       {addUser && <AddUser setAddUser={setAddUser} fetchusers={fetchusers} />}
+
+      {editUserDetails && (
+        <EditUser
+          userData={editUserDetails}
+          onCloseEdit={() => setEditUserDetails(null)}
+          onActionSuccess={fetchusers}
+        />
+      )}
+
+      {deleteUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"  >
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative"  >
+            {/* Close */}
+            <button
+              onClick={() => setDeleteUser(null)}
+              className="absolute top-3 right-3 text-gray-600 hover:text-red-600 cursor-pointer"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Icon */}
+            <div className="flex items-center justify-center mb-4">
+              <div className="bg-red-100 text-red-600 p-4 rounded-full">
+                <AlertTriangle size={32} />
+              </div>
+            </div>
+
+            {/* Content */}
+            <h2 className="text-xl font-semibold text-center text-gray-800">
+              Delete User?
+            </h2>
+
+            <p className="text-center text-gray-600 mt-2">
+              Are you sure you want to delete
+              <span className="font-semibold text-gray-800">
+                {" "}
+                {deleteUser.firstName} {deleteUser.lastName}
+              </span>
+              ?
+            </p>
+
+            
+
+            {/* Actions */}
+            <div className="flex justify-center gap-4 mt-6">
+              <button
+                onClick={() => setDeleteUser(null)}
+                className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  handleDelete(deleteUser.id, role);
+                  setDeleteUser(null);
+                }}
+                className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 flex items-center gap-2 cursor-pointer"
+              >
+                <Trash2 size={16} />
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
