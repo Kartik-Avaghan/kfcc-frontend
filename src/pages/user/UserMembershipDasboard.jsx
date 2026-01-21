@@ -158,7 +158,10 @@ export default function UserMembershipDasboard() {
       app.applicationId?.toString().toLowerCase().includes(term) ||
        app.applicantName?.toLowerCase().includes(term)
 
-       const matchesStatus = !statusFilter || app.status == statusFilter ;
+       const matchesStatus = !statusFilter ||
+       (statusFilter === "REJECTED" && app.status.includes("REJECTED")) ||
+       (statusFilter === "HOLD" && app.status.includes("HOLD"))  ||
+        app.status == statusFilter ;
 
        return (matchSearch && matchesStatus);
       

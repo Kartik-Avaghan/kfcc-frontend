@@ -95,6 +95,7 @@ const STATUS_STYLES = {
 function PublicityClearenceDashboard() {
   const [titleRegisteredData, setTitleRegisteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const[statusFilter, setStatusFilter]=useState("");
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [formMode, setFormMode] = useState(null);
@@ -125,19 +126,33 @@ function PublicityClearenceDashboard() {
     }
   };
 
-  const filteredData = titleRegisteredData.filter((item) =>
-    [
-      item.title?.title,
-      item.title?.director,
-      item.title?.leadActor,
-      item.title?.language,
-      item.title?.category,
-      item.title?.id?.toString(),
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  console.log(titleRegisteredData);
+  
+
+
+  
+  const filteredData = titleRegisteredData.filter((item) => {
+  const term = searchTerm.toLowerCase();
+
+  const matchSearch =
+    item.title?.director?.toLowerCase().includes(term) ||
+    item.title?.leadActor?.toLowerCase().includes(term) ||
+    item.title?.language?.toLowerCase().includes(term) ||
+    item.title?.category?.toLowerCase().includes(term) ||
+    item.title?.id?.toString().toLowerCase().includes(term);
+
+
+    // const status = item.publicityClearanceStatus;
+
+  const matchStatus = !statusFilter ||
+      (statusFilter === "REJECTED" && item.publicityClearanceStatus.includes("REJECTED")) ||
+      (statusFilter === "HOLD" && item.publicityClearanceStatus.includes("HOLD")) ||
+       item.publicityClearanceStatus === statusFilter;
+
+  return matchSearch && matchStatus;
+});
+
+   
 
   const handleOpenForm = (item) => {
     const statusType = getStatusType(item.publicityClearanceStatus);
@@ -164,7 +179,7 @@ function PublicityClearenceDashboard() {
       </div>
 
       {/* Search */}
-      <div className="mt-6 mb-10 max-w-xl">
+      {/* <div className="flex  justify-between mt-6 mb-10 max-w-xl">
         <div className="flex items-center gap-2 mb-10 max-w-lg border-2 border-gray-300 rounded-xl p-3">
           <Search className="w-5 h-5 text-gray-600" />
           <input
@@ -174,6 +189,43 @@ function PublicityClearenceDashboard() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full focus:outline-none"
           />
+        </div>
+
+        <div>
+          <select name="" id="">All Status</select>
+        </div>
+      </div> */}
+
+
+
+
+      {/* Filters */}
+      <div className="flex justify-between items-center mb-10 mt-4">
+        <div className="flex items-center gap-2  min-w-lg border-2 border-gray-300 rounded-xl p-3">
+          <Search className="w-5 h-5 text-gray-600" />
+          <input
+            type="text"
+            placeholder="Search by title, director, language..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full focus:outline-none"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 max-w-md border-2 border-gray-300 rounded-xl p-3 px-6">
+          <select
+            type="text"
+            value={statusFilter}
+            onChange={(e)=> setStatusFilter(e.target.value)}
+            placeholder="status"
+            className="w-full focus:outline-none"
+          >
+            <option value="">All Statuses</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="FINAL_APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="HOLD">Hold</option>
+          </select>
         </div>
       </div>
 
@@ -201,7 +253,7 @@ function PublicityClearenceDashboard() {
           const stepIndex = STATUS_FLOW[status] ?? 0;
           const statusType = getStatusType(status);
           const style = STATUS_STYLES[statusType];
-          const StatusIcon = style.icon;
+          // const StatusIcon = style.icon;
 
           return (
             <div
