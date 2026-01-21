@@ -1,16 +1,20 @@
 import { X, Save, UserRoundPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { notify } from "../../Utils/notify";
+import RoleSelectField from "./RoleSelectField";
+
 
 function EditUser({ userData, onCloseEdit, onActionSuccess }) {
   const [loading, setLoading] = useState(false);
-
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
     lastName: "",
     email: "",
     mobileNo: "",
+    bloodGroup: "",
+    dob: "",
+    roles: [],
   });
 
   // Prefill form with existing user data
@@ -22,6 +26,9 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
         lastName: userData.lastName || "",
         email: userData.email || "",
         mobileNo: userData.mobileNo || "",
+        bloodGroup: userData.bloodGroup || "",
+        dob: userData.dob || "",
+        roles: userData.roles || [],
       });
     }
   }, [userData]);
@@ -32,6 +39,12 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
   };
 
   const handleUpdate = async () => {
+
+    if(formData.roles.length === 0){
+      notify("At least one role must be selected", "error");
+      return;
+    }
+
     setLoading(true);
     const userId = userData.id;
 
@@ -45,7 +58,7 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
             Authorization: localStorage.getItem("token"),
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -120,7 +133,7 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Email</label>
               <input
@@ -144,21 +157,55 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
                 className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2  focus:ring-1 focus:ring-blue-500 focus:outline-none"
               />
             </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2  focus:ring-1 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Blood Group
+              </label>
+              <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
           </div>
 
-          {/* <div>
-        <label className="text-sm font-medium text-gray-700">Role</label>
-        <select
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-1 focus:ring-blue-500"
-        >
-          <option value="">Select Role</option>
-          <option value="ADMIN">Admin</option>
-          <option value="USER">User</option>
-        </select>
-      </div> */}
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Roles
+            </label>
+            <RoleSelectField
+              formData={formData}
+              setFormData={setFormData}
+            />
+
+            {formData.roles.length === 0 && (
+              <p className="text-sm text-red-500">
+                At least one role must be selected
+              </p>
+            )}
+
+          </div>
+
         </div>
 
         {/* Actions */}
