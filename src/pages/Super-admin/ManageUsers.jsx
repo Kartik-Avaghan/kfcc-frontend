@@ -177,7 +177,7 @@ function ManageUsers() {
                     </div>
                   </td>
                   <td className=" px-2 py-4">{user.email}</td>
-                  <td className=" px-2 py-4">+91 {user.mobileNo} </td>
+                  <td className=" px-0 py-4">+91 {user.mobileNo} </td>
                   <td className="flex items-center p-2 ">
                     <button
                       onClick={() => setEditUserDetails(user)}
