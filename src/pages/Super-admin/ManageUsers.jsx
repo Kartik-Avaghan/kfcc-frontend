@@ -26,6 +26,8 @@ function ManageUsers() {
 
   const [editUserDetails, setEditUserDetails] = useState(null);
   const [deleteUser, setDeleteUser] = useState(null);
+  const[searchFilter, setSearchFilter]=useState();
+
 
   const fetchusers = async () => {
     try {
@@ -42,11 +44,14 @@ function ManageUsers() {
         throw new Error(data.message || "Failed to fetch users");
       }
       setUsers(data.content);
+      
       setTotalPages(data.totalPages);
     } catch (error) {
       console.log("Error fetching users: ", error);
     }
   };
+
+  
 
   useEffect(() => {
     fetchusers();
@@ -86,6 +91,23 @@ function ManageUsers() {
     }
   };
 
+ const filteredUsers = users.filter((user) => {
+  const term = searchTerm.toLowerCase();
+
+  const fullName = `${user.firstName} ${user.middleName ?? ""} ${user.lastName}`.toLowerCase();
+
+  return (
+    fullName.includes(term) ||
+    user.email?.toLowerCase().includes(term) ||
+    user.mobileNo?.toString().includes(term) ||
+    user.roles?.some((role) => role.toLowerCase().includes(term))
+  );
+});
+
+
+
+
+
   return (
     <div className="px-14 py-8 max-w-8xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
@@ -118,7 +140,7 @@ function ManageUsers() {
         />
       </div>
 
-      {users.length > 0 ? (
+      {filteredUsers.length > 0 ? (
         <div className="rounded-xl overflow-hidden ">
           <table className="w-full background-white border-collapse ">
             <thead>
@@ -131,7 +153,7 @@ function ManageUsers() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <tr key={user.id} className="divide-slate-200 divide-y">
                   <td className=" px-2 py-4">
                     {user.firstName +
