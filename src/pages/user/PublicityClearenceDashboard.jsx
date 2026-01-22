@@ -253,7 +253,7 @@ function PublicityClearenceDashboard() {
           const stepIndex = STATUS_FLOW[status] ?? 0;
           const statusType = getStatusType(status);
           const style = STATUS_STYLES[statusType];
-          // const StatusIcon = style.icon;
+          const StatusIcon = style.icon;
 
           return (
             <div
@@ -275,7 +275,7 @@ function PublicityClearenceDashboard() {
                   <p className="text-sm text-gray-600">
                     Application No:
                     <span className="text-lg font-bold ml-1">
-                      #{item.title.id}
+                      #{item.publicityClearanceId}
                     </span>
                   </p>
                 </div>
@@ -387,6 +387,7 @@ function PublicityClearenceDashboard() {
                     className={`mx-6 my-6 p-3 rounded-lg border ${style.border} flex gap-2`}
                   >
                     {/* <StatusIcon className={style.text} /> */}
+                    <StatusIcon className={`w-5 h-5  ${style.text}`} />
                     <p className={`text-sm ${style.bg} ${style.text}`}>
                       {style.message}
                     </p>

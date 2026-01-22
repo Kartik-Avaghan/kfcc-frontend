@@ -131,7 +131,7 @@ const handleApplicationActionSuccess = (applicationId) => {
                     <p>
                       Application No:{" "}
                       <span className="font-bold text-lg">
-                        #{item.title.id}
+                        #{item.publicityClearanceId}
                       </span>
                     </p>
 
