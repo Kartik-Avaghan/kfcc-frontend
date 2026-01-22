@@ -146,12 +146,7 @@ export default function UserMembershipDasboard() {
 
   const filteredApplications = applications.filter((app) => {
     const term = searchTerm.toLowerCase();
-    // return (
-    //   app.membershipCategory?.toLowerCase().includes(term) ||
-    //   app.applicationId?.toString().toLowerCase().includes(term) ||
-    //   app.applicantName?.toLowerCase().includes(term)
-    // );
-
+    
     const matchSearch = 
 
        app.membershipCategory?.toLowerCase().includes(term) ||

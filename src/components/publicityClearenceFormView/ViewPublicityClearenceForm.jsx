@@ -75,7 +75,7 @@ export default function ViewPublicityClearenceForm({
         <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 hover:text-gray-300"
+            className="absolute top-4 right-4 hover:text-gray-300 cursor-pointer"
           >
             <X />
           </button>
@@ -274,7 +274,7 @@ function Doc({ label, file, onView }) {
       {hasFile ? (
         <button
           onClick={() => onView(file)}
-          className="text-blue-600 text-sm underline"
+          className="text-blue-600 text-sm underline cursor-pointer"
         >
           View
         </button>
