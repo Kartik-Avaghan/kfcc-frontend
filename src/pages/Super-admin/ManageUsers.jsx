@@ -271,18 +271,19 @@ function ManageUsers() {
             </div>
 
             {/* Content */}
-            <h2 className="text-xl font-semibold text-center text-gray-800">
-              Delete User?
+            <h2 className="text-xl font-semibold text-center text-red-600">
+              Remove {role} ?
             </h2>
 
             <p className="text-center text-gray-600 mt-2">
-              Are you sure you want to delete
+              Are you sure you want to remove
               <span className="font-semibold text-gray-800">
                 {" "}
                 {deleteUser.firstName} {deleteUser.lastName}
               </span>
-              ?
+              ? from {role} Role
             </p>
+            
 
             {/* Actions */}
             <div className="flex justify-center gap-4 mt-6">
@@ -301,7 +302,7 @@ function ManageUsers() {
                 className="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 flex items-center gap-2 cursor-pointer"
               >
                 <Trash2 size={16} />
-                Delete
+                Remove
               </button>
             </div>
           </div>

@@ -27,4 +27,5 @@ export const ROLE_STYLE = {
     TEMPORARY_MEMBER: "bg-gray-100 text-gray-700 border border-gray-300",
 
     USER: "bg-gray-100 text-gray-700 border border-gray-300",
+    DEFAULT: "bg-gray-100 text-gray-700 border border-gray-300",
 };

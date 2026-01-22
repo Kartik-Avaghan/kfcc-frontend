@@ -81,8 +81,8 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 relative">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="flex text-xl gap-2 font-bold text-blue-900">
-            <UserRoundPen className="h-8 w-8 " />
+          <h2 className="flex items-center text-xl gap-2 font-bold text-blue-900">
+            <UserRoundPen size={24}/>
             Edit User Details
           </h2>
           <button onClick={onCloseEdit}>
@@ -190,7 +190,7 @@ function EditUser({ userData, onCloseEdit, onActionSuccess }) {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-gray-700 ">
               Roles
             </label>
             <RoleSelectField

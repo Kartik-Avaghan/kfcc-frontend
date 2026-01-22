@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { notify } from "../../Utils/notify";
 
 function AddUser({ setAddUser , fetchusers }) {
