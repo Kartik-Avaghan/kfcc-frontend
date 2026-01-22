@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import AddUser from "../../components/super-admin/AddUser";
 import { notify } from "../../Utils/notify";
 import EditUser from "../../components/super-admin/EditUser";
+import { ROLE_STYLE as roleStyles } from "../../components/super-admin/RolesStyle";
 
 function ManageUsers() {
   const { role } = useParams();
@@ -34,7 +35,7 @@ function ManageUsers() {
           headers: {
             Authorization: localStorage.getItem("token"),
           },
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok) {
@@ -67,7 +68,7 @@ function ManageUsers() {
             Authorization: localStorage.getItem("token"),
           },
           body: JSON.stringify(request),
-        }
+        },
       );
 
       const data = response.ok ? await response.text() : await response.json();
@@ -83,37 +84,6 @@ function ManageUsers() {
     } catch (error) {
       console.log("Error fetching users: ", error);
     }
-  };
-
-  const roleStyles = {
-    SUPER_ADMIN: "bg-orange-100 text-orange-700 border border-red-300",
-    PRESIDENT: "bg-purple-100 text-purple-700 border border-purple-300",
-    SECRETARY: "bg-blue-100 text-blue-700 border border-blue-300",
-    MANAGER: "bg-emerald-100 text-emerald-700 border border-emerald-300",
-    STAFF: "bg-yellow-100 text-yellow-800 border border-yellow-300",
-    EC_MEMBER: "bg-lime-100 text-lime-700 border border-lime-300",
-
-    VP_PRODUCER: "bg-indigo-100 text-indigo-700 border border-indigo-300",
-    VP_EXHIBITOR: "bg-indigo-100 text-indigo-700 border border-indigo-300",
-    VP_DISTRIBUTOR: "bg-indigo-100 text-indigo-700 border border-indigo-300",
-
-    ONM_COMMITTEE: "bg-pink-100 text-pink-700 border border-pink-300",
-    ONM_COMMITTEE_VOTER: "bg-pink-100 text-pink-700 border border-pink-300",
-    ONM_COMMITTEE_LEADER: "bg-pink-200 text-pink-800 border border-pink-400",
-
-    TITLE_COMMITTEE: "bg-teal-100 text-teal-700 border border-teal-300",
-    TITLE_COMMITTEE_VOTER: "bg-teal-100 text-teal-700 border border-teal-300",
-    TITLE_COMMITTEE_LEADER: "bg-teal-200 text-teal-800 border border-teal-400",
-
-    PRODUCER: "bg-teal-100 text-teal-700 border border-teal-300",
-    DISTRIBUTOR: "bg-teal-100 text-teal-700 border border-teal-300",
-    EXHIBITOR: "bg-teal-100 text-teal-700 border border-teal-300",
-    STUDIO: "bg-teal-100 text-teal-700 border border-teal-300",
-
-    HONORARY_MEMBER: "bg-gray-100 text-gray-700 border border-gray-300",
-    TEMPORARY_MEMBER: "bg-gray-100 text-gray-700 border border-gray-300",
-
-    USER: "bg-gray-100 text-gray-700 border border-gray-300",
   };
 
   return (
@@ -170,17 +140,19 @@ function ManageUsers() {
                       " " +
                       user.lastName}
                   </td>
-                  <td className=" px-2 py-4">
-                    {user.roles.map((role) => (
-                      <span
-                        key={role}
-                        className={`px-3 py-1 text-xs font-semibold gap-2 rounded-full m-1 ${
-                          roleStyles[role] ?? "bg-gray-100 text-gray-700 "
-                        }`}
-                      >
-                        {role}
-                      </span>
-                    ))}
+                  <td className="px-2 py-4 ">
+                    <div className="flex flex-wrap">
+                      {user.roles.map((role) => (
+                        <span
+                          key={role}
+                          className={`px-3 py-1 text-xs font-semibold gap-2 rounded-full m-1 ${
+                            roleStyles[role] ?? "bg-gray-100 text-gray-700 "
+                          }`}
+                        >
+                          {role}
+                        </span>
+                      ))}{" "}
+                    </div>
                   </td>
                   <td className=" px-2 py-4">{user.email}</td>
                   <td className=" px-2 py-4">+91 {user.mobileNo} </td>
@@ -191,13 +163,15 @@ function ManageUsers() {
                     >
                       <SquarePen className="" size={20} />
                     </button>
-                    <button
-                      onClick={() => setDeleteUser(user)}
-                      className="text-red-500 hover:underline ml-4 cursor-pointer hover:bg-red-600 hover:text-white rounded-full p-3 w-11 h-11 flex items-center"
-                      // onClick={ () => handleDelete(user.id , role)}
-                    >
-                      <Trash className="" size={20} />
-                    </button>
+                    {role !== "all" && (
+                      <button
+                        onClick={() => setDeleteUser(user)}
+                        className="text-red-500 hover:underline ml-4 cursor-pointer hover:bg-red-600 hover:text-white rounded-full p-3 w-11 h-11 flex items-center"
+                        // onClick={ () => handleDelete(user.id , role)}
+                      >
+                        <Trash className="" size={20} />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -279,8 +253,8 @@ function ManageUsers() {
       )}
 
       {deleteUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"  >
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative"  >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
             {/* Close */}
             <button
               onClick={() => setDeleteUser(null)}
@@ -309,8 +283,6 @@ function ManageUsers() {
               </span>
               ?
             </p>
-
-            
 
             {/* Actions */}
             <div className="flex justify-center gap-4 mt-6">

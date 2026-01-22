@@ -239,29 +239,9 @@ function Nav() {
     ],
   };
 
-  const ALL_ROLES = [
-    "PRESIDENT",
-    "MANAGER",
-    "SECRETARY",
-    "EC_MEMBER",
-    "STAFF",
-    "TITLE_COMMITTEE_LEADER",
-    "TITLE_COMMITTEE_VOTER",
-    "ONM_COMMITTEE_LEADER",
-    "ONM_COMMITTEE_VOTER",
-    "VP_PRODUCER",
-    "PRODUCER",
-    "DISTRIBUTOR",
-    "TEMPORARY_MEMBER",
-    "HONORARY_MEMBER",
-    "STUDIO",
-    "EXHIBITOR",
-    "USER",
-  ];
-
   const ROLE_CATEGORIES = {
     Management: [
-      "SUPER_ADMIN",
+      "PRESIDENT",
       "MANAGER",
       "SECRETARY",
       "EC_MEMBER",
