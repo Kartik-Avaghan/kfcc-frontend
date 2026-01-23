@@ -34,8 +34,10 @@ const STATUS_FLOW = {
   SECRETARY_REMARKED: 3,
   SECRETARY_REJECTED: 3,
 
-  FINAL_APPROVED: 4,
+  
   MANAGER_REJECTED: 4,
+
+  FINAL_APPROVED: 5,
 };
 
 const STEPS = [
@@ -43,6 +45,7 @@ const STEPS = [
   "Staff",
   "VP_Producer",
   "Secretary",
+  "Manager",
   "Final Approval",
 ];
 
@@ -212,13 +215,13 @@ function PublicityClearenceDashboard() {
           />
         </div>
 
-        <div className="flex items-center gap-2 max-w-md border-2 border-gray-300 rounded-xl p-3 px-6">
+        <div className="flex items-center gap-2 max-w-md border-2 border-gray-300 rounded-xl p-3 px-6 ">
           <select
             type="text"
             value={statusFilter}
             onChange={(e)=> setStatusFilter(e.target.value)}
             placeholder="status"
-            className="w-full focus:outline-none"
+            className="w-full focus:outline-none cursor-pointer"
           >
             <option value="">All Statuses</option>
             <option value="SUBMITTED">Submitted</option>
