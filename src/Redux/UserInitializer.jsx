@@ -34,7 +34,7 @@ function UserInitializer({ children }) {
           userLogin({
             // id: data.id,
             name: data.firstName,
-            phone: data.sub,
+            phone: data.mobile,
             roles: data.roles,
           })
         );

@@ -39,7 +39,7 @@ function Login() {
         }`,
         {
           method: "POST",
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok) {
@@ -66,7 +66,7 @@ function Login() {
         `${import.meta.env.VITE_API_BASE_URL}/auth/verify-otp?mobileNo=${
           userDetails.phone
         }&otp=${userDetails.otp}`,
-        { method: "POST" }
+        { method: "POST" },
       );
 
       if (!response.ok) {
@@ -88,7 +88,7 @@ function Login() {
           name: decodedToken.username,
           phone: decodedToken.sub,
           roles: decodedToken.userrole,
-        })
+        }),
       );
 
       // clear form

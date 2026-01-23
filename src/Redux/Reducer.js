@@ -14,8 +14,8 @@ const userSlice = createSlice({
 
       state.user = {
         // id: payload.id,
-        name: payload.name,
-        phone: payload.phone,
+        name: action.payload.name,
+        phone: action.payload.phone,
         roles: Array.isArray(payload.roles)
           ? payload.roles
           : [payload.roles], // enforce array

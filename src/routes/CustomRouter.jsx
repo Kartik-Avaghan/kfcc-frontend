@@ -24,6 +24,7 @@ import UserTitleRegistrationDashboard from "../pages/user/UserTitleRegistrationD
 import Unauthorized from "../pages/Unauthorized";
 import ProtectedRoutes from "../Auth/ProtectedRoutes";
 import ManageUsers from "../pages/Super-admin/ManageUsers";
+import EditUserProfile from "../components/users/EditUserProfile";
 
 function CustomRouter() {
   return (
@@ -42,6 +43,7 @@ function CustomRouter() {
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="user/account" element={<EditUserProfile/>}/>
 
           {/*user  */}
           <Route

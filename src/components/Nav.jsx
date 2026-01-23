@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import {
   FileText,
   LogOut,
@@ -18,6 +18,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userLogout } from "../Redux/Reducer";
 import logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
 
 function Nav() {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ function Nav() {
 
   const user = useSelector((state) => state.user.user);
   const isAuth = useSelector((state) => state.user.isAuthenticated);
+  
 
   useEffect(() => {
     if (!isAuth) {
@@ -285,6 +287,9 @@ function Nav() {
     navigate("/login");
   };
 
+  console.log("user data:",user);
+  
+
   return (
     <div className="fixed inset-y-0 left-0 w-72">
       <div className="h-full bg-linear-to-b from-blue-950 via-blue-900 to-blue-950 text-white flex flex-col shadow-2xl">
@@ -301,8 +306,8 @@ function Nav() {
 
         {/* User Info */}
         <div className="p-6 border-b border-blue-800">
-          <div className="flex items-center space-x-3">
-            <div className="w-14 h-10 bg-blue-700 rounded-full flex items-center justify-center">
+          <Link to={"/user/account"}><div className="flex items-center space-x-3">
+            <div  className="w-14 h-10 bg-blue-700 rounded-full flex items-center justify-center cursor-pointer">
               <User className="w-5 h-5" />
             </div>
             <div>
@@ -315,7 +320,7 @@ function Nav() {
                 </>
               )}
             </div>
-          </div>
+          </div></Link>
         </div>
 
         {/* Menu */}
@@ -401,6 +406,9 @@ function Nav() {
           <p className="text-xs text-gray-400 mt-2">© Developed By thincnext</p>
         </div>
       </div>
+
+
+      
     </div>
   );
 }
