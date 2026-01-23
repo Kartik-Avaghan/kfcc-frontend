@@ -1,11 +1,16 @@
-import { X, CreditCard, RefreshCcw, Calendar, ArrowRight, User } from "lucide-react";
 
-export default function RenewalMembership({
+import { X, CreditCard, RefreshCcw, Calendar, ArrowRight, User, Film } from "lucide-react";
+
+export default function RenewalTitleRegistration ({
   applicationData,
   onCloseRenew,
   onActionSuccess,
 }) {
   const renewalFee = 2500;
+
+
+  console.log("application", applicationData);
+  
 
   //  DATE CALCULATION 
  const today = new Date();
@@ -39,7 +44,7 @@ renewalEndDate.setFullYear(renewalEndDate.getFullYear() + 1);
       <div className="flex items-center gap-2 py-2">
         <RefreshCcw size={18} className="text-black" />
         <h2 className="text-lg font-bold text-black">
-          Renew Membership
+          Renew Title Registration
         </h2>
       </div>
 
@@ -60,12 +65,12 @@ renewalEndDate.setFullYear(renewalEndDate.getFullYear() + 1);
         {/* Membership Info */}
         <div className="flex flex-col gap-2 mb-5">
           <div className="flex items-center gap-2 text-yellow-800 font-semibold">
-            <User size={18} />
-            <span>Membership Category</span>
+            <Film size={18} />
+            <span>Title Registered</span>
           </div>
 
           <p className="text-lg font-semibold text-gray-900">
-            {applicationData.membershipCategory}
+            {applicationData.title}
           </p>
         </div>
 

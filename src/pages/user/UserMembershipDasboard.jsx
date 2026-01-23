@@ -91,8 +91,6 @@ const STEPS = [
   "Final Approval",
 ];
 
-
-
 const shouldShowRenewButton = (expiryDate) => {
   if (!expiryDate) return false;
 
@@ -102,11 +100,8 @@ const shouldShowRenewButton = (expiryDate) => {
   const diffTime = expiry.getTime() - today.getTime();
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-
   return diffDays <= 30;
 };
-
-
 
 export default function UserMembershipDasboard() {
   const [applications, setApplications] = useState([]);
@@ -115,7 +110,7 @@ export default function UserMembershipDasboard() {
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [formMode, setFormMode] = useState(null); // "view" | "edit"
   const [statusFilter, setStatusFilter] = useState("");
-  const[renewMembership, setRenewMembership]= useState(null);
+  const [renewMembership, setRenewMembership] = useState(null);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -232,7 +227,7 @@ export default function UserMembershipDasboard() {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               placeholder="status"
-              className="w-full focus:outline-none"
+              className="w-full focus:outline-none cursor-pointer"
             >
               <option value="">All Statuses</option>
               <option value="SUBMITTED">Submitted</option>
@@ -304,26 +299,27 @@ export default function UserMembershipDasboard() {
                   <div className="flex gap-4">
                     <button
                       onClick={() => handleOpenForm(application)}
-                      className={`px-6 py-3 items-center rounded-xl text-white transition flex ${
+                      className={`px-6 py-2 items-center rounded-xl text-white transition flex ${
                         statusType === "REMARKED"
                           ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
                           : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
                       }`}
                     >
                       {" "}
-                      <Eye size={20} className={`mr-2`} />
+                      <Eye className="inline w-5 h-5 mr-2" />
                       {statusType === "REMARKED"
                         ? "Edit Application"
                         : "View Details"}
                     </button>
 
-
-                    {shouldShowRenewButton(application.expiryDate) &&(
-                    <button onClick={()=>setRenewMembership(application)} className="flex gap-2 items-center bg-yellow-500 hover:bg-yellow-600 text-white border rounded-xl px-4 py-3 cursor-pointer">
-                     <RefreshCcw size={18}/> Renew
-                    </button>
-                    ) }
-
+                    {shouldShowRenewButton(application.expiryDate) && (
+                      <button
+                        onClick={() => setRenewMembership(application)}
+                        className="flex gap-2 items-center bg-yellow-600 hover:bg-yellow-700 text-white border rounded-xl px-4 py-3 cursor-pointer"
+                      >
+                        <RefreshCcw size={18} /> Renew
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -440,14 +436,16 @@ export default function UserMembershipDasboard() {
           )} */}
 
                 {/* ===== FOOTER ===== */}
-                <div className="mt-5 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-600">
-                  <span>
-                    <span className="font-medium">Submitted At:</span>{" "}
-                    {new Date(application.submittedAt).toLocaleDateString(
-                      "en-In",
-                    )}
-                  </span>
-                  {application.expiryDate && (
+
+                {application.acceptanceDate && (
+                  <div className="mt-5 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-600">
+                    <span>
+                      <span className="font-medium">Accepted At:</span>{" "}
+                      {new Date(application.acceptanceDate).toLocaleDateString(
+                        "en-In",
+                      )}
+                    </span>
+
                     <span>
                       <span className="font-medium">Expire At:</span>{" "}
                       <span>
@@ -456,8 +454,8 @@ export default function UserMembershipDasboard() {
                         )}
                       </span>
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -477,9 +475,11 @@ export default function UserMembershipDasboard() {
           )}
 
           {renewMembership && (
-            <RenewalMembership applicationData ={renewMembership}
-            onCloseRenew={()=>setRenewMembership(null)}
-            onActionSuccess={fetchApplications}/>
+            <RenewalMembership
+              applicationData={renewMembership}
+              onCloseRenew={() => setRenewMembership(null)}
+              onActionSuccess={fetchApplications}
+            />
           )}
         </div>
       </div>

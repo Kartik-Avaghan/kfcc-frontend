@@ -6,6 +6,7 @@ import { userLogin } from "../../Redux/Reducer";
 import { useNavigate } from "react-router-dom";
 
 function EditUserProfile() {
+    
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,7 +34,7 @@ function EditUserProfile() {
           headers: {
             Authorization: localStorage.getItem("token"),
           },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Failed to fetch profile");
@@ -51,7 +52,6 @@ function EditUserProfile() {
     fetchUserData();
   }, []);
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -71,7 +71,7 @@ function EditUserProfile() {
             Authorization: localStorage.getItem("token"),
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Update failed");
@@ -81,7 +81,7 @@ function EditUserProfile() {
       dispatch(userLogin(updatedUser));
       notify("Profile updated successfully", "success");
 
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (error) {
       notify(error.message, "error");
     } finally {
@@ -89,36 +89,66 @@ function EditUserProfile() {
     }
   };
 
-  
   return (
-    <div className="flex items-center min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-6">
-
-        {/* Header */}
-        <div className="  gap-3 mb-10">
-          <button onClick={() => navigate(-1)}>
-            <ArrowLeft size={24} className="text-gray-600 hover:text-gray-700 mb-6 cursor-pointer" />
+    <div className="flex items-center min-h-screen  p-6">
+        
+      <div className="max-w-4xl mx-auto rounded-2xl  p-6">
+        <button onClick={() => navigate(-1)}>
+            <ArrowLeft
+              size={24}
+              className="text-gray-600 hover:text-gray-700 mb-6 cursor-pointer"
+            />
           </button>
+        {/* Header */}
+        <div className="gap-3 mb-10">
+          
           <h1 className="flex  items-center gap-2 text-3xl font-bold text-blue-900">
-           <Pen size={20}/> Edit Profile
+            <Pen size={20} /> Edit Profile
           </h1>
         </div>
 
         {/* Form */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
-          <Input label="Middle Name" name="middleName" value={formData.middleName} onChange={handleChange} />
-          <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
+          <Input
+            label="First Name"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+          <Input
+            label="Middle Name"
+            name="middleName"
+            value={formData.middleName}
+            onChange={handleChange}
+          />
+          <Input
+            label="Last Name"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+        </div>
 
-          </div>
-
-
-          <div className=" grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
-             <Input label="Email" name="email" value={formData.email} onChange={handleChange} />
-          <Input label="Mobile No" name="mobileNo" value={formData.mobileNo} onChange={handleChange} />
-          <Input label="Date of Birth" name="dob" type="date" value={formData.dob} onChange={handleChange} />
-          
-
+        <div className=" grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+          <Input
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <Input
+            label="Mobile No"
+            name="mobileNo"
+            value={formData.mobileNo}
+            onChange={handleChange}
+          />
+          <Input
+            label="Date of Birth"
+            name="dob"
+            type="date"
+            value={formData.dob}
+            onChange={handleChange}
+          />
 
           <div>
             <label className="text-sm text-gray-800">Blood Group</label>
@@ -139,12 +169,7 @@ function EditUserProfile() {
               <option value="AB-">AB-</option>
             </select>
           </div>
-          </div>
-           
-         
-
-          
-       
+        </div>
 
         {/* Actions */}
         <div className="flex justify-end mt-8">
@@ -153,7 +178,11 @@ function EditUserProfile() {
             disabled={loading}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
           >
-            {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+            {loading ? (
+              <Loader2 className="animate-spin" size={18} />
+            ) : (
+              <Save size={18} />
+            )}
             Update Profile
           </button>
         </div>

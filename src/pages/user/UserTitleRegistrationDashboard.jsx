@@ -9,11 +9,13 @@ import {
   FileText,
   Plus,
   Eye,
+  RefreshCcw,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
 import EditTitleRegistrationDetails from "../../components/users/EditTitleRegistrationDetails";
 import TitleRegistrationForm from "../../components/users/TitleRegistrationForm";
+import RenewalTitleRegistration from "../../components/users/RenewalTitleRegistration";
 
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
@@ -113,6 +115,19 @@ const STATUS_STYLE = {
   },
 };
 
+
+const shouldShowRenewButton = (expiryDate) => {
+  if (!expiryDate) return false;
+
+  const today = new Date();
+  const expiry = new Date(expiryDate);
+
+  const diffTime = expiry.getTime() - today.getTime();
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  return diffDays <= 30;
+};
+
 /*  MAIN COMPONENT  */
 export default function UserTitleRegistrationDashboard() {
   const [applications, setApplications] = useState([]);
@@ -120,57 +135,49 @@ export default function UserTitleRegistrationDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [formMode, setFormMode] = useState(null); // "view" | "edit"
+  const [renewTitle, setRenewTitle] = useState(null);
 
   const [statusFilter, setStatusFilter] = useState("");
   const [openModal, setOpenModal] = useState(false);
 
   /*  FETCH  */
-  
-    const fetchApplications = async () => {
-      try {
-        setLoading(true);
 
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API_BASE_URL
-          }/titleRegistration/user/applications`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: localStorage.getItem("token"),
-            },
-          }
-        );
+  const fetchApplications = async () => {
+    try {
+      setLoading(true);
 
-        if (!response.ok) throw new Error("Failed to fetch applications");
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/titleRegistration/user/applications`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token"),
+          },
+        },
+      );
 
-        const data = await response.json();
-        // console.log(data);
+      if (!response.ok) throw new Error("Failed to fetch applications");
 
-        setApplications(Array.isArray(data) ? data : []);
-      } catch (error) {
-        notify(error.message, "error");
-      } finally {
-        setLoading(false);
-      }
-    };
+      const data = await response.json();
+      // console.log(data);
 
+      setApplications(Array.isArray(data) ? data : []);
+    } catch (error) {
+      notify(error.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-
+  useEffect(() => {
     fetchApplications();
   }, []);
 
-  /* ================= SEARCH ================= */
+  /*  SEARCH  */
   const filteredApplications = applications.filter((d) => {
     const term = searchTerm.toLowerCase();
-    // return (
-    //   d.title?.toLowerCase().includes(term) ||
-    //   d.director?.toLowerCase().includes(term) ||
-    //   d.language?.toLowerCase().includes(term) ||
-    //   d.producerName?.toLowerCase().includes(term) ||
-    //   d.id?.toString().toLowerCase().includes(term)
-    // );
 
     const matchSearch =
       d.title?.toLowerCase().includes(term) ||
@@ -198,7 +205,12 @@ export default function UserTitleRegistrationDashboard() {
   };
 
   if (openModal) {
-    return <TitleRegistrationForm setOpenModal={setOpenModal} onActionSuccess={fetchApplications} />;
+    return (
+      <TitleRegistrationForm
+        setOpenModal={setOpenModal}
+        onActionSuccess={fetchApplications}
+      />
+    );
   }
 
   //  const STATUS_BG = {
@@ -253,7 +265,7 @@ export default function UserTitleRegistrationDashboard() {
             placeholder="status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full  focus:outline-none "
+            className="w-full  focus:outline-none cursor-pointer"
           >
             <option value="">All Statuses</option>
             <option value="SUBMITTED">Submitted</option>
@@ -304,53 +316,62 @@ export default function UserTitleRegistrationDashboard() {
                     <h3 className="text-xl font-semibold text-gray-800">
                       {detail.title}
                     </h3>
-                    {/* <p className="text-sm text-gray-600">
-                  Application ID: {detail.id}
-                </p> */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
                       <p>
                         Application No:{" "}
                         <span className="font-bold text-lg">#{detail.id}</span>
                       </p>
-                      <p>
+                      {/* <p>
                         Submitted Date:{" "}
                         <span className=" font-medium">
                           {new Date(detail.updatedAt).toLocaleDateString(
                             "en-IN"
                           )}
                         </span>
-                      </p>
+                      </p> */}
                       <p>
                         Director:{" "}
                         <span className="font-medium">{detail.director}</span>
                       </p>
 
-                      {detail.acceptedDate && (
-                        <p>
-                          Accepted Date:{" "}
+                      {/* <p>
+                          Expired Date:{" "}
                           <span className="font-medium">
-                            {new Date(detail.acceptedDate).toLocaleDateString(
+                            {new Date(detail.expireDate).toLocaleDateString(
                               "en-IN"
                             )}
                           </span>
-                        </p>
-                      )}
+                        </p> */}
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleOpenForm(detail)}
-                    className={`px-6 py-3 rounded-xl text-white transition flex items-center ${
-                      statusType === "REMARKED"
-                        ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                        : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
-                    }`}
-                  >
-                    <Eye className="inline w-5 h-5 mr-2" />
-                    {statusType === "REMARKED"
-                      ? "Edit Application"
-                      : "View Details"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleOpenForm(detail)}
+                      className={`px-6 py-3 rounded-xl text-white transition flex items-center ${
+                        statusType === "REMARKED"
+                          ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                          : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
+                      }`}
+                    >
+                      <Eye className="inline w-5 h-5 mr-2" />
+                      {statusType === "REMARKED"
+                        ? "Edit Application"
+                        : "View Details"}
+                    </button>
+
+
+                    {shouldShowRenewButton(detail.expireDate) && (
+
+                    <button
+                      onClick={() => setRenewTitle(detail)}
+                      className="flex items-center px-5 py-3 gap-2 rounded-xl text-white bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                    >
+                      <RefreshCcw size={18} />
+                      Renew
+                    </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -428,6 +449,29 @@ export default function UserTitleRegistrationDashboard() {
                       )}
                     </div>
                   )}
+
+                <div className="flex justify-between p-2 mt-2 text-sm text-gray-600">
+                  {detail.acceptedDate && (
+                    <p>
+                      Accepted Date:{" "}
+                      <span className="font-medium">
+                        {new Date(detail.acceptedDate).toLocaleDateString(
+                          "en-IN",
+                        )}
+                      </span>
+                    </p>
+                  )}
+                  {detail.expireDate && (
+                    <p>
+                      Expired Date:{" "}
+                      <span className="font-medium">
+                        {new Date(detail.expireDate).toLocaleDateString(
+                          "en-IN",
+                        )}
+                      </span>
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           );
@@ -455,6 +499,14 @@ export default function UserTitleRegistrationDashboard() {
             setFormMode(null);
             setSelectedAppId(null);
           }}
+        />
+      )}
+
+      {renewTitle && (
+        <RenewalTitleRegistration
+          applicationData={renewTitle}
+          onCloseRenew={() => setRenewTitle(null)}
+          onActionSuccess={fetchApplications}
         />
       )}
     </div>
