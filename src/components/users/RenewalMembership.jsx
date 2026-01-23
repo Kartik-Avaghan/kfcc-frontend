@@ -1,4 +1,5 @@
 import { X, CreditCard, RefreshCcw, Calendar, ArrowRight, User } from "lucide-react";
+import { notify } from "../../Utils/notify";
 
 export default function RenewalMembership({
   applicationData,
@@ -19,16 +20,39 @@ const renewalEndDate = new Date(renewalStartDate);
 renewalEndDate.setFullYear(renewalEndDate.getFullYear() + 1);
 
 
-  const handleRenew = () => {
-    console.log("Renewing membership:", applicationData.applicationId);
 
-    // TODO: API call here
 
-    setTimeout(() => {
-      onActionSuccess();
-      onCloseRenew();
-    }, 800);
-  };
+ const handleRenew = async () => {
+   try {
+     const id = applicationData.applicationId;
+     
+ 
+     const response = await fetch(
+       `${import.meta.env.VITE_API_BASE_URL}/membership/renew/${id}`,
+       {
+         method: "POST",
+         headers: {
+           Authorization: `${localStorage.getItem("token")}`,
+         },
+       }
+     );
+ 
+     if (!response.ok) {
+       throw new Error("Failed to renew title");
+     }
+ 
+     const message = await response.text(); // backend sends String
+ 
+     console.log(message);
+     notify("Membership Renewal success", "success");
+ 
+     onActionSuccess();
+     onCloseRenew();
+   } catch (error) {
+     console.error("Renew error:", error);
+     notify("error", error.message || "Something went wrong");
+   }
+ };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
