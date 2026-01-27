@@ -55,6 +55,7 @@ const getStatusType = (status) => {
   if (status.includes("REJECTED")) return "REJECTED";
   if (status.includes("REMARKED")) return "REMARKED";
   if (status.includes("HOLD")) return "HOLD";
+  if (status === "PENDING_PAYMENT") return "PENDING_PAYMENT";
   if (status === "FINAL_APPROVED") return "APPROVED";
 
   return "IN_PROGRESS";
@@ -62,15 +63,17 @@ const getStatusType = (status) => {
 
 /*  STATUS STYLES  */
 const STATUS_STYLE = {
-  //  PENDING: {
-  //   bar: "bg-blue-600",
-  //   text: "text-blue-700",
-  //   bg: "bg-blue-50",
-  //   border: "border-blue-600",
-  //   badge: "border-blue-200",
-  //   icon: Clock,
-  //   message: "Application is currently under review",
-  // },
+
+  PENDING_PAYMENT: {
+    bar: "bg-orange-600",
+    text: "text-orange-700",
+    bg: "bg-orange-50",
+    border: "border-orange-600",
+    badge: "border-orange-200",
+    icon: AlertTriangle,
+    message: "Application payment pending",
+  },
+
   IN_PROGRESS: {
     bar: "bg-blue-600",
     text: "text-blue-700",
@@ -178,9 +181,6 @@ export default function UserTitleRegistrationDashboard() {
     fetchApplications();
   }, []);
 
-
-  
-
   /*  SEARCH  */
   const filteredApplications = applications.filter((d) => {
     const term = searchTerm.toLowerCase();
@@ -256,9 +256,6 @@ export default function UserTitleRegistrationDashboard() {
           />
         </div>
 
-        {/* <div  className={`flex items-center max-w-md rounded-xl p-3 px-6 border transition-colors duration-300 ${
-    STATUS_BG[statusFilter] || STATUS_BG[""]
-  }`}> */}
         <div className="flex items-center max-w-md rounded-xl p-3 px-6 border-2 border-gray-300">
           <select
             type="text"
@@ -335,8 +332,12 @@ export default function UserTitleRegistrationDashboard() {
                     {
                       detail.status === "PENDING_PAYMENT" && (
                         <button type="button"
-                          className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-amber-500 hover:bg-amber-700 hover:cursor-pointer "
-                          onClick={() => startPayment( "TITLE" , detail.id )}
+                          className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-orange-500 hover:bg-orange-600 hover:cursor-pointer "
+                          onClick={async () => {
+                            await startPayment("TITLE", detail.id);
+
+                            fetchApplications();
+                          }}
                         >
                           <IndianRupee size={16} />
                           Retry Payment

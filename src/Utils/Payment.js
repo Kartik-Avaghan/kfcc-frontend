@@ -1,59 +1,67 @@
-export const startPayment = async (module , applicationId) => {
-    // 1. Create order
-    const res = await fetch(
-      `http://localhost:8080/payments/create-order?module=${module}&applicationId=${applicationId}`,
+export const startPayment = (module, applicationId) => {
+
+  return new Promise((resolve, reject) => {
+
+    // Create order on the server
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/payments/create-order?module=${module}&applicationId=${applicationId}`,
       {
         method: "POST",
         headers: {
-          Authorization: `${localStorage.getItem("token")}`,
+          Authorization: localStorage.getItem("token"),
         },
-      },
-    );
-
-    if (!res.ok) {
-      throw new Error("Failed to create payment order");
-    }
-
-    const order = await res.json();
-
-    // 2. Razorpay options
-    const options = {
-      key: "rzp_test_S8oZkCOdBEMSPN", // test key
-      amount: order.amount,
-      currency: order.currency,
-      name: "KFCC",
-      description: "Membership Payment",
-      order_id: order.id,
-
-      handler: async function (response) {
-        
-        console.log("Payment order created success", response);
-
-        const res = await fetch("http://localhost:8080/payments/verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(response),
-        });
-
+      }
+    )
+      .then(async (res) => {
         if (!res.ok) {
-          throw new Error("Payment verification failed");
+          throw new Error("Failed to create payment order");
         }
+        return res.json();
+      })
+      .then((order) => {
 
-        const data = await res.json();
-        console.log("Verification result:", data);
+        const options = {
+          key: "rzp_test_S8oZkCOdBEMSPN",
+          amount: order.amount,
+          currency: order.currency,
+          order_id: order.id,
 
-      },
+          handler: async function (response) {
+            try {
+              const verifyRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/payments/verify`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: localStorage.getItem("token"),
+                },
+                body: JSON.stringify(response),
+              });
 
-      theme: {
-        color: "#0f172a",
-      },
-    };
+              if (!verifyRes.ok) {
+                reject(new Error("Payment verification failed"));
+                return;
+              }
 
-    // 3. Open checkout
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-    
+              // Resolve ONLY after verification
+              resolve(response);
+
+            } catch (err) {
+              reject(err);
+            }
+          },
+
+          modal: {
+            ondismiss: function () {
+              reject(new Error("Payment cancelled by user"));
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 };

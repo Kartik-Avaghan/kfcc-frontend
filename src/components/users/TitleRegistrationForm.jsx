@@ -58,6 +58,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
   };
 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
 
     const formPayload = new FormData();
@@ -111,7 +112,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
 
     notify("Details Verified", "success");
 
-    startPayment("TITLE", data.application.id);
+    await startPayment("TITLE", data.application.id);
 
     notify("Application submitted successfully", "success");
 

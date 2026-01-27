@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Upload, IdCard, Image as ImageIcon } from "lucide-react";
 import { notify } from "../../Utils/notify";
-
+import { startPayment } from "../../Utils/Payment";
 
 function ApplyForIdCard() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ function ApplyForIdCard() {
           headers: {
             Authorization: localStorage.getItem("token"),
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -87,7 +87,7 @@ function ApplyForIdCard() {
             Authorization: localStorage.getItem("token"),
           },
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {
@@ -96,12 +96,21 @@ function ApplyForIdCard() {
         throw new Error(err || "Failed to apply for ID card");
       }
 
+      const data = await response.json();
+
+      await startPayment("IDCARD", data.id);
+
       notify("ID Card request submitted", "success");
+
+      setPhoto(null);
+      setPreview(null);
+
     } catch (error) {
       notify(error.message || "Something went wrong", "error");
     } finally {
       setSubmitting(false);
     }
+
   };
 
   return (
@@ -193,7 +202,6 @@ function ApplyForIdCard() {
             </select>
           </div>
 
-      
           {/* Actions */}
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-300">
             <button
