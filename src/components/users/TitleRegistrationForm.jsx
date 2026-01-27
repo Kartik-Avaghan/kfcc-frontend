@@ -2,9 +2,9 @@ import { ChevronLeft, File, Plus, X, Languages } from "lucide-react";
 import React, { useState } from "react";
 
 import { notify } from "../../Utils/notify";
+import { startPayment } from "../../Utils/Payment";
 
 function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
-  //   const [openModal, setOpenModal] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -32,14 +32,33 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    const existingFiles = formData.documents || [];
+
+    if (existingFiles.length + newFiles.length > 5) {
+      notify("You can upload a maximum of 5 files only", "error");
+      e.target.value = "";
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      documents: [...prev.documents, ...newFiles],
+    }));
+
+    e.target.value = "";
+  };
+
+  const removeFile = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      documents: prev.documents.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.documents.length === 0) {
-    notify("Please upload at least one document", "error");
-    return;
-  }
-
 
     const formPayload = new FormData();
 
@@ -64,107 +83,58 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
             gstNo: formData.gstNo,
           }),
         ],
-        { type: "application/json" }
-      )
+        { type: "application/json" },
+      ),
     );
 
     for (let file of formData.documents || []) {
       formPayload.append("files", file);
     }
 
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/titleRegistration/apply`, {
-      method: "POST",
-      headers: {
-        Authorization: `${localStorage.getItem("token")}`,
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/titleRegistration/apply`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+        body: formPayload,
       },
-      body: formPayload,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Response was not ok");
-        }
+    );
 
-        return response.json();
-      })
-      .then((data) => {
-        setFormData(data);
-        notify("Title Registration form submitted successfully", "success");
-        setFormData({
-          title: "",
-          titleInKannada: "",
-          date: "",
-          isFirstFilm: false,
-          institution: "",
-          language: "",
-          previouslyRegistered: false,
-          previouslyRegisteredDetails: "",
-          filmsByInstitutes: "",
-          director: "",
-          musicDirector: "",
-          leadActor: "",
-          category: "",
-          gstNo: "",
-          documents: [],
-        });
-        onActionSuccess();
-        setOpenModal(false);
-      })
-      .catch((error) => notify(error.message, "error"));
-  };
+    const data = await response.json();
 
-  // const handleFileChange = (e) => {
-  //   const newFiles = Array.from(e.target.files);
+    if (!response.ok) {
+      notify(data.message, "error");
+      return;
+    }
 
-  //   setFormData((prev) => {
-  //     const existingFiles = prev.documents || [];
+    notify("Details Verified", "success");
 
-  //     //  Already reached limit
-  //   // if (existingFiles.length >= 5) {
-  //   //   notify("You can upload a maximum of 5 files only", "error");
-  //   //   return prev;
-  //   // }
+    startPayment("TITLE", data.application.id);
 
-  //     // total files count check
-  //     if (existingFiles.length + newFiles.length > 5) {
-  //       notify("You can upload a maximum of 5 files only", "error");
-  //       return prev;
-  //     }
+    notify("Application submitted successfully", "success");
 
-  //     return {
-  //       ...prev,
-  //       documents: [...existingFiles, ...newFiles],
-  //     };
-  //   });
+    setFormData({
+      title: "",
+      titleInKannada: "",
+      date: "",
+      isFirstFilm: false,
+      institution: "",
+      language: "",
+      previouslyRegistered: false,
+      previouslyRegisteredDetails: "",
+      filmsByInstitutes: "",
+      director: "",
+      musicDirector: "",
+      leadActor: "",
+      category: "",
+      gstNo: "",
+      documents: [],
+    });
 
-  //   // reset input so same file can be selected again if needed
-  //   e.target.value = "";
-  // };
-
-
-  const handleFileChange = (e) => {
-  const newFiles = Array.from(e.target.files);
-  const existingFiles = formData.documents || [];
-
-  if (existingFiles.length + newFiles.length > 5) {
-    notify("You can upload a maximum of 5 files only", "error");
-    e.target.value = "";
-    return;
-  }
-
-  setFormData((prev) => ({
-    ...prev,
-    documents: [...prev.documents, ...newFiles],
-  }));
-
-  e.target.value = "";
-};
-
-
-  const removeFile = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      documents: prev.documents.filter((_, i) => i !== index),
-    }));
+    onActionSuccess();
+    setOpenModal(false);
   };
 
   return (
@@ -178,9 +148,9 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
           <button
             type="button"
             onClick={() => setOpenModal(false)}
-            className="flex text-lg items-center justify-center  text-gray-900  hover:text-gray-700 transition cursor-pointer"
+            className="flex text-lg items-center justify-center  text-gray-900  hover:text-gray-700 transition cursor-pointer gap-1"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={18} className="mt-1" />
             Back
           </button>
 
@@ -250,8 +220,8 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                   type="button"
                   onClick={() =>
                     window.open(
-                      "https://translate.google.co.in/?sl=en&tl=kn&text=Kishor&op=translate",
-                      "_blank"
+                      "https://translate.google.co.in/?sl=en&tl=kn&op=translate",
+                      "_blank",
                     )
                   }
                   className="absolute right-2 top-3/4 -translate-y-4 text-blue-700  hover:text-blue-900 cursor-pointer"
@@ -325,45 +295,6 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
               )}
             </div>
           </div>
-
-          {/* Producer & Institution */}
-          {/* <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-            Production Details
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Institution Name
-              </label>
-              <input
-                type="text"
-                name="institution"
-                value={formData.institution}
-                onChange={handleChange}
-                placeholder="Institution Name"
-                className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                GST Number
-              </label>
-              <input
-                type="text"
-                name="gstNo"
-                value={formData.gstNo}
-                onChange={handleChange}
-                placeholder="Enter GST No."
-                className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-            
-          </div>
-        </div> */}
 
           {/* Extra Info for non-first films */}
           {formData.isFirstFilm === false && (
@@ -539,27 +470,24 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                     type="file"
                     name="documents"
                     multiple
-                    
                     onChange={handleFileChange}
-                  
                     className="w-full border rounded-lg p-1 focus:ring-2 focus:ring-blue-500 focus:outline-none file:bg-blue-700
-    file:text-white
-    file:px-2
-    file:py-2
-    file:text-sm
-    file:rounded-md
-    file:border-0
-    file:cursor-pointer
-    hover:file:bg-blue-800"
+                    file:text-white
+                    file:px-2
+                    file:py-2
+                    file:text-sm
+                    file:rounded-md
+                    file:border-0
+                    file:cursor-pointer
+                    hover:file:bg-blue-800"
                     accept=".pdf,.doc,.docx,.jpg,.png"
                   />
 
-
                   {formData.documents.length >= 5 && (
-  <p className="text-red-600 text-sm mt-1">
-    Maximum 5 files uploaded. Remove a file to add more.
-  </p>
-)}
+                    <p className="text-red-600 text-sm mt-1">
+                      Maximum 5 files uploaded. Remove a file to add more.
+                    </p>
+                  )}
                 </div>
 
                 {/* Preview Window */}
@@ -617,7 +545,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="w-2xl py-3 bg-blue-950 text-white font-semibold rounded-xl shadow hover:bg-blue-800 hover:shadow-lg transition-all"
+              className="w-2xl py-3 bg-blue-950 text-white font-semibold rounded-xl shadow hover:bg-blue-800 hover:shadow-lg transition-all cursor-pointer"
             >
               ಅರ್ಜಿ ಸಲ್ಲಿಸಿ / Submit Application
             </button>

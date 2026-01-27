@@ -62,6 +62,8 @@ export default function ViewTitleRegistrationForm({
 
   if (!data) return null;
 
+  
+
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-xl overflow-hidden flex flex-col">

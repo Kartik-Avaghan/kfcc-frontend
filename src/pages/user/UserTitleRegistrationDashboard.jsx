@@ -5,17 +5,20 @@ import {
   AlertTriangle,
   XCircle,
   Search,
-  AlertCircle,
   FileText,
   Plus,
   Eye,
   RefreshCcw,
+  IndianRupee,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
+import { startPayment } from "../../Utils/Payment";
 import ViewTitleRegistrationForm from "../../components/titleregistrationformView/ViewTitleRegistrationForm";
 import EditTitleRegistrationDetails from "../../components/users/EditTitleRegistrationDetails";
 import TitleRegistrationForm from "../../components/users/TitleRegistrationForm";
 import RenewalTitleRegistration from "../../components/users/RenewalTitleRegistration";
+
+
 
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
@@ -175,6 +178,9 @@ export default function UserTitleRegistrationDashboard() {
     fetchApplications();
   }, []);
 
+
+  
+
   /*  SEARCH  */
   const filteredApplications = applications.filter((d) => {
     const term = searchTerm.toLowerCase();
@@ -213,12 +219,6 @@ export default function UserTitleRegistrationDashboard() {
     );
   }
 
-  //  const STATUS_BG = {
-  //   "": "bg-white text-gray-800 border-gray-300",
-  //   SUBMITTED: "bg-blue-700 text-white border-blue-700",
-  //   FINAL_APPROVED: "bg-green-700 text-white border-green-700",
-  //   REJECTED: "bg-red-600 text-white border-red-600",
-  // };
 
   return (
     <div className="px-16 py-8 max-w-7xl mx-auto">
@@ -321,31 +321,29 @@ export default function UserTitleRegistrationDashboard() {
                         Application No:{" "}
                         <span className="font-bold text-lg">#{detail.id}</span>
                       </p>
-                      {/* <p>
-                        Submitted Date:{" "}
-                        <span className=" font-medium">
-                          {new Date(detail.updatedAt).toLocaleDateString(
-                            "en-IN"
-                          )}
-                        </span>
-                      </p> */}
+
                       <p>
                         Director:{" "}
                         <span className="font-medium">{detail.director}</span>
                       </p>
 
-                      {/* <p>
-                          Expired Date:{" "}
-                          <span className="font-medium">
-                            {new Date(detail.expireDate).toLocaleDateString(
-                              "en-IN"
-                            )}
-                          </span>
-                        </p> */}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
+
+                    {
+                      detail.status === "PENDING_PAYMENT" && (
+                        <button type="button"
+                          className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-amber-500 hover:bg-amber-700 hover:cursor-pointer "
+                          onClick={() => startPayment( "TITLE" , detail.id )}
+                        >
+                          <IndianRupee size={16} />
+                          Retry Payment
+                        </button>
+                      )
+                    }
+
                     <button
                       onClick={() => handleOpenForm(detail)}
                       className={`px-6 py-3 rounded-xl text-white transition flex items-center ${
