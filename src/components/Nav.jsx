@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   FileText,
   LogOut,
@@ -26,7 +26,6 @@ function Nav() {
 
   const user = useSelector((state) => state.user.user);
   const isAuth = useSelector((state) => state.user.isAuthenticated);
-  
 
   useEffect(() => {
     if (!isAuth) {
@@ -37,7 +36,7 @@ function Nav() {
   const roleMenus = {
     USER: [
       // { name: "Dashboard", icon: BarChart3, path: "/user/dashboard" },
-      { name: "Membership", icon: FileText, path: "/user/membershipdashboard"},
+      { name: "Membership", icon: FileText, path: "/user/membershipdashboard" },
     ],
     STAFF: [
       {
@@ -279,7 +278,7 @@ function Nav() {
     .flatMap((role) => roleMenus[role] || [])
     .filter(
       (item, index, self) =>
-        index === self.findIndex((i) => i.path === item.path)
+        index === self.findIndex((i) => i.path === item.path),
     );
 
   const handleLogout = () => {
@@ -287,8 +286,7 @@ function Nav() {
     navigate("/login");
   };
 
-  console.log("user data:",user);
-  
+  console.log("user data:", user);
 
   return (
     <div className="fixed inset-y-0 left-0 w-72">
@@ -306,21 +304,23 @@ function Nav() {
 
         {/* User Info */}
         <div className="p-6 border-b border-blue-800">
-          <Link to={"/user/account"}><div className="flex items-center space-x-3">
-            <div  className="w-14 h-10 bg-blue-700 rounded-full flex items-center justify-center cursor-pointer">
-              <User className="w-5 h-5" />
+          <Link to={"/user/account"}>
+            <div className="flex items-center space-x-3">
+              <div className="w-14 h-10 bg-blue-700 rounded-full flex items-center justify-center cursor-pointer">
+                <User className="w-5 h-5" />
+              </div>
+              <div>
+                {user && (
+                  <>
+                    <p className="font-medium">Welcome {user?.name}</p>
+                    <p className="text-xs text-blue-200 capitalize">
+                      {user?.roles?.join(", ")}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-            <div>
-              {user && (
-                <>
-                  <p className="font-medium">Welcome {user?.name}</p>
-                  <p className="text-xs text-blue-200 capitalize">
-                    {user?.roles?.join(", ")}
-                  </p>
-                </>
-              )}
-            </div>
-          </div></Link>
+          </Link>
         </div>
 
         {/* Menu */}
@@ -367,24 +367,25 @@ function Nav() {
 
                   {/* Roles */}
                   <nav className="space-y-1">
-                    { roles.map((role) => (
-                      <nav className="flex items-center justify-start" key={role}>
-                        <NavLink
+                    {roles.map((role) => (
+                      <nav
+                        className="flex items-center justify-start"
                         key={role}
-                        to={`/manage/users/${role}`}
-                        className={({ isActive }) =>
-                          `flex items-center px-4 py-2 rounded-lg text-sm transition w-full
-                          ${ isActive ? "bg-blue-800 text-white" : "text-blue-200 hover:bg-blue-900 hover:text-white" }`}
                       >
-                        <Dot/>
-                        <span className="capitalize">
-                          {role.replaceAll("_", " ")}
-                        </span>
-                      </NavLink>
-
+                        <NavLink
+                          key={role}
+                          to={`/manage/users/${role}`}
+                          className={({ isActive }) =>
+                            `flex items-center px-4 py-2 rounded-lg text-sm transition w-full
+                          ${isActive ? "bg-blue-800 text-white" : "text-blue-200 hover:bg-blue-900 hover:text-white"}`
+                          }
+                        >
+                          <Dot />
+                          <span className="capitalize">
+                            {role.replaceAll("_", " ")}
+                          </span>
+                        </NavLink>
                       </nav>
-          
-                      
                     ))}
                   </nav>
                 </div>
@@ -406,9 +407,6 @@ function Nav() {
           <p className="text-xs text-gray-400 mt-2">© Developed By thincnext</p>
         </div>
       </div>
-
-
-      
     </div>
   );
 }

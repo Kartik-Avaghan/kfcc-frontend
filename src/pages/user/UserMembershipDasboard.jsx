@@ -9,15 +9,18 @@ import {
   Search,
   Plus,
   Eye,
-  ChevronLeft,
-  ChevronDown,
   RefreshCcw,
+  IndianRupee,
 } from "lucide-react";
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 import MembershipForm from "../../components/users/MembershipForm";
 import RenewalMembership from "../../components/users/RenewalMembership";
+import { startPayment } from "../../Utils/Payment";
 
 const STATUS_FLOW = {
+  
+  PENDING_PAYMENT: -1,
+  
   SUBMITTED: 0,
 
   STAFF_APPROVED: 1,
@@ -40,6 +43,7 @@ const getStatusType = (status) => {
   if (status?.includes("REJECTED")) return "REJECTED";
   if (status?.includes("REMARKED")) return "REMARKED";
   if (status?.includes("HOLD")) return "HOLD";
+  if (status?.includes("PENDING_PAYMENT")) return "PENDING";
   if (status === "FINAL_APPROVED") return "APPROVED";
   return "IN_PROGRESS";
 };
@@ -80,6 +84,14 @@ const STATUS_STYLES = {
     text: "text-orange-700",
     bar: "bg-orange-600",
     icon: AlertTriangle,
+  },
+
+  PENDING: {
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    text: "text-amber-700",
+    bar: "bg-amber-600",
+    icon: Clock,
   },
 };
 
@@ -297,6 +309,23 @@ export default function UserMembershipDasboard() {
                   {application.status.replaceAll("_", " ")}
                 </span> */}
                   <div className="flex gap-4">
+                    {application.status === "PENDING_PAYMENT" && (
+                      <button
+                        type="button"
+                        className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-orange-500 hover:bg-orange-600 hover:cursor-pointer "
+                        onClick={async () => {
+                          await startPayment(
+                            "MEMBERSHIP",
+                            application.applicationId,
+                          );
+                          fetchApplications();
+                        }}
+                      >
+                        <IndianRupee size={16} />
+                        Retry Payment
+                      </button>
+                    )}
+
                     <button
                       onClick={() => handleOpenForm(application)}
                       className={`px-6 py-2 items-center rounded-xl text-white transition flex ${
@@ -339,6 +368,8 @@ export default function UserMembershipDasboard() {
                       "Application has been rejected"}
                     {statusType === "HOLD" &&
                       "Application has been put on hold"}
+                    {statusType === "PENDING" &&
+                      "Payment is pending for the application"}
                   </p>
                 </div>
 
@@ -417,23 +448,6 @@ export default function UserMembershipDasboard() {
                       )}
                     </div>
                   )}
-
-                {/* {(statusType === "REMARKED" || statusType === "REJECTED") &&
-          application.remark && (
-            <div
-              className={`mt-4 p-4 rounded-lg border ${style.border} ${style.bg}`}
-            >
-              <h4 className={`text-sm font-bold ${style.text} mb-1`}>
-                {statusType === "REMARKED" ? "Remark: " : "Rejection Reason"}  <span className={`text-sm text ${style.text}`}>{application.remark}</span>
-              </h4>
-             
-              {application.remarkedBy && (
-                <p className={`text-xs text ${style.text} mt-2`}>
-                  <span className="font-bold" >By:</span> {application.remarkedBy}
-                </p>
-              )}
-            </div>
-          )} */}
 
                 {/* ===== FOOTER ===== */}
 
