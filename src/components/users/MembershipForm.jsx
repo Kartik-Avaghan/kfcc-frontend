@@ -1031,7 +1031,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 ಆಧಾರ್ ಸಂಖ್ಯೆ / Aadhaar Number
               </label>
               <input
-                type="text"
+                type="number"
                 name="proprietorAadhaarNo"
                 value={formData.proprietor.proprietorAadhaarNo}
                 onChange={(e) => handleInputChange(e, "proprietor")}
@@ -1063,7 +1063,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
               </label>
               <input
-                type="text"
+                type="number"
                 name="proprietorPanNo"
                 value={formData.proprietor.proprietorPanNo}
                 onChange={(e) => handleInputChange(e, "proprietor")}
@@ -1150,77 +1150,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
               />
             </div>
-
-            {/* <div>
-            <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-blue-700" />
-              ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ / Partnership Deed
-            </label>
-            <input
-              type="file"
-              name="partnershipDeed"
-              onChange={(e) => handleInputChange(e, "applicant")}
-              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-            />
-          </div>
-
-          <div>
-            <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-blue-700" />
-              ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ / Memorandum of Association(moa)
-            </label>
-            <input
-              type="file"
-              name="moa"
-              onChange={(e) => handleInputChange(e, "applicant")}
-              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-            />
-          </div>
-
-          <div>
-            <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-blue-700" />
-              ಸಂಘದ ಲೇಖನಗಳು / Articles of Association(aoa)
-            </label>
-            <input
-              type="file"
-              name="aoa"
-              onChange={(e) => handleInputChange(e, "applicant")}
-              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-            />
-          </div> */}
-
-            {/* Phone Number */}
-            {/* <div>
-            <label className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
-              <Phone className="w-4 h-4 text-blue-700" />
-              ದೂರವಾಣಿ ಸಂಖ್ಯೆ / Mobile No.
-            </label>
-            <input
-              type="text"
-              name="applicantPhNo"
-              value={formData.applicantPhNo}
-              onChange={handleInputChange}
-              placeholder="+91"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 transition"
-            />
-          </div>
-
-     
-          <div>
-            <label className=" font-semibold text-gray-800 mb-1 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-blue-700" />
-              ಇ-ಮೇಲ್ ಐಡಿ / E-mail ID
-            </label>
-            <input
-              type="email"
-              name="applicantEmail"
-              value={formData.applicantEmail}
-              placeholder="example@mail.com"
-              onChange={handleInputChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2  transition"
-            />
-          </div> */}
+            
 
             {/* Membership Category */}
             <div>

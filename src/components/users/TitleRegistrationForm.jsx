@@ -423,7 +423,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                 </select>
               </div>
 
-              {formData.category === "Other" && (
+              {/* {formData.category === "Other" && (
                 <div>
                   <label className="block font-semibold text-gray-700 mb-1">
                     ವರ್ಗ ನಮೂದಿಸಿ /Enter the Category
@@ -445,7 +445,7 @@ function TitleRegistrationForm({ setOpenModal, onActionSuccess }) {
                     required
                   />
                 </div>
-              )}
+              )} */}
 
               <div>
                 <label className="block font-semibold text-gray-700 mb-1">

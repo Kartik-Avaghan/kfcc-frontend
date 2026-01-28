@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Save, ArrowLeft, Loader2, Pen } from "lucide-react";
 import { notify } from "../../Utils/notify";
-import { useDispatch } from "react-redux";
-import { userLogin } from "../../Redux/Reducer";
 import { useNavigate } from "react-router-dom";
 
 function EditUserProfile() {
-    
-  const dispatch = useDispatch();
+  
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -76,12 +73,8 @@ function EditUserProfile() {
 
       if (!response.ok) throw new Error("Update failed");
 
-      const updatedUser = await response.json();
-
-      dispatch(userLogin(updatedUser));
       notify("Profile updated successfully", "success");
-
-      navigate("/dashboard");
+      await fetchUserData();
     } catch (error) {
       notify(error.message, "error");
     } finally {
@@ -91,17 +84,15 @@ function EditUserProfile() {
 
   return (
     <div className="flex items-center min-h-screen  p-6">
-        
       <div className="max-w-4xl mx-auto rounded-2xl  p-6">
         <button onClick={() => navigate(-1)}>
-            <ArrowLeft
-              size={24}
-              className="text-gray-600 hover:text-gray-700 mb-6 cursor-pointer"
-            />
-          </button>
+          <ArrowLeft
+            size={24}
+            className="text-gray-600 hover:text-gray-700 mb-6 cursor-pointer"
+          />
+        </button>
         {/* Header */}
         <div className="gap-3 mb-10">
-          
           <h1 className="flex  items-center gap-2 text-3xl font-bold text-blue-900">
             <Pen size={20} /> Edit Profile
           </h1>
