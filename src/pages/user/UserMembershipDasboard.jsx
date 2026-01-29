@@ -16,6 +16,7 @@ import ViewMembershipForm from "../../components/membershipformView/ViewMembersh
 import MembershipForm from "../../components/users/MembershipForm";
 import RenewalMembership from "../../components/users/RenewalMembership";
 import { startPayment } from "../../Utils/Payment";
+import EditMembershipDetails from "../../components/users/EditMembershipDetails";
 
 const STATUS_FLOW = {
   

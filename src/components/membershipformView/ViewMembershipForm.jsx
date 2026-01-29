@@ -52,7 +52,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
 
   if (!data) return null;
 
-  const isProprietor = data.applicantOwnershipType === "PROPRIETOR";
+  // const isProprietor = data.applicantOwnershipType === "PROPRIETOR";
   const hasMembers = [
     "PARTNERSHIP",
     "LIMITED",
@@ -152,7 +152,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
           </InfoSection>
 
           {/* PROPRIETOR */}
-          {isProprietor && data.proprietor && (
+          {/* {isProprietor && data.proprietor && (
             <InfoSection title="Proprietor Details" icon={Building}>
               <Field label="Name" value={data.proprietor.proprietorName} />
               <Field label="DOB" value={data.proprietor.proprietorDob} />
@@ -182,11 +182,11 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
               />
               <Doc
                 label="E-Signature"
-                file={data.proprietor.proprietorESignature}
+                file={data.applicantSignature}
                 onView={openPreview}
               />
             </InfoSection>
-          )}
+          )} */}
 
           {/* MEMBERS */}
 

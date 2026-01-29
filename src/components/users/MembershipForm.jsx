@@ -205,24 +205,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       labelEn: "E-Signature",
       labelKn: "ಇ-ಸಹಿ",
     },
-    // {
-    //   key: "partnershipDeed",
-    //   type: "file",
-    //   labelEn: "Partnership Deed",
-    //   labelKn: "ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ",
-    // },
-    // {
-    //   key: "moa",
-    //   type: "file",
-    //   labelEn: "Memorandum of Association(moa)",
-    //   labelKn: "ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ",
-    // },
-    // {
-    //   key: "aoa",
-    //   type: "file",
-    //   labelEn: "Articles of Association(aoa)",
-    //   labelKn: "ಸಂಘದ ಲೇಖನಗಳು",
-    // },
   ];
 
   const nomineeFields = [
@@ -251,7 +233,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       labelKn: "ನಾಮಿನಿ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
       maxlength: 10,
     },
-
     {
       key: "nomineeEmail",
       type: "email",
@@ -269,6 +250,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
   const [termsChecked, setTermsChecked] = useState(false);
 
   const handleInputChange = (e, section = null, index = null) => {
+    
     const { name, value, files } = e.target;
 
     if (section === "proprietor") {
@@ -283,14 +265,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
       const newPartners = [...formData.partners];
       newPartners[index][name] = files ? files[0] : value;
       setFormData((prev) => ({ ...prev, partners: newPartners }));
-    }
-    // else if (section === "applicant") {
-    //   setFormData((prev) => ({
-    //     ...prev,
-    //     [name]: files ? files[0] : value,
-    //   }));
-    // }
-    else if (section === "applicant") {
+    } else if (section === "applicant") {
       setFormData((prev) => ({
         ...prev,
         [name]:
@@ -615,8 +590,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
           }
           return response.json();
         })
-        .then( async (data) => {
-
+        .then(async (data) => {
           await startPayment("MEMBERSHIP", data.applicationId);
 
           notify("membership form is successfully submited", "success");
@@ -790,9 +764,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
 
     return id && id.toString().trim().length > 0;
   };
-
-  const isOtpValid = (type) =>
-    endoresmentOtp[type] && endoresmentOtp[type].length === 6;
 
   return (
     <>
@@ -1035,7 +1006,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                 ಪ್ಯಾನ್ ಸಂಖ್ಯೆ / PAN Number
               </label>
               <input
-                type="number"
+                type="text"
                 name="proprietorPanNo"
                 value={formData.proprietor.proprietorPanNo}
                 onChange={(e) => handleInputChange(e, "proprietor")}
@@ -1462,7 +1433,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                         type="text"
                         maxLength={6}
                         placeholder="XXXXXX"
-                        disabled={endoresmentOtpSent.PROPOSER.timeleft === 0}
                         onChange={(e) =>
                           setEndoresmentOtp((prev) => ({
                             ...prev,
@@ -1477,10 +1447,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     <div className="col-span-12 md:col-span-2 flex items-end">
                       <button
                         type="button"
-                        disabled={
-                          endoresmentOtpSent.PROPOSER.timeleft === 0 ||
-                          !isOtpValid("PROPOSER")
-                        }
                         onClick={() =>
                           handleEndorsementVerification("PROPOSER")
                         }
@@ -1608,7 +1574,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                         type="text"
                         maxLength={6}
                         placeholder="XXXXXX"
-                        disabled={endoresmentOtpSent.SECONDER.timeleft === 0}
                         onChange={(e) =>
                           setEndoresmentOtp((prev) => ({
                             ...prev,
@@ -1623,10 +1588,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                     <div className="col-span-12 md:col-span-2 flex items-end">
                       <button
                         type="button"
-                        disabled={
-                          endoresmentOtpSent.SECONDER.timeleft === 0 ||
-                          !isOtpValid("SECONDER")
-                        }
                         onClick={() =>
                           handleEndorsementVerification("SECONDER")
                         }
@@ -1768,11 +1729,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
           </button>
         </form>
       </div>
-      {/* )} */}
-
-      {/* {!openModal && <MembershipCard setOpenModal={setOpenModal} />} */}
-
-      {/* {!openModal && <UserMembershipDasboard setOpenModal={setOpenModal}/>} */}
     </>
   );
 };

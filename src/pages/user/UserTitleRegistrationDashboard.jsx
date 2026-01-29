@@ -18,11 +18,10 @@ import EditTitleRegistrationDetails from "../../components/users/EditTitleRegist
 import TitleRegistrationForm from "../../components/users/TitleRegistrationForm";
 import RenewalTitleRegistration from "../../components/users/RenewalTitleRegistration";
 
-
-
 /*  STATUS FLOW  */
 const STATUS_STEP_INDEX = {
   // DRAFT: 0,
+  PENDING_PAYMENT: -1,
   SUBMITTED: 0,
 
   STAFF_APPROVED: 1,
@@ -63,7 +62,6 @@ const getStatusType = (status) => {
 
 /*  STATUS STYLES  */
 const STATUS_STYLE = {
-
   PENDING_PAYMENT: {
     bar: "bg-orange-600",
     text: "text-orange-700",
@@ -120,7 +118,6 @@ const STATUS_STYLE = {
     message: "Application has been holded",
   },
 };
-
 
 const shouldShowRenewButton = (expiryDate) => {
   if (!expiryDate) return false;
@@ -183,6 +180,7 @@ export default function UserTitleRegistrationDashboard() {
 
   /*  SEARCH  */
   const filteredApplications = applications.filter((d) => {
+
     const term = searchTerm.toLowerCase();
 
     const matchSearch =
@@ -218,7 +216,6 @@ export default function UserTitleRegistrationDashboard() {
       />
     );
   }
-
 
   return (
     <div className="px-16 py-8 max-w-7xl mx-auto">
@@ -323,27 +320,24 @@ export default function UserTitleRegistrationDashboard() {
                         Director:{" "}
                         <span className="font-medium">{detail.director}</span>
                       </p>
-
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
+                    {detail.status === "PENDING_PAYMENT" && (
+                      <button
+                        type="button"
+                        className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-orange-500 hover:bg-orange-600 hover:cursor-pointer "
+                        onClick={async () => {
+                          await startPayment("TITLE", detail.id);
 
-                    {
-                      detail.status === "PENDING_PAYMENT" && (
-                        <button type="button"
-                          className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-orange-500 hover:bg-orange-600 hover:cursor-pointer "
-                          onClick={async () => {
-                            await startPayment("TITLE", detail.id);
-
-                            fetchApplications();
-                          }}
-                        >
-                          <IndianRupee size={16} />
-                          Retry Payment
-                        </button>
-                      )
-                    }
+                          fetchApplications();
+                        }}
+                      >
+                        <IndianRupee size={16} />
+                        Retry Payment
+                      </button>
+                    )}
 
                     <button
                       onClick={() => handleOpenForm(detail)}
@@ -359,16 +353,14 @@ export default function UserTitleRegistrationDashboard() {
                         : "View Details"}
                     </button>
 
-
                     {shouldShowRenewButton(detail.expireDate) && (
-
-                    <button
-                      onClick={() => setRenewTitle(detail)}
-                      className="flex items-center px-5 py-3 gap-2 rounded-xl text-white bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                    >
-                      <RefreshCcw size={18} />
-                      Renew
-                    </button>
+                      <button
+                        onClick={() => setRenewTitle(detail)}
+                        className="flex items-center px-5 py-3 gap-2 rounded-xl text-white bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
+                      >
+                        <RefreshCcw size={18} />
+                        Renew
+                      </button>
                     )}
                   </div>
                 </div>
@@ -508,6 +500,8 @@ export default function UserTitleRegistrationDashboard() {
           onActionSuccess={fetchApplications}
         />
       )}
+
     </div>
+    
   );
 }

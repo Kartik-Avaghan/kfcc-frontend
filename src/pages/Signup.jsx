@@ -225,6 +225,7 @@ function Signup() {
                   name="bloodGroup"
                   value={formData.bloodGroup}
                   onChange={handleChange}
+                  required
                   className="w-full border border-gray-300 rounded-lg py-2.5 px-4 pl-10 focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Select Blood Group</option>
@@ -247,6 +248,7 @@ function Signup() {
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
+                  required
                   className="w-full border border-gray-300 rounded-lg py-2.5 px-4 pl-10 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -272,7 +274,6 @@ function Signup() {
               <div className="text-sm text-gray-400">
                 By registering, you confirm that the information provided is accurate and belongs to you. Providing incorrect details may lead to application rejection.
               </div>
-
 
               {/* SUBMIT */}
               <button
