@@ -199,11 +199,6 @@ function Nav() {
     ],
 
     MANAGER: [
-      // {
-      //   name: "Manager Dashboard",
-      //   icon: BarChart3,
-      //   path: "manager/managerdashboard",
-      // },
       { name: "ONM Meetings", icon: Users, path: "/manager/onmMeeting" },
       {
         name: "Title Meetings",
@@ -314,7 +309,9 @@ function Nav() {
                   <>
                     <p className="font-medium">Welcome {user?.name}</p>
                     <p className="text-xs text-blue-200 capitalize">
-                      {user?.roles?.join(", ")}
+                      {/* {user?.roles?.filter(role => role !== "USER").join(", ")} */}
+                      {user?.roles?.length === 1 && user.roles[0] === "USER"
+                        ? "USER" : user?.roles?.filter((role) => role !== "USER").join(", ")}
                     </p>
                   </>
                 )}
@@ -324,7 +321,7 @@ function Nav() {
         </div>
 
         {/* Menu */}
-        {/* <div className="flex-1 p-6 overflow-y-auto  scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-900"> */}
+
         <div className="flex-1 p-6 overflow-y-auto scrollbar-modern">
           <p className="text-xs font-semibold text-blue-300 uppercase mb-4">
             Main Menu
@@ -354,6 +351,7 @@ function Nav() {
 
           {isSuperAdmin && (
             <div className="mt-8">
+              
               <p className="text-xs font-semibold text-blue-300 uppercase mb-4">
                 Role Management
               </p>
