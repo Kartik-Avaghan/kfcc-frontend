@@ -16,6 +16,7 @@ if(token  && token.startsWith("Bearer ")){
 }
 
 if(!token){
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUser(false);
     navigate("/login");
     return;

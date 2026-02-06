@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
+import { X, MessageSquare, AlertTriangle, Send } from "lucide-react";
 import { notify } from "../../Utils/notify";
 
 function MembershipReject({ applicationId, onClose, onSuccess }) {
@@ -8,31 +8,30 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}/action`, {
-      method: "POST",
-      headers: {
-        "Authorization": localStorage.getItem("token"),
-        "Content-Type": "application/json",
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}/action`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "REJECT",
+          remark: remark,
+        }),
       },
-      body: JSON.stringify({
-        action: "REJECT",
-        remark : remark,
-      }),
+    )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Response not ok");
+      }
+      notify("Application is Rejected", "error");
+      onClose(false);
+      onSuccess();
+      return response.json();
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Response not ok");
-        }
-        notify("Application is Rejected","error")
-        onClose(false);
-        onSuccess();
-        return response.json();
-      })
-      .then((data) => {
-        // console.log("Remark submitted:", data);
-         // close popup after success
-      })
-      .catch((error) => notify(error.message, "error"));
+    .catch((error) => notify(error.message, "error"));
   }
 
   return (
@@ -52,14 +51,16 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
           >
             <X className="w-5 h-5" />
           </button>
-          
+
           <div className="flex items-center gap-3 pr-10">
             <div className="p-2">
               <MessageSquare className="w-6 h-6" />
             </div>
             <div>
               <h2 className="text-xl font-bold">Reject Application</h2>
-              <p className="text-yellow-100 text-sm">Provide feedback for this application</p>
+              <p className="text-yellow-100 text-sm">
+                Provide feedback for this application
+              </p>
             </div>
           </div>
         </div>
@@ -71,9 +72,12 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
               <div>
-                <p className="text-yellow-800 text-sm font-medium mb-1">Important Notice</p>
+                <p className="text-yellow-800 text-sm font-medium mb-1">
+                  Important Notice
+                </p>
                 <p className="text-yellow-700 text-xs leading-relaxed">
-                  This remark will be sent to the applicant. Please provide clear and constructive feedback.
+                  This remark will be sent to the applicant. Please provide
+                  clear and constructive feedback.
                 </p>
               </div>
             </div>
@@ -82,7 +86,10 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Textarea */}
             <div className="space-y-2">
-              <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="remark"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Your Remark *
               </label>
               <textarea
@@ -96,8 +103,12 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
                 minLength={10}
               />
               <div className="flex justify-between items-center">
-                <p className="text-xs text-gray-500">Minimum 10 characters required</p>
-                <p className="text-xs text-gray-500">{remark.length} characters</p>
+                <p className="text-xs text-gray-500">
+                  Minimum 10 characters required
+                </p>
+                <p className="text-xs text-gray-500">
+                  {remark.length} characters
+                </p>
               </div>
             </div>
 
@@ -116,7 +127,7 @@ function MembershipReject({ applicationId, onClose, onSuccess }) {
                 className="flex-1 bg-linear-to-r from-red-600 to-orange-600 text-white px-6 py-3 rounded-xl font-medium hover:from-yellow-700 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-yellow-300 cursor-pointer"
               >
                 <X className="size-5" />
-                 Reject 
+                Reject
               </button>
             </div>
           </form>

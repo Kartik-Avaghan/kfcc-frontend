@@ -11,6 +11,7 @@ import {
   Eye,
   RefreshCcw,
   IndianRupee,
+  SquarePen,
 } from "lucide-react";
 import ViewMembershipForm from "../../components/membershipformView/ViewMembershipForm";
 import MembershipForm from "../../components/users/MembershipForm";
@@ -21,8 +22,9 @@ import EditMembershipDetails from "../../components/users/EditMembershipDetails"
 const STATUS_FLOW = {
   
   PENDING_PAYMENT: -1,
-  
+  DRAFT: -1,
   SUBMITTED: 0,
+
 
   STAFF_APPROVED: 1,
   STAFF_REMARKED: 1,
@@ -42,7 +44,7 @@ const STATUS_FLOW = {
 
 const getStatusType = (status) => {
   if (status?.includes("REJECTED")) return "REJECTED";
-  if (status?.includes("REMARKED")) return "REMARKED";
+  if (status?.includes("DRAFT")) return "REMARKED";
   if (status?.includes("HOLD")) return "HOLD";
   if (status?.includes("PENDING_PAYMENT")) return "PENDING";
   if (status === "FINAL_APPROVED") return "APPROVED";
@@ -57,6 +59,7 @@ const STATUS_STYLES = {
     bar: "bg-blue-600",
     icon: Clock,
   },
+
   REMARKED: {
     bg: "bg-yellow-50",
     border: "border-yellow-200",
@@ -117,11 +120,12 @@ const shouldShowRenewButton = (expiryDate) => {
 };
 
 export default function UserMembershipDasboard() {
+
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAppId, setSelectedAppId] = useState(null);
-  const [formMode, setFormMode] = useState(null); // "view" | "edit"
+  const [viewApplication , setViewApplication] = useState(false);
+  const [editApplication , setEditApplication] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
   const [renewMembership, setRenewMembership] = useState(null);
 
@@ -148,6 +152,7 @@ export default function UserMembershipDasboard() {
       console.log("Membership data", data);
 
       setApplications(data);
+
     } catch (err) {
       notify(err.message, "error");
     } finally {
@@ -159,16 +164,8 @@ export default function UserMembershipDasboard() {
     fetchApplications();
   }, []);
 
-  const handleOpenForm = (details) => {
-    setSelectedAppId(details.applicationId);
-    if (getStatusType(details.status) === "REMARKED") {
-      setFormMode("edit");
-    } else {
-      setFormMode("view");
-    }
-  };
-
   const filteredApplications = applications.filter((app) => {
+
     const term = searchTerm.toLowerCase();
 
     const matchSearch =
@@ -183,6 +180,7 @@ export default function UserMembershipDasboard() {
       app.status == statusFilter;
 
     return matchSearch && matchesStatus;
+
   });
 
   if (openModal) {
@@ -328,19 +326,23 @@ export default function UserMembershipDasboard() {
                     )}
 
                     <button
-                      onClick={() => handleOpenForm(application)}
-                      className={`px-6 py-2 items-center rounded-xl text-white transition flex ${
-                        statusType === "REMARKED"
-                          ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                          : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
-                      }`}
+                      onClick={() => setViewApplication(application.applicationId)}
+                      className={`px-6 py-2 items-center rounded-xl text-white transition flex bg-blue-700 hover:bg-blue-800 hover:cursor-pointer`}
                     >
-                      {" "}
                       <Eye className="inline w-5 h-5 mr-2" />
-                      {statusType === "REMARKED"
-                        ? "Edit Application"
-                        : "View Details"}
+                      View Details
                     </button>
+
+                    { (application.status === "PENDING_PAYMENT" || application.status === "DRAFT") && (
+                      <button
+                        type="button"
+                        className="flex items-center justify-center px-5 py-3 gap-1 rounded-xl text-white bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer "
+                        onClick={() => setEditApplication(application.applicationId)}
+                      >
+                        <SquarePen size={16} />
+                        Edit Application
+                      </button>
+                    )}
 
                     {shouldShowRenewButton(application.expiryDate) && (
                       <button
@@ -475,17 +477,17 @@ export default function UserMembershipDasboard() {
             );
           })}
 
-          {formMode === "view" && selectedAppId && (
+          {viewApplication && (
             <ViewMembershipForm
-              applicationId={selectedAppId}
-              onClose={() => setFormMode(null)}
+              applicationId={viewApplication}
+              onClose={() => setViewApplication(false)}
             />
           )}
 
-          {formMode === "edit" && selectedAppId && (
+          {editApplication && (
             <EditMembershipDetails
-              applicationId={selectedAppId}
-              onClose={() => setFormMode(null)}
+              applicationId={editApplication}
+              onClose={() => setEditApplication(false)}
             />
           )}
 

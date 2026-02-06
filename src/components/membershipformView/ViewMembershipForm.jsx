@@ -119,7 +119,6 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
             <Field label="State" value={data.applicantState} />
             <Field label="Pin Code" value={data.applicantPinCode} />
             
-        
             <Doc
               label="Applicant Image"
               file={data.applicantImage}

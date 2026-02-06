@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { X, MessageSquare, AlertTriangle, Send } from 'lucide-react';
 import { notify } from "../../Utils/notify";
 
@@ -6,6 +6,7 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
   const [remark, setRemark] = useState("");
 
   function handleSubmit(e) {
+
     e.preventDefault();
 
     fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}/action`, {
@@ -19,19 +20,19 @@ function MembershipRemark({ applicationId, onClose, onSuccess  }) {
           remark : remark,
       }),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Response not ok");
-        }
-        notify("Application is Remarked", "warn");
-        onClose(false);
-        onSuccess();
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Remark submitted:", data);
-      })
-      .catch((error) => notify(error.message, "error"));
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Response not ok");
+      }
+      notify("Application is Remarked", "warn");
+      onClose(false);
+      onSuccess();
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Remark submitted:", data);
+    })
+    .catch((error) => notify(error.message, "error"));
   }
 
   return (

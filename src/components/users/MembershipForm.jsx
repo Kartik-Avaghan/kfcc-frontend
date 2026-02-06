@@ -45,6 +45,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
   });
 
   const [formData, setFormData] = useState({
+
     date: new Date().toISOString().split("T")[0],
 
     applicantFirmName: "",
@@ -59,6 +60,8 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
     applicantDistrict: "",
     applicantState: "",
     applicantPinCode: "",
+    applicantAadhaarNo: "",
+    applicantPanNo: "",
 
     // -------- DOCUMENT FILES --------
     applicantPhoto: null,
@@ -975,9 +978,9 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
               </label>
               <input
                 type="number"
-                name="proprietorAadhaarNo"
-                value={formData.proprietor.proprietorAadhaarNo}
-                onChange={(e) => handleInputChange(e, "proprietor")}
+                name="applicantAadhaarNo"
+                value={formData.applicantAadhaarNo}
+                onChange={(e) => handleInputChange(e, "applicant")}
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                 placeholder="Enter Aadhaar number"
                 maxLength={12}
@@ -1007,9 +1010,9 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
               </label>
               <input
                 type="text"
-                name="proprietorPanNo"
-                value={formData.proprietor.proprietorPanNo}
-                onChange={(e) => handleInputChange(e, "proprietor")}
+                name="applicantPanNo"
+                value={formData.applicantPanNo}
+                onChange={(e) => handleInputChange(e, "applicant")}
                 className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2"
                 placeholder="Enter PAN number"
                 maxLength={10}
