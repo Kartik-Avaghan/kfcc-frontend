@@ -20,33 +20,13 @@ import {
   Fingerprint,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
-import { startPayment } from "../../Utils/Payment";
 
-const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
-  const BASE_MEMBERSHIP_FEE = 59000;
-  const KALYAN_NIDHI_FEE = 22500;
-
-  const OTP_DURATION = 60;
-  const [endoresmentOtpSent, setEndoresmentOtpSent] = useState({
-    PROPOSER: {
-      sent: false,
-      timeleft: 0,
-      verified: false,
-    },
-    SECONDER: {
-      sent: false,
-      timeleft: 0,
-      verified: false,
-    },
-  });
-  
-  const [endoresmentOtp, setEndoresmentOtp] = useState({
-    PROPOSER: "",
-    SECONDER: "",
-  });
-
+const EditMembershipForm = ({
+  setOpenModal,
+  onActionSuccess,
+  applicationId,
+}) => {
   const [formData, setFormData] = useState({
-
     date: new Date().toISOString().split("T")[0],
 
     applicantFirmName: "",
@@ -115,28 +95,51 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
         nomineeRelationship: "",
       },
     ],
-
-    proposer: {
-      proposerMembershipId: null, // MUST be number or null
-      proposerName: "",
-      proposerAddress: "",
-      proposerMobileNo: "",
-      proposerDesignation: "",
-    },
-
-    seconder: {
-      seconderMembershipId: null,
-      seconderName: "",
-      seconderAddress: "",
-      seconderMobileNo: "",
-      seconderDesignation: "",
-    },
-
-    membershipFee: BASE_MEMBERSHIP_FEE,
-    kalyanNidhi: false,
-    totalAmountToPay: BASE_MEMBERSHIP_FEE,
-    
   });
+
+  useEffect(() => {
+    const fetchApplication = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/membership/${applicationId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: localStorage.getItem("token"),
+            },
+          },
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch membership");
+
+        const data = await response.json();
+
+        setFormData({
+          applicantFirmName: data.applicantFirmName || "",
+          applicantMembershipCategory: data.applicantMembershipCategory || "",
+          applicantOwnershipType: data.applicantOwnershipType || "",
+          applicantGstNo: data.applicantGstNo || "",
+          applicantPanNo: data.applicantPanNo || "",
+          applicantPan: data.applicantPan || "",
+          applicantAadhaarNo: data.applicantAadhaarNo || "",
+          applicantAadhaar: data.applicantAadhaar || "",
+          applicantAddressLine1: data.applicantAddressLine1 || "",
+          applicantAddressLine2: data.applicantAddressLine2 || "",
+          applicantDistrict: data.applicantDistrict || "",
+          applicantState: data.applicantState || "",
+          applicantPinCode: data.applicantPinCode || "",
+          membershipFee: data.membershipFee || "",
+          membershipExpiryDate: data.membershipExpiryDate || "",
+          nominees: data.nominee || [],
+          partners: data.partners || [],
+        });
+      } catch (error) {
+        notify(error.message, "error");
+      }
+    };
+
+    fetchApplication();
+  }, [applicationId]);
 
   useEffect(() => {
     if (formData.applicantOwnershipType === "PROPRIETOR") {
@@ -252,10 +255,7 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
     },
   ];
 
-  const [termsChecked, setTermsChecked] = useState(false);
-
   const handleInputChange = (e, section = null, index = null) => {
-    
     const { name, value, files } = e.target;
 
     if (section === "proprietor") {
@@ -312,19 +312,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
     const newNominee = [...formData.nominees];
     newNominee[idx][key] = value;
     setFormData((prev) => ({ ...prev, nominees: newNominee }));
-  };
-
-  const handleCheckboxChange = (key, checked) => {
-    setFormData((prev) => {
-      const baseFee = prev.membershipFee;
-      const kalyanFee = 22500;
-
-      return {
-        ...prev,
-        kalyanNidhi: checked,
-        totalAmountToPay: checked ? baseFee + kalyanFee : baseFee,
-      };
-    });
   };
 
   const addPartner = () => {
@@ -384,138 +371,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
     }));
   };
 
-  const handleEndorsementSendOtp = async (type) => {
-    // Implement OTP sending logic here
-    const membershipId =
-      type === "PROPOSER"
-        ? formData.proposer.proposerMembershipId
-        : formData.seconder.seconderMembershipId;
-
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/membership/endorsement/send-otp/${membershipId}/${type}
-        `,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        },
-      );
-
-      const data = response.ok ? await response.text() : await response.json();
-
-      if (!response.ok) {
-        notify(data.message, "error");
-        return;
-      }
-
-      notify(data, "success");
-      setEndoresmentOtpSent((prev) => ({
-        ...prev,
-        [type]: {
-          sent: true,
-          timeleft: OTP_DURATION,
-          verified: false,
-        },
-      }));
-    } catch (error) {
-      notify(error.message, "error");
-    }
-  };
-
-  const handleEndorsementVerification = async (type) => {
-    const endorsementMembershipId =
-      type === "PROPOSER"
-        ? formData.proposer.proposerMembershipId
-        : formData.seconder.seconderMembershipId;
-
-    try {
-      const payload = {
-        proposerMembershipId: endorsementMembershipId,
-        otp: endoresmentOtp[type],
-        type: type,
-      };
-
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/membership/endorsement/verify-otp`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(payload),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        notify(data.message, "error");
-        return;
-      }
-
-      setEndoresmentOtpSent((prev) => ({
-        ...prev,
-        [type]: {
-          ...prev[type],
-          verified: true,
-          timeleft: 0,
-        },
-      }));
-
-      setFormData((prev) => ({
-        ...prev,
-        [type.toLowerCase()]: {
-          ...prev[type.toLowerCase()],
-          [`${type.toLowerCase()}Name`]: [
-            data.firstName,
-            data.middleName,
-            data.lastName,
-          ]
-            .filter(Boolean)
-            .join(" "),
-          [`${type.toLowerCase()}Address`]: data.address,
-          [`${type.toLowerCase()}Designation`]: data.designation,
-          [`${type.toLowerCase()}MobileNo`]: data.mobile,
-        },
-      }));
-
-      notify(`${type.toLowerCase()} Verified`, "success");
-    } catch (error) {
-      notify(error.message, "error");
-    }
-  };
-
-  const maskMobile = (mobile) => {
-    if (!mobile) return "";
-    const str = mobile.toString();
-    return "XXXXXXX" + str.slice(-3);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setEndoresmentOtpSent((prev) => {
-        const updated = { ...prev };
-
-        ["PROPOSER", "SECONDER"].forEach((type) => {
-          if (updated[type].timeleft > 0) {
-            updated[type].timeleft -= 1;
-          }
-        });
-
-        return updated;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -523,10 +378,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
 
     const payload = {
       ...formData,
-      membershipFee: formData.membershipFee,
-      kalyanNidhi: formData.kalyanNidhi ? 1 : 0,
-      totalAmountToPay: formData.totalAmountToPay,
-
       partners:
         formData.applicantOwnershipType === "PROPRIETOR"
           ? []
@@ -559,18 +410,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
 
     if (formData.aoa) form.append("aoa", formData.aoa);
 
-    // proprietor
-    if (formData.proprietor.proprietorPan)
-      form.append("proprietorPan", formData.proprietor.proprietorPan);
-
-    if (formData.proprietor.proprietorAadhaar)
-      form.append("proprietorAadhaar", formData.proprietor.proprietorAadhaar);
-
-    if (formData.proprietor.proprietorESignature)
-      form.append(
-        "proprietorESignature",
-        formData.proprietor.proprietorESignature,
-      );
 
     if (formData.applicantOwnershipType !== "PROPRIETOR") {
       formData.partners.forEach((p) => {
@@ -582,21 +421,23 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
     }
 
     try {
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/membership/apply`, {
-        method: "POST",
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/membership/update/${applicationId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+          body: form,
         },
-        body: form,
-      })
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error("Response was not ok");
           }
           return response.json();
         })
-        .then(async (data) => {
-          await startPayment("MEMBERSHIP", data.applicationId);
+        .then(async () => {
 
           notify("membership form is successfully submited", "success");
 
@@ -625,20 +466,6 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             moa: null,
             aoa: null,
 
-            proprietor: {
-              proprietorName: "",
-              proprietorAddress: "",
-              proprietorDob: "", // yyyy-MM-dd
-              proprietorBloodGroup: "",
-
-              proprietorPanNo: "",
-              proprietorAadhaarNo: "",
-
-              proprietorPan: null, // FILE
-              proprietorAadhaar: null, // FILE
-              proprietorESignature: null, // FILE
-            },
-
             partners: [
               // {
               //   partnerName: "",
@@ -664,39 +491,10 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
               },
             ],
 
-            proposer: {
-              proposerMembershipId: "", // MUST be number or null
-              proposerName: "",
-              proposerAddress: "",
-              proposerMobileNo: "",
-              proposerDesignation: "",
-            },
-
-            seconder: {
-              seconderMembershipId: "",
-              seconderName: "",
-              seconderAddress: "",
-              seconderMobileNo: "",
-              seconderDesignation: "",
-            },
-            totalAmountToPay: 59000,
           });
 
-          setEndoresmentOtpSent({
-            PROPOSER: { sent: false, timeleft: 0, verified: false },
-            SECONDER: { sent: false, timeleft: 0, verified: false },
-          });
-
-          setEndoresmentOtp({
-            PROPOSER: "",
-            SECONDER: "",
-          });
-
-          //  Reset terms checkbox as well
-          setTermsChecked(false);
-
-          onActionSuccess();
           setOpenModal(false);
+          onActionSuccess();
         })
         .catch((error) => {
           notify(error.message, "error");
@@ -745,30 +543,42 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
     fetchUserData();
   }, []);
 
-  // const handleUserData = (e) => {
-  //   const { name, value } = e.target;
-  //   setUserData((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
-
-  // const isProposerMembershipEntered =
-  // formData.proposer.proposerMembershipId &&
-  // formData.proposer.proposerMembershipId.toString().trim().length > 0;
-
-  // const isProposerOtpValid =
-  // endoresmentOtp.PROPOSER &&
-  // endoresmentOtp.PROPOSER.length === 6;
-
-  const isMembershipEntered = (type) => {
-    const id =
-      type === "PROPOSER"
-        ? formData.proposer.proposerMembershipId
-        : formData.seconder.seconderMembershipId;
-
-    return id && id.toString().trim().length > 0;
-  };
+  const ImageField = ({ label, name, type }) => (
+    <div className="w-full">
+      <label htmlFor={name} className="flex items-center gap-2">
+        {" "}
+        <ImageIcon className="w-4 h-4 text-blue-700 " /> {label}
+      </label>
+      <div className="flex items-center">
+        <input
+          type="file"
+          name={name}
+          id={name}
+          className="border border-gray-300 rounded-md h-12 file:bg-blue-500 file:p-1 file:text-white file:rounded-md file:mt-2 file:ml-2 cursor-pointer w-full"
+          onChange={(e) => handleInputChange(e, type)}
+        />
+        {formData[name] ? (
+          formData[name] instanceof File ? (
+            <img
+              src={`${URL.createObjectURL(formData[name])}`}
+              alt={`${label} Preview`}
+              className="w-14 h-14 object-contain"
+            />
+          ) : (
+            <img
+              src={`${import.meta.env.VITE_API_BASE_URL}/${formData[name]}`}
+              alt={`${label} Preview`}
+              className="w-14 h-14 object-contain"
+            />
+          )
+        ) : (
+          <span className="text-sm text-red-500 ml-4">
+            No Document uploaded
+          </span>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -991,19 +801,11 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             </div>
 
             {/* Image */}
-            <div>
-              <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-blue-700" />
-                ಅರ್ಜಿದಾರರ ಆಧಾರ್ ಕಾರ್ಡ್ / Applicant Aadhaar card
-              </label>
-              <input
-                type="file"
-                name="applicantAadhaar"
-                onChange={(e) => handleInputChange(e, "applicant")}
-                required
-                className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-              />
-            </div>
+            <ImageField
+              label=" ಅರ್ಜಿದಾರರ ಆಧಾರ್ ಕಾರ್ಡ್ / Applicant Aadhaar card"
+              name="applicantAadhaar"
+              type="applicant"
+            />
 
             <div>
               <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -1023,49 +825,24 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             </div>
 
             {/* Image */}
-            <div>
-              <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-blue-700" />
-                ಅರ್ಜಿದಾರರ ಪ್ಯಾನ್ ಕಾರ್ಡ್ / Applicant Pancard
-              </label>
-              <input
-                type="file"
-                name="applicantPan"
-                onChange={(e) => handleInputChange(e, "applicant")}
-                required
-                className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-              />
-            </div>
+            <ImageField
+              label="ಅರ್ಜಿದಾರರ ಪ್ಯಾನ್ ಕಾರ್ಡ್ / Applicant Pancard"
+              name="applicantPan"
+              type="applicant"
+            />
 
             {/* Image */}
-            <div>
-              <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-blue-700" />
-                ಅರ್ಜಿದಾರರ ವಿಳಾಸ ಪುರಾವೆ / Applicant Address-Proff
-              </label>
-              <input
-                type="file"
-                name="applicantAddressProof"
-                onChange={(e) => handleInputChange(e, "applicant")}
-                required
-                className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-              />
-            </div>
+            <ImageField
+              label="  ಅರ್ಜಿದಾರರ ವಿಳಾಸ ಪುರಾವೆ / Applicant Address-Proff"
+              name="applicantAddressProof"
+              type="applicant"
+            />
 
-            {/* Image */}
-            <div>
-              <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-blue-700" />
-                ಅರ್ಜಿದಾರರ ಇ ಸಹಿ / Applicant E-Signature
-              </label>
-              <input
-                type="file"
-                name="applicantSignature"
-                onChange={(e) => handleInputChange(e, "applicant")}
-                required
-                className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-              />
-            </div>
+            <ImageField
+              label="ಅರ್ಜಿದಾರರ ಇ ಸಹಿ / Applicant E-Signature"
+              name="applicantSignature"
+              type="applicant"
+            />
 
             <div>
               <label className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
@@ -1085,19 +862,11 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             </div>
 
             {/* Image */}
-            <div>
-              <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-blue-700" />
-                ಸಂಸ್ಥೆಯ ಮುದ್ರೆ / Firm Seal
-              </label>
-              <input
-                type="file"
-                name="firmSeal"
-                onChange={(e) => handleInputChange(e, "applicant")}
-                required
-                className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-              />
-            </div>
+            <ImageField
+              label="ಸಂಸ್ಥೆಯ ಮುದ್ರೆ / Firm Seal"
+              name="firmSeal"
+              type="applicant"
+            />
 
             {/* Membership Category */}
             <div>
@@ -1126,19 +895,11 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             </div>
 
             {/* Image */}
-            <div>
-              <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-blue-700" />
-                ಅರ್ಜಿದಾರರ ಚಿತ್ರ / Applicant Image
-              </label>
-              <input
-                type="file"
-                name="applicantPhoto"
-                onChange={(e) => handleInputChange(e, "applicant")}
-                required
-                className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-              />
-            </div>
+            <ImageField
+              label="ಅರ್ಜಿದಾರರ ಚಿತ್ರ / Applicant Image"
+              name="applicantPhoto"
+              type="applicant"
+            />
 
             {/* Ownership Type */}
             <div>
@@ -1186,47 +947,21 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                    {/* <ImageIcon className="w-4 h-4 text-blue-700" /> */}
-                    ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ / Partnership Deed
-                  </label>
-                  <input
-                    type="file"
-                    name="partnershipDeed"
-                    onChange={(e) => handleInputChange(e, "applicant")}
-                    required
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-                  />
-                </div>
-
-                <div>
-                  <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                    {/* <ImageIcon className="w-4 h-4 text-blue-700" /> */}
-                    ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ / Memorandum of Association(moa)
-                  </label>
-                  <input
-                    type="file"
-                    name="moa"
-                    onChange={(e) => handleInputChange(e, "applicant")}
-                    required
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-                  />
-                </div>
-
-                <div>
-                  <label className=" font-semibold text-gray-800 mb-2 flex items-center gap-2">
-                    {/* <ImageIcon className="w-4 h-4 text-blue-700" /> */}
-                    ಸಂಘದ ಲೇಖನಗಳು / Articles of Association(aoa)
-                  </label>
-                  <input
-                    type="file"
-                    name="aoa"
-                    onChange={(e) => handleInputChange(e, "applicant")}
-                    required
-                    className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-1 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px]"
-                  />
-                </div>
+                <ImageField
+                  label="ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ / Partnership Deed"
+                  name="partnershipDeed"
+                  type="applicant"
+                />
+                <ImageField
+                  label=" ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ / Memorandum of Association(moa)"
+                  name="moa"
+                  type="applicant"
+                />
+                <ImageField
+                  label=" ಸಂಘದ ಲೇಖನಗಳು / Articles of Association(aoa)"
+                  name="aoa"
+                  type="applicant"
+                />
               </div>
 
               {/* Partner Cards */}
@@ -1262,20 +997,44 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
                             ))}
                           </select>
                         ) : (
-                          <input
-                            type={field.type}
-                            name={field.key}
-                            value={
-                              field.type === "file"
-                                ? undefined
-                                : partner[field.key] || ""
-                            }
-                            onChange={(e) =>
-                              handleInputChange(e, "partners", idx)
-                            }
-                            required
-                            className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-2 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px] cursor-pointer"
-                          />
+                          <div className="flex items-center gap-2">
+                            <input
+                              type={field.type}
+                              name={field.key}
+                              value={
+                                field.type === "file"
+                                  ? undefined
+                                  : partner[field.key] || ""
+                              }
+                              onChange={(e) =>
+                                handleInputChange(e, "partners", idx)
+                              }
+                              required
+                              className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-2 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px] cursor-pointer h-12"
+                            />
+
+                            {field.type === "file" && (
+                              <div className="mt-2">
+                                {partner[field.key] ? (
+                                  <img
+                                    src={
+                                      typeof partner[field.key] === "string"
+                                        ? `${import.meta.env.VITE_API_BASE_URL}/${partner[field.key].replace(/\\/g, "/")}`
+                                        : URL.createObjectURL(
+                                            partner[field.key],
+                                          )
+                                    }
+                                    alt="Preview"
+                                    className="w-20 h-20 object-contain"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-red-500 font-medium">
+                                    File does not exist
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     ))}
@@ -1373,364 +1132,11 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
             )}
           </div>
 
-          {/* Proposer Form */}
-          <div className="p-4 space-y-4">
-            <h3 className="text-lg font-semibold">
-              ಪ್ರತಿಪಾದಕ ವಿವರಗಳು / Proposer Details
-            </h3>
-
-            <div className="grid grid-cols-12 gap-4">
-              {/* Membership ID */}
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಪ್ರತಿಪಾದಕ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Proposer Membership ID
-                </label>
-                <input
-                  type="number"
-                  name="proposerMembershipId"
-                  value={formData.proposer.proposerMembershipId}
-                  onChange={(e) => handleInputChange(e, "proposer")}
-                  required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Send / Resend Button */}
-              <div className="col-span-12 md:col-span-2 flex items-end">
-                {isMembershipEntered("PROPOSER") &&
-                  !endoresmentOtpSent.PROPOSER.sent && (
-                    <button
-                      type="button"
-                      // disabled={!isProposerMembershipEntered}
-                      onClick={() => handleEndorsementSendOtp("PROPOSER")}
-                      className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
-                    >
-                      <Send size={16} /> Send OTP
-                    </button>
-                  )}
-
-                {isMembershipEntered("PROPOSER") &&
-                  endoresmentOtpSent.PROPOSER.sent &&
-                  endoresmentOtpSent.PROPOSER.timeleft === 0 &&
-                  !endoresmentOtpSent.PROPOSER.verified && (
-                    <button
-                      type="button"
-                      onClick={() => handleEndorsementSendOtp("PROPOSER")}
-                      className="w-full bg-blue-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800 cursor-pointer"
-                    >
-                      <Send size={16} /> Resend OTP
-                    </button>
-                  )}
-              </div>
-
-              {/* OTP Section */}
-              {endoresmentOtpSent.PROPOSER.sent &&
-                !endoresmentOtpSent.PROPOSER.verified && (
-                  <>
-                    <div className="col-span-12 md:col-span-6">
-                      <label className="flex items-center gap-3 font-semibold mb-2">
-                        ಒಟಿಪಿ ನಮೂದಿಸಿ / Enter OTP
-                        <span className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
-                          {endoresmentOtpSent.PROPOSER.timeleft}s
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={6}
-                        placeholder="XXXXXX"
-                        onChange={(e) =>
-                          setEndoresmentOtp((prev) => ({
-                            ...prev,
-                            PROPOSER: e.target.value,
-                          }))
-                        }
-                        required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
-                    </div>
-
-                    <div className="col-span-12 md:col-span-2 flex items-end">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleEndorsementVerification("PROPOSER")
-                        }
-                        className="w-full cursor-pointer bg-green-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white disabled:bg-gray-400"
-                      >
-                        <Check size={18} /> Verify
-                      </button>
-                    </div>
-                  </>
-                )}
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಪ್ರತಿಪಾದಕ ಹೆಸರು / Proposer Name
-                </label>
-                <input
-                  type="text"
-                  name="proposerName"
-                  value={formData.proposer.proposerName}
-                  disabled
-                  className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-200"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಪ್ರತಿಪಾದಕ ವಿಳಾಸ / Proposer Address
-                </label>
-                <input
-                  type="text"
-                  name="proposerAddress"
-                  value={formData.proposer.proposerAddress}
-                  disabled
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಮೊಬೈಲ್ ಸಂಖ್ಯೆ / Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  name="proposerMobileNo"
-                  value={maskMobile(formData.proposer.proposerMobileNo)}
-                  disabled
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಹುದ್ದೆ / Designation
-                </label>
-                <input
-                  type="text"
-                  name="proposerDesignation"
-                  value={formData.proposer.proposerDesignation}
-                  disabled
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 space-y-4">
-            <h3 className="text-lg font-semibold">
-              ಸೇಕಂಡರ್ ವಿವರಗಳು / Seconder Details
-            </h3>
-
-            <div className="grid grid-cols-12 gap-4">
-              {/* Membership ID */}
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಸೇಕಂಡರ್ ಸದಸ್ಯತ್ವ ಸಂಖ್ಯೆ / Seconder Membership ID
-                </label>
-                <input
-                  type="number"
-                  name="seconderMembershipId"
-                  value={formData.seconder.seconderMembershipId}
-                  onChange={(e) => handleInputChange(e, "seconder")}
-                  required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-2 flex items-end">
-                {isMembershipEntered("SECONDER") &&
-                  !endoresmentOtpSent.SECONDER.sent && (
-                    <button
-                      type="button"
-                      onClick={() => handleEndorsementSendOtp("SECONDER")}
-                      className="w-full bg-blue-600 flex items-center cursor-pointer justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800"
-                    >
-                      <Send size={16} /> Send OTP
-                    </button>
-                  )}
-
-                {isMembershipEntered("SECONDER") &&
-                  endoresmentOtpSent.SECONDER.sent &&
-                  endoresmentOtpSent.SECONDER.timeleft === 0 &&
-                  !endoresmentOtpSent.SECONDER.verified && (
-                    <button
-                      type="button"
-                      onClick={() => handleEndorsementSendOtp("SECONDER")}
-                      className="w-full bg-blue-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white hover:bg-blue-800 cursor-pointer"
-                    >
-                      <Send size={16} /> Resend OTP
-                    </button>
-                  )}
-              </div>
-
-              {/* OTP Section */}
-              {endoresmentOtpSent.SECONDER.sent &&
-                !endoresmentOtpSent.SECONDER.verified && (
-                  <>
-                    <div className="col-span-12 md:col-span-6">
-                      <label className="flex items-center gap-3 font-semibold mb-2">
-                        ಒಟಿಪಿ ನಮೂದಿಸಿ / Enter OTP
-                        <span className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm">
-                          {endoresmentOtpSent.SECONDER.timeleft}s
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={6}
-                        placeholder="XXXXXX"
-                        onChange={(e) =>
-                          setEndoresmentOtp((prev) => ({
-                            ...prev,
-                            SECONDER: e.target.value,
-                          }))
-                        }
-                        required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
-                    </div>
-
-                    <div className="col-span-12 md:col-span-2 flex items-end">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleEndorsementVerification("SECONDER")
-                        }
-                        className="w-full cursor-pointer bg-green-600 flex items-center justify-center gap-2 py-2.5 rounded-md text-white disabled:bg-gray-400"
-                      >
-                        <Check size={18} /> Verify
-                      </button>
-                    </div>
-                  </>
-                )}
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಸೇಕಂಡರ್ ಹೆಸರು / seconder Name
-                </label>
-                <input
-                  type="text"
-                  name="seconderName"
-                  value={formData.seconder.seconderName}
-                  disabled
-                  className="w-full border border-gray-300  px-3 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-gray-200"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಸೇಕಂಡರ್ ವಿಳಾಸ / seconder Address
-                </label>
-                <input
-                  type="text"
-                  name="seconderAddress"
-                  value={formData.seconder.seconderAddress}
-                  disabled
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಮೊಬೈಲ್ ಸಂಖ್ಯೆ / Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  name="seconderMobileNo"
-                  value={maskMobile(formData.seconder.seconderMobileNo)}
-                  disabled
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
-                />
-              </div>
-
-              <div className="col-span-12 md:col-span-6">
-                <label className="block font-semibold mb-2">
-                  ಹುದ್ದೆ / Designation
-                </label>
-                <input
-                  type="text"
-                  name="seconderDesignation"
-                  value={formData.seconder.seconderDesignation}
-                  disabled
-                  className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-3 py-2 bg-gray-200"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Fees */}
-          <div className="border border-gray-200 p-6 rounded-xl space-y-4 bg-linear-to-bl from-blue-50 via-white to-blue-100 shadow-md transition-all hover:shadow-lg  duration-200">
-            {/* Membership Fee Section */}
-            <div className="flex items-center gap-3 text-blue-900">
-              <Wallet className="w-5 h-5 text-blue-700" />
-              <label className="text-lg font-medium">
-                Membership Form Application Fee
-                <span className="block text-gray-600 text-base mt-0.5">
-                  ₹50,000 + GST ={" "}
-                  <span className="font-semibold text-blue-900">₹59,000</span>
-                </span>
-              </label>
-            </div>
-
-            {/* Kalyan Nidhi Checkbox */}
-            <label className="flex items-center gap-3 text-lg cursor-pointer hover:text-blue-700 transition-colors">
-              <input
-                type="checkbox"
-                checked={formData.kalyanNidhi}
-                onChange={(e) =>
-                  handleCheckboxChange("kalyanNidhi", e.target.checked)
-                }
-                className="w-4.5 h-4.5 accent-blue-700 cursor-pointer"
-              />
-
-              <span>
-                Apply for <span className="font-semibold">Kalyan Nidhi</span>{" "}
-                <span className="font-semibold text-blue-900 ml-1">
-                  ₹22,500
-                </span>
-              </span>
-            </label>
-
-            {/* Total Display */}
-            <div className="flex items-center justify-between mt-4 border-t pt-3">
-              <span className="font-semibold text-xl text-gray-800 flex items-center gap-2">
-                <IndianRupee className="w-5 h-5 text-blue-700 mt-1" />
-                Total:
-              </span>
-              <span className="font-bold text-2xl text-blue-700">
-                ₹{formData.totalAmountToPay.toLocaleString("en-IN")}
-              </span>
-            </div>
-          </div>
-
-          {/* Terms & Submit */}
-          <label className="inline-flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={termsChecked}
-              onChange={(e) => setTermsChecked(e.target.checked)}
-              className="form-checkbox w-4 h-4"
-            />
-            <span>
-              ನಾನು/ನಾವು ನೀಡಿರುವ{" "}
-              <a href="" target="_blank" className="text-blue-600 underline">
-                ನೀತಿ, ನಿಯಮಗಳನ್ನು
-              </a>{" "}
-              ಓದಿ ಒಪ್ಪಿಕೊಂಡಿರುತ್ತೇನೆ / I have read and agree to the Terms and
-              Conditions
-            </span>
-          </label>
-
           <button
             type="submit"
-            disabled={!termsChecked}
-            className={`w-full py-3 rounded text-white font-semibold cursor-pointer ${
-              termsChecked
-                ? "bg-blue-500 hover:bg-blue-600"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
+            className={`w-full py-3 rounded text-white font-semibold cursor-pointer bg-blue-500 hover:bg-blue-600`}
           >
-            Submit
+            Submit Changes
           </button>
         </form>
       </div>
@@ -1738,4 +1144,4 @@ const MembershipForm = ({ setOpenModal, onActionSuccess }) => {
   );
 };
 
-export default MembershipForm;
+export default EditMembershipForm;

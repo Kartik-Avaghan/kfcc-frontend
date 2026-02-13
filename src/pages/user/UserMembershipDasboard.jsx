@@ -17,7 +17,7 @@ import ViewMembershipForm from "../../components/membershipformView/ViewMembersh
 import MembershipForm from "../../components/users/MembershipForm";
 import RenewalMembership from "../../components/users/RenewalMembership";
 import { startPayment } from "../../Utils/Payment";
-import EditMembershipDetails from "../../components/users/EditMembershipDetails";
+import EditMembershipForm from "../../components/users/EditMembershipForm";
 
 const STATUS_FLOW = {
   
@@ -149,7 +149,6 @@ export default function UserMembershipDasboard() {
       if (!res.ok) throw new Error("Failed to fetch applications");
 
       const data = await res.json();
-      console.log("Membership data", data);
 
       setApplications(data);
 
@@ -190,6 +189,17 @@ export default function UserMembershipDasboard() {
         onActionSuccess={fetchApplications}
       />
     );
+  }
+
+  if(editApplication){
+    return(
+               <EditMembershipForm
+              applicationId={editApplication}
+              key={editApplication}
+              onActionSuccess={fetchApplications}
+              setOpenModal={setEditApplication}
+            />
+    )
   }
 
   return (
@@ -484,13 +494,6 @@ export default function UserMembershipDasboard() {
             />
           )}
 
-          {editApplication && (
-            <EditMembershipDetails
-              applicationId={editApplication}
-              onClose={() => setEditApplication(false)}
-            />
-          )}
-
           {renewMembership && (
             <RenewalMembership
               applicationData={renewMembership}
@@ -498,6 +501,7 @@ export default function UserMembershipDasboard() {
               onActionSuccess={fetchApplications}
             />
           )}
+          
         </div>
       </div>
     </>

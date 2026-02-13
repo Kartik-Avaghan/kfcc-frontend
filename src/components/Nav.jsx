@@ -280,8 +280,7 @@ function Nav() {
     dispatch(userLogout());
     navigate("/login");
   };
-
-  console.log("user data:", user);
+  
 
   return (
     <div className="fixed inset-y-0 left-0 w-72">
