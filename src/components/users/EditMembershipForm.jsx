@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import {
   User,
   MapPin,
@@ -20,6 +21,7 @@ import {
   Fingerprint,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
+import ImageField from "./ImageField";
 
 const EditMembershipForm = ({
   setOpenModal,
@@ -410,7 +412,6 @@ const EditMembershipForm = ({
 
     if (formData.aoa) form.append("aoa", formData.aoa);
 
-
     if (formData.applicantOwnershipType !== "PROPRIETOR") {
       formData.partners.forEach((p) => {
         if (p.partnerPan) form.append("partnerPan", p.partnerPan);
@@ -438,7 +439,6 @@ const EditMembershipForm = ({
           return response.json();
         })
         .then(async () => {
-
           notify("membership form is successfully submited", "success");
 
           // Reset formData to empty/default
@@ -490,7 +490,6 @@ const EditMembershipForm = ({
                 nomineeRelationship: "",
               },
             ],
-
           });
 
           setOpenModal(false);
@@ -542,43 +541,6 @@ const EditMembershipForm = ({
 
     fetchUserData();
   }, []);
-
-  const ImageField = ({ label, name, type }) => (
-    <div className="w-full">
-      <label htmlFor={name} className="flex items-center gap-2">
-        {" "}
-        <ImageIcon className="w-4 h-4 text-blue-700 " /> {label}
-      </label>
-      <div className="flex items-center">
-        <input
-          type="file"
-          name={name}
-          id={name}
-          className="border border-gray-300 rounded-md h-12 file:bg-blue-500 file:p-1 file:text-white file:rounded-md file:mt-2 file:ml-2 cursor-pointer w-full"
-          onChange={(e) => handleInputChange(e, type)}
-        />
-        {formData[name] ? (
-          formData[name] instanceof File ? (
-            <img
-              src={`${URL.createObjectURL(formData[name])}`}
-              alt={`${label} Preview`}
-              className="w-14 h-14 object-contain"
-            />
-          ) : (
-            <img
-              src={`${import.meta.env.VITE_API_BASE_URL}/${formData[name]}`}
-              alt={`${label} Preview`}
-              className="w-14 h-14 object-contain"
-            />
-          )
-        ) : (
-          <span className="text-sm text-red-500 ml-4">
-            No Document uploaded
-          </span>
-        )}
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -804,7 +766,8 @@ const EditMembershipForm = ({
             <ImageField
               label=" ಅರ್ಜಿದಾರರ ಆಧಾರ್ ಕಾರ್ಡ್ / Applicant Aadhaar card"
               name="applicantAadhaar"
-              type="applicant"
+              value={formData.applicantAadhaar}
+              onChange={(e) => handleInputChange(e, "applicant")}
             />
 
             <div>
@@ -828,20 +791,23 @@ const EditMembershipForm = ({
             <ImageField
               label="ಅರ್ಜಿದಾರರ ಪ್ಯಾನ್ ಕಾರ್ಡ್ / Applicant Pancard"
               name="applicantPan"
-              type="applicant"
+              value={formData.applicantPan}
+              onChange={(e) => handleInputChange(e, "applicant")}
             />
 
             {/* Image */}
             <ImageField
               label="  ಅರ್ಜಿದಾರರ ವಿಳಾಸ ಪುರಾವೆ / Applicant Address-Proff"
               name="applicantAddressProof"
-              type="applicant"
+              value={formData.applicantAddressProof}
+              onChange={(e) => handleInputChange(e, "applicant")}
             />
 
             <ImageField
               label="ಅರ್ಜಿದಾರರ ಇ ಸಹಿ / Applicant E-Signature"
               name="applicantSignature"
-              type="applicant"
+              value={formData.applicantSignature}
+              onChange={(e) => handleInputChange(e, "applicant")}
             />
 
             <div>
@@ -865,7 +831,8 @@ const EditMembershipForm = ({
             <ImageField
               label="ಸಂಸ್ಥೆಯ ಮುದ್ರೆ / Firm Seal"
               name="firmSeal"
-              type="applicant"
+              value={formData.firmSeal}
+              onChange={(e) => handleInputChange(e, "applicant")}
             />
 
             {/* Membership Category */}
@@ -898,7 +865,8 @@ const EditMembershipForm = ({
             <ImageField
               label="ಅರ್ಜಿದಾರರ ಚಿತ್ರ / Applicant Image"
               name="applicantPhoto"
-              type="applicant"
+              value={formData.applicantPhoto}
+              onChange={(e) => handleInputChange(e, "applicant")}
             />
 
             {/* Ownership Type */}
@@ -950,17 +918,20 @@ const EditMembershipForm = ({
                 <ImageField
                   label="ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ / Partnership Deed"
                   name="partnershipDeed"
-                  type="applicant"
+                                value={formData.partnershipDeed}
+              onChange={(e) => handleInputChange(e, "applicant")}
                 />
                 <ImageField
                   label=" ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ / Memorandum of Association(moa)"
                   name="moa"
-                  type="applicant"
+                                value={formData.moa}
+              onChange={(e) => handleInputChange(e, "applicant")}
                 />
                 <ImageField
                   label=" ಸಂಘದ ಲೇಖನಗಳು / Articles of Association(aoa)"
                   name="aoa"
-                  type="applicant"
+                  value={formData.aoa}
+              onChange={(e) => handleInputChange(e, "applicant")}
                 />
               </div>
 
