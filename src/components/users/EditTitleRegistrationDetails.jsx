@@ -111,7 +111,7 @@ function EditTitleRegistrationDetails({ applicationId, onClose, onSuccess }) {
             title: formData.title,
             titleInKannada: formData.titleInKannada,
             date: formData.date,
-            isFirstFilm: formData.isFirstFilm,
+            isFirstFilm: formData.firstFilm,
             institution: formData.institution,
             language: formData.language,
             previouslyRegistered: formData.previouslyRegistered,
