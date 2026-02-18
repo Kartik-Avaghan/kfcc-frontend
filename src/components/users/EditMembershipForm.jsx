@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import React from "react";
 import {
   User,
   MapPin,
@@ -7,15 +6,11 @@ import {
   Layers,
   Building,
   Droplet,
-  Wallet,
-  IndianRupee,
   Plus,
   Building2,
   Map,
   Hash,
   ChevronLeft,
-  Check,
-  Send,
   Calendar,
   CreditCard,
   Fingerprint,
@@ -122,9 +117,7 @@ const EditMembershipForm = ({
           applicantOwnershipType: data.applicantOwnershipType || "",
           applicantGstNo: data.applicantGstNo || "",
           applicantPanNo: data.applicantPanNo || "",
-          applicantPan: data.applicantPan || "",
           applicantAadhaarNo: data.applicantAadhaarNo || "",
-          applicantAadhaar: data.applicantAadhaar || "",
           applicantAddressLine1: data.applicantAddressLine1 || "",
           applicantAddressLine2: data.applicantAddressLine2 || "",
           applicantDistrict: data.applicantDistrict || "",
@@ -132,14 +125,27 @@ const EditMembershipForm = ({
           applicantPinCode: data.applicantPinCode || "",
           membershipFee: data.membershipFee || "",
           membershipExpiryDate: data.membershipExpiryDate || "",
+
+          applicantPhoto: data.applicantImage || null,
+          applicantPan: data.applicantPan || null,
+          applicantAadhaar: data.applicantAadhaar || null,
+          applicantAddressProof: data.applicantAddressProof || null,
+          applicantSignature: data.applicantSignature || null,
+          firmSeal: data.firmSeal || null,
+
+          // parnership
+          partnershipDeed: data.partnershipDeed || null,
+          moa: data.moa || null,
+          aoa: data.aoa || null,
+
           nominees: data.nominee || [],
           partners: data.partners || [],
+          
         });
       } catch (error) {
         notify(error.message, "error");
       }
     };
-
     fetchApplication();
   }, [applicationId]);
 
@@ -174,7 +180,6 @@ const EditMembershipForm = ({
       labelEn: "Date of Birth",
       labelKn: "ಜನ್ಮ ದಿನಾಂಕ",
     },
-
     {
       key: "partnerBloodGroup",
       type: "select",
@@ -182,7 +187,6 @@ const EditMembershipForm = ({
       labelKn: "ರಕ್ತದ ಗುಂಪು",
       options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Other"],
     },
-
     {
       key: "partnerPanNo",
       type: "text",
@@ -198,19 +202,19 @@ const EditMembershipForm = ({
       maxlength: 12,
     },
     {
-      key: "partnerPan",
+      key: "partnerPanImg",
       type: "file",
       labelEn: "PAN Card",
       labelKn: "ಪ್ಯಾನ್ ಕಾರ್ಡ್",
     },
     {
-      key: "partnerAadhaar",
+      key: "partnerAadhaarImg",
       type: "file",
       labelEn: "Aadhaar Card",
       labelKn: "ಆಧಾರ್ ಕಾರ್ಡ್",
     },
     {
-      key: "partnerSignature",
+      key: "partnerESignature",
       type: "file",
       labelEn: "E-Signature",
       labelKn: "ಇ-ಸಹಿ",
@@ -918,20 +922,20 @@ const EditMembershipForm = ({
                 <ImageField
                   label="ಪಾಲುದಾರಿಕೆ ಒಪ್ಪಂದ ಪತ್ರ / Partnership Deed"
                   name="partnershipDeed"
-                                value={formData.partnershipDeed}
-              onChange={(e) => handleInputChange(e, "applicant")}
+                  value={formData.partnershipDeed}
+                  onChange={(e) => handleInputChange(e, "applicant")}
                 />
                 <ImageField
                   label=" ಸಂಘದ ಜ್ಞಾಪಕ ಪತ್ರ / Memorandum of Association(moa)"
                   name="moa"
-                                value={formData.moa}
-              onChange={(e) => handleInputChange(e, "applicant")}
+                  value={formData.moa}
+                  onChange={(e) => handleInputChange(e, "applicant")}
                 />
                 <ImageField
                   label=" ಸಂಘದ ಲೇಖನಗಳು / Articles of Association(aoa)"
                   name="aoa"
                   value={formData.aoa}
-              onChange={(e) => handleInputChange(e, "applicant")}
+                  onChange={(e) => handleInputChange(e, "applicant")}
                 />
               </div>
 
@@ -980,7 +984,6 @@ const EditMembershipForm = ({
                               onChange={(e) =>
                                 handleInputChange(e, "partners", idx)
                               }
-                              required
                               className="w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 px-1 py-2 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition file:text-[12px] cursor-pointer h-12"
                             />
 

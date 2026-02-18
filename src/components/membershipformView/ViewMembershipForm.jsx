@@ -5,7 +5,6 @@ import {
   XCircle,
   MessageSquare,
   User,
-  Building,
   Users,
   CreditCard,
   AlertCircle,
@@ -16,14 +15,11 @@ import MembershipReject from "./MembershipReject";
 import MembershipAccept from "./MembereshipAccept";
 import { useSelector } from "react-redux";
 
-// import MembershipAccept from "./MembershipAccept";
 
 export default function ViewMembershipForm({ applicationId, onClose }) {
   const [preview, setPreview] = useState(null);
-
   const [data, setData] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
-
   const [showRemarkModal, setShowRemarkModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
@@ -31,12 +27,16 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
   const roles = user?.roles || [];
 
   const ONM_BLOCKED_ROLES = [
-    "ONM_COMMITTEE_VOTER","ONM_COMMITTEE_LEADER","ONM_COMMITTEE",
-    "EC_MEMBER","PRODUCER","USER",
+    "ONM_COMMITTEE_VOTER",
+    "ONM_COMMITTEE_LEADER",
+    "ONM_COMMITTEE",
+    "EC_MEMBER",
+    "PRODUCER",
+    "USER",
   ];
 
   const isRestrictedUser = roles.some((role) =>
-    ONM_BLOCKED_ROLES.includes(role)
+    ONM_BLOCKED_ROLES.includes(role),
   );
 
   useEffect(() => {
@@ -80,7 +80,6 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
           </button>
 
           <div className="flex justify-between items-end mt-2">
-
             <div>
               <h2 className="text-2xl font-bold">Membership Application</h2>
               <p className="text-blue-100 mt-1">
@@ -88,16 +87,15 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
               </p>
             </div>
 
-            {
-              data.membershipAcceptanceDate && (
-                <span className=" flex items-center p-4 text-center h-8  rounded-full text-sm bg-white/10 border border-white/20">
-                  Approved At: { new Date(data.membershipAcceptanceDate).toLocaleDateString("en-IN") }
-                </span>
-              ) 
-            }
-      
+            {data.membershipAcceptanceDate && (
+              <span className=" flex items-center p-4 text-center h-8  rounded-full text-sm bg-white/10 border border-white/20">
+                Approved At:{" "}
+                {new Date(data.membershipAcceptanceDate).toLocaleDateString(
+                  "en-IN",
+                )}
+              </span>
+            )}
           </div>
-
         </div>
 
         {/* CONTENT */}
@@ -118,7 +116,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
             <Field label="District" value={data.applicantDistrict} />
             <Field label="State" value={data.applicantState} />
             <Field label="Pin Code" value={data.applicantPinCode} />
-            
+
             <Doc
               label="Applicant Image"
               file={data.applicantImage}
@@ -141,54 +139,22 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
               onView={openPreview}
             />
             <Doc label="Firm Seal" file={data.firmSeal} onView={openPreview} />
-            <Doc
-              label="Partnership Deed"
-              file={data.partnershipDeed}
-              onView={openPreview}
-            />
-            <Doc label="MOA" file={data.moa} onView={openPreview} />
-            <Doc label="AOA" file={data.aoa} onView={openPreview} />
+
+            {data.applicantOwnershipType !== "PROPRIETOR" && (
+              <>
+                <Doc
+                  label="Partnership Deed"
+                  file={data.partnershipDeed}
+                  onView={openPreview}
+                />
+                <Doc label="MOA" file={data.moa} onView={openPreview} />
+                <Doc label="AOA" file={data.aoa} onView={openPreview} />
+              </>
+            )}
           </InfoSection>
 
-          {/* PROPRIETOR */}
-          {/* {isProprietor && data.proprietor && (
-            <InfoSection title="Proprietor Details" icon={Building}>
-              <Field label="Name" value={data.proprietor.proprietorName} />
-              <Field label="DOB" value={data.proprietor.proprietorDob} />
-              <Field
-                label="Blood Group"
-                value={data.proprietor.proprietorBloodGroup}
-              />
-              <Field
-                label="Address"
-                value={data.proprietor.proprietorAddress}
-              />
-              <Field label="PAN No" value={data.proprietor.proprietorPanNo} />
-              <Field
-                label="Aadhaar No"
-                value={data.proprietor.proprietorAadhaarNo}
-              />
-
-              <Doc
-                label="PAN Image"
-                file={data.proprietor.proprietorPanImg}
-                onView={openPreview}
-              />
-              <Doc
-                label="Aadhaar Image"
-                file={data.proprietor.proprietorAadhaarImg}
-                onView={openPreview}
-              />
-              <Doc
-                label="E-Signature"
-                file={data.applicantSignature}
-                onView={openPreview}
-              />
-            </InfoSection>
-          )} */}
-
+      
           {/* MEMBERS */}
-
           {hasMembers && data.partners?.length > 0 && (
             <InfoSection title="Partners / Directors / Members" icon={Users}>
               <div className="space-y-6 col-span-full">
@@ -238,7 +204,6 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
           )}
 
           {/* NOMINEE */}
-
           <InfoSection title="Nominee Details" icon={User}>
             <div className="space-y-6 col-span-full">
               {data.nominee?.length ? (
@@ -340,7 +305,7 @@ export default function ViewMembershipForm({ applicationId, onClose }) {
           <div
             className="fixed inset-0 bg-black/90 flex items-center justify-center z-60"
             onClick={() => setPreview(null)}
-          > 
+          >
             <button className="absolute top-30 left-50 text-white cursor-pointer">
               <XIcon />
             </button>

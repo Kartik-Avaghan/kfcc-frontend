@@ -10,6 +10,7 @@ import {
   Eye,
   RefreshCcw,
   IndianRupee,
+  SquarePen,
 } from "lucide-react";
 import { notify } from "../../Utils/notify";
 import { startPayment } from "../../Utils/Payment";
@@ -52,7 +53,7 @@ const STEPS = [
 const getStatusType = (status) => {
   if (!status) return "IN_PROGRESS";
   if (status.includes("REJECTED")) return "REJECTED";
-  if (status.includes("REMARKED")) return "REMARKED";
+  if (status.includes("DRAFT")) return "REMARKED";
   if (status.includes("HOLD")) return "HOLD";
   if (status === "PENDING_PAYMENT") return "PENDING_PAYMENT";
   if (status === "FINAL_APPROVED") return "APPROVED";
@@ -136,8 +137,8 @@ export default function UserTitleRegistrationDashboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAppId, setSelectedAppId] = useState(null);
-  const [formMode, setFormMode] = useState(null); // "view" | "edit"
+  const [viewForm, setViewFormOpen] = useState(false);
+  const [editForm, setEditForm] = useState(false);
   const [renewTitle, setRenewTitle] = useState(null);
 
   const [statusFilter, setStatusFilter] = useState("");
@@ -180,7 +181,6 @@ export default function UserTitleRegistrationDashboard() {
 
   /*  SEARCH  */
   const filteredApplications = applications.filter((d) => {
-
     const term = searchTerm.toLowerCase();
 
     const matchSearch =
@@ -198,15 +198,6 @@ export default function UserTitleRegistrationDashboard() {
 
     return matchSearch && matchStatus;
   });
-
-  const handleOpenForm = (detail) => {
-    if (getStatusType(detail.status) === "REMARKED") {
-      setFormMode("edit");
-    } else {
-      setFormMode("view");
-    }
-    setSelectedAppId(detail.id);
-  };
 
   if (openModal) {
     return (
@@ -340,18 +331,23 @@ export default function UserTitleRegistrationDashboard() {
                     )}
 
                     <button
-                      onClick={() => handleOpenForm(detail)}
-                      className={`px-6 py-3 rounded-xl text-white transition flex items-center ${
-                        statusType === "REMARKED"
-                          ? "bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer"
-                          : "bg-blue-700 hover:bg-blue-800 hover:cursor-pointer"
-                      }`}
+                      onClick={() => setViewFormOpen(detail.id)}
+                      className={`px-6 py-3 rounded-xl text-white transition flex items-center bg-blue-700 hover:bg-blue-800 hover:cursor-pointer`}
                     >
                       <Eye className="inline w-5 h-5 mr-2" />
-                      {statusType === "REMARKED"
-                        ? "Edit Application"
-                        : "View Details"}
+                      View Details
                     </button>
+
+                    {(detail.status === "PENDING_PAYMENT" ||
+                      detail.status === "DRAFT") && (
+                      <button
+                        onClick={() => setEditForm(detail.id)}
+                        className={`px-6 py-3 rounded-xl text-white transition flex items-center bg-yellow-600 hover:bg-yellow-700 hover:cursor-pointer`}
+                      >
+                        <SquarePen className="inline w-5 h-5 mr-2" />
+                        Edit Application
+                      </button>
+                    )}
 
                     {shouldShowRenewButton(detail.expireDate) && (
                       <button
@@ -469,27 +465,22 @@ export default function UserTitleRegistrationDashboard() {
         })}
       </div>
 
-      {/* {viewFormOpen && <ViewTitleRegistrationForm applicationId={viewFormOpen} onClose={()=>setViewFormOpen(false)}/>}
-
-    {editForm && <EditTitleRegistrationForm applicationId={editForm} onClose={()=>setEditForm(false)}/>} */}
-
-      {formMode === "view" && selectedAppId && (
+      {viewForm && (
         <ViewTitleRegistrationForm
-          applicationId={selectedAppId}
+          applicationId={viewForm}
           onClose={() => {
-            setFormMode(null);
-            setSelectedAppId(null);
+            setViewFormOpen(false);
           }}
         />
       )}
 
-      {formMode === "edit" && selectedAppId && (
+      {editForm && (
         <EditTitleRegistrationDetails
-          applicationId={selectedAppId}
+          applicationId={editForm}
           onClose={() => {
-            setFormMode(null);
-            setSelectedAppId(null);
+            setEditForm(false);
           }}
+          onSuccess={fetchApplications}
         />
       )}
 
@@ -502,6 +493,5 @@ export default function UserTitleRegistrationDashboard() {
       )}
 
     </div>
-    
   );
 }
